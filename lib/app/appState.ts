@@ -66,10 +66,14 @@ export function uid(prefix: string): string {
 
 export function pushAudit(
   list: AuditEntry[],
-  entry: Omit<AuditEntry, "id" | "at" | "user">,
+  entry: Omit<AuditEntry, "id" | "at" | "user" | "role">,
   userName: string,
+  userRole: Role,
 ): AuditEntry[] {
-  return [{ id: uid("AUD"), at: nowStamp(), user: userName, ...entry }, ...list];
+  return [
+    { id: uid("AUD"), at: nowStamp(), user: userName, role: userRole, ...entry },
+    ...list,
+  ];
 }
 
 export function applyEvidenceAdds(

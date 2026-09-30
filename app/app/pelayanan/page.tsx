@@ -24,6 +24,8 @@ import {
 } from "@/data/app/seed";
 import { getTemplate } from "@/lib/app/selectors";
 import { servicesToday } from "@/lib/app/services/passportService";
+import { ROLE_LABEL } from "@/lib/app/actions";
+import { can } from "@/lib/app/permissions";
 
 const SERVICE_POINTS = [
   "Ruang Fisioterapi 1",
@@ -82,7 +84,7 @@ function ServiceStatusChip({ status }: { status: "AKTIF" | "SELESAI" }) {
 
 export default function PelayananPage() {
   const router = useRouter();
-  const { src, startService, addEvidence } = useApp();
+  const { src, startService, addEvidence, role } = useApp();
 
   const [patientId, setPatientId] = React.useState(patients[0].id);
   const [providerId, setProviderId] = React.useState(providers[0].id);
@@ -93,7 +95,10 @@ export default function PelayananPage() {
   const chosen = getTemplate(templateId);
   const activeCount = today.filter((s) => s.status === "AKTIF").length;
 
+  const canStart = can(role, "startService");
+
   function onStart() {
+    if (!canStart) return;
     const id = startService({ patientId, providerId, templateId, servicePoint });
     router.push(`/app/pelayanan/${id}`);
   }
@@ -172,10 +177,31 @@ export default function PelayananPage() {
               {chosen.required.map((k) => EVIDENCE_LABEL[k]).join(", ")}
             </span>
           </p>
-          <Button size="sm" className="shrink-0 rounded-full" onClick={onStart}>
-            Mulai Pelayanan
-            <ArrowRight aria-hidden="true" className="size-3.5" />
-          </Button>
+          <div className="flex flex-col items-start gap-1.5 sm:items-end">
+            <Button
+              size="sm"
+              className="shrink-0 rounded-full"
+              disabled={!canStart}
+              title={
+                canStart
+                  ? undefined
+                  : `Peran ${ROLE_LABEL[role] ?? role} tidak berwenang memulai pelayanan.`
+              }
+              onClick={onStart}
+            >
+              Mulai Pelayanan
+              <ArrowRight aria-hidden="true" className="size-3.5" />
+            </Button>
+            {!canStart ? (
+              <p className="text-[11px] text-slate-500">
+                Hanya Operator dan Admin yang memulai pelayanan. Peran Anda saat ini:{" "}
+                <span className="font-medium text-slate-700">
+                  {ROLE_LABEL[role] ?? role}
+                </span>
+                .
+              </p>
+            ) : null}
+          </div>
         </div>
       </section>
 

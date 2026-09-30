@@ -31,7 +31,8 @@ import {
   explain as buildExplanation,
   view as claimView,
 } from "@/lib/app/services/claimService";
-import { REVIEW_LABEL } from "@/lib/app/actions";
+import { REVIEW_LABEL, ROLE_LABEL } from "@/lib/app/actions";
+import { can, ROLE_REVIEW_HELPER } from "@/lib/app/permissions";
 import type { ExplainResult } from "@/lib/app/explain";
 import { impactOf } from "@/lib/app/rules";
 import type { ImpactResult } from "@/data/app/types";
@@ -134,7 +135,7 @@ export default function ClaimDetailPage() {
     };
   }, [claimId]);
 
-  const canReview = role === "reviewer" || role === "admin";
+  const canReview = can(role, "reviewClaim");
 
   function submit(action: ReviewActionKind) {
     const note = reviewNote.trim();
@@ -451,7 +452,7 @@ export default function ClaimDetailPage() {
               </p>
             </div>
             <span className="inline-flex h-6 items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 font-mono text-[10px] tracking-wider text-slate-500">
-              {role}
+              {ROLE_LABEL[role] ?? role}
             </span>
           </div>
 
@@ -497,12 +498,22 @@ export default function ClaimDetailPage() {
             </Button>
           </div>
 
-          {!canReview ? (
-            <p className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-600">
-              Role <span className="font-medium">{role}</span> hanya dapat melihat.
-              Ganti role lewat menu profil (mis. Reviewer) untuk bertindak.
-            </p>
-          ) : null}
+          <p
+            className={
+              "mt-3 rounded-xl border px-3.5 py-2.5 text-xs " +
+              (canReview
+                ? "border-sky-200 bg-sky-50 text-sky-800"
+                : "border-slate-200 bg-slate-50 text-slate-600")
+            }
+          >
+            {ROLE_REVIEW_HELPER[role]}
+            {!canReview ? (
+              <>
+                {" "}
+                Ganti role lewat menu profil untuk mengambil tindakan.
+              </>
+            ) : null}
+          </p>
 
           {submitted ? (
             <p

@@ -14,9 +14,11 @@ import { seedSource, type DataSource } from "@/lib/app/selectors";
 import {
   applyEvidenceAdds,
   initialPersistedState,
+  pushAudit,
   type PersistedState,
   type StartServiceInput,
 } from "@/lib/app/appState";
+import { ROLE_LABEL } from "@/lib/app/actions";
 import {
   captureEvidence,
   startService as startServiceReducer,
@@ -155,7 +157,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     (input: StartServiceInput): string => {
       let id = "";
       setState((prev) => {
-        const result = startServiceReducer(prev, input, user.name);
+        const result = startServiceReducer(prev, input, user.name, user.role);
         id = result.serviceId;
         return result.state;
       });
@@ -167,7 +169,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   const addEvidence = React.useCallback(
     (serviceId: string, kind: EvidenceKind, channel?: CaptureChannel) => {
       setState((prev) =>
-        captureEvidence(prev, serviceId, kind, user.name, channel) ?? prev,
+        captureEvidence(prev, serviceId, kind, user.name, user.role, channel) ??
+        prev,
       );
     },
     [setState, user.name],
@@ -176,7 +179,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   const submitReview = React.useCallback(
     (claimId: string, action: ReviewActionKind, note: string) => {
       setState((prev) =>
-        submitReviewReducer(prev, claimId, action, note, user.name),
+        submitReviewReducer(prev, claimId, action, note, user.name, user.role),
       );
     },
     [setState, user.name],
@@ -199,7 +202,25 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   }, [setState]);
 
   const setRole = React.useCallback((role: Role) => {
-    setState((prev) => ({ ...prev, role }));
+    setState((prev) => {
+      if (prev.role === role) return prev;
+      const nextUser = users.find((u) => u.role === role);
+      return {
+        ...prev,
+        role,
+        audit: pushAudit(
+          prev.audit,
+          {
+            action: "ROLE_CHANGED",
+            entity: "User",
+            entityId: nextUser?.id ?? role,
+            description: `Role diubah menjadi ${ROLE_LABEL[role] ?? role}.`,
+          },
+          nextUser?.name ?? "Pengguna Demo",
+          role,
+        ),
+      };
+    });
   }, [setState]);
 
   const statusOf = React.useCallback(

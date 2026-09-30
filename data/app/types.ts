@@ -188,12 +188,14 @@ export type AuditEntity =
   | "Billing"
   | "Claim"
   | "Review"
-  | "Signal";
+  | "Signal"
+  | "User";
 
 export type AuditEntry = {
   id: string;
   at: string;
   user: string;
+  role?: Role;
   action: string;
   entity: AuditEntity;
   entityId: string;

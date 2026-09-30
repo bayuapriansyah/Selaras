@@ -14,6 +14,12 @@ import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Button } from "@/components/ui/button";
 import { ROLE_LABEL } from "@/lib/app/actions";
+import {
+  can,
+  PERMISSIONS,
+  PERMISSION_LABEL,
+  ROLES,
+} from "@/lib/app/permissions";
 import type { Role } from "@/data/app/types";
 
 const ROLE_DESC: Record<Role, string> = {
@@ -35,8 +41,9 @@ const ENDPOINTS = [
 export default function SettingsPage() {
   const { user, role, setRole, state, resetDemo, src } = useApp();
   const [confirming, setConfirming] = React.useState(false);
+  const canReset = can(role, "resetDemo");
 
-  const roles: Role[] = ["operator", "provider", "reviewer", "admin"];
+  const roles: Role[] = ROLES;
 
   return (
     <div className="flex flex-col gap-6">
@@ -112,6 +119,77 @@ export default function SettingsPage() {
         </div>
       </section>
 
+      <section
+        aria-label="Permission matrix"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <h2 className="text-sm font-semibold text-slate-900">
+          Permission matrix · role-based demo
+        </h2>
+        <p className="text-xs text-slate-500">
+          Prototype RBAC (mock auth demo) — bukan production authorization.
+          Tabel dibangun langsung dari modul permission yang sama dengan yang
+          dipakai UI, sehingga tidak bisa berbeda. Akses lihat halaman terbuka
+          untuk semua role.
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-left text-xs">
+            <thead>
+              <tr className="border-b border-slate-200">
+                <th className="py-2 pr-3 font-medium text-slate-600">Aksi</th>
+                {roles.map((r) => (
+                  <th
+                    key={r}
+                    className={
+                      "px-3 py-2 text-center font-mono text-[10px] tracking-wider uppercase " +
+                      (r === role ? "text-sky-700" : "text-slate-500")
+                    }
+                  >
+                    {ROLE_LABEL[r] ?? r}
+                    {r === role ? " ·" : ""}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {PERMISSIONS.map((p) => (
+                <tr key={p} className="border-b border-slate-100">
+                  <td className="py-2 pr-3 text-slate-700">
+                    {PERMISSION_LABEL[p]}
+                  </td>
+                  {roles.map((r) => (
+                    <td
+                      key={r}
+                      className={
+                        "px-3 py-2 text-center font-semibold " +
+                        (can(r, p) ? "text-emerald-600" : "text-slate-300")
+                      }
+                      title={can(r, p) ? "Diizinkan" : "Tidak diizinkan"}
+                    >
+                      {can(r, p) ? "✓" : "–"}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              <tr className="border-b border-slate-100">
+                <td className="py-2 pr-3 text-slate-700">
+                  Ganti role demo (mock auth)
+                </td>
+                {roles.map((r) => (
+                  <td
+                    key={r}
+                    className="px-3 py-2 text-center font-semibold text-emerald-600"
+                    title="Diizinkan"
+                  >
+                    ✓
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <div className="grid gap-5 lg:grid-cols-2">
         <section
           aria-label="Data demo"
@@ -145,15 +223,32 @@ export default function SettingsPage() {
           </dl>
           <div className="mt-4 border-t border-slate-100 pt-4">
             {!confirming ? (
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded-full"
-                onClick={() => setConfirming(true)}
-              >
-                <RotateCcw aria-hidden="true" className="size-3.5" />
-                Reset demo
-              </Button>
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full"
+                  disabled={!canReset}
+                  title={
+                    canReset
+                      ? undefined
+                      : `Peran ${ROLE_LABEL[role] ?? role} tidak berwenang mereset demo.`
+                  }
+                  onClick={() => setConfirming(true)}
+                >
+                  <RotateCcw aria-hidden="true" className="size-3.5" />
+                  Reset demo
+                </Button>
+                {!canReset ? (
+                  <p className="mt-2 text-[11px] text-slate-500">
+                    Hanya Admin yang dapat reset demo — peran Anda saat ini:{" "}
+                    <span className="font-medium text-slate-700">
+                      {ROLE_LABEL[role] ?? role}
+                    </span>
+                    .
+                  </p>
+                ) : null}
+              </>
             ) : (
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs text-slate-600">

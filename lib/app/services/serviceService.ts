@@ -4,6 +4,7 @@ import type {
   CaptureChannel,
   EvidenceKind,
   EvidenceSource,
+  Role,
   Service,
 } from "@/data/app/types";
 import { getTemplate, seedSource } from "@/lib/app/selectors";
@@ -17,7 +18,7 @@ import {
 export function startService(
   prev: PersistedState,
   input: StartServiceInput,
-  userName: string,
+  userName: string, userRole: Role,
 ): { state: PersistedState; serviceId: string } {
   const seq = prev.nextSeq;
   const key = String(seq).padStart(2, "0");
@@ -90,6 +91,7 @@ export function startService(
           description: `Pelayanan ${template.name.toLowerCase()} dimulai untuk ${input.patientId}.`,
         },
         userName,
+        userRole,
       ),
     },
   };
@@ -109,7 +111,7 @@ export function captureEvidence(
   prev: PersistedState,
   serviceId: string,
   kind: EvidenceKind,
-  userName: string,
+  userName: string, userRole: Role,
   channel?: CaptureChannel,
 ): PersistedState | null {
   const current = findService(prev, serviceId);
@@ -142,6 +144,7 @@ export function captureEvidence(
           : `${EVIDENCE_LABEL[kind]} tercatat untuk ${serviceId}.`) + via,
     },
     userName,
+    userRole,
   );
 
   if (kind === "billing") {
@@ -154,6 +157,7 @@ export function captureEvidence(
         description: `Billing dibuat untuk ${serviceId}.`,
       },
       userName,
+      userRole,
     );
   }
 
@@ -167,6 +171,7 @@ export function captureEvidence(
         description: `Klaim ${current.claimId ?? "-"} tertaut ke ${serviceId}.`,
       },
       userName,
+      userRole,
     );
   }
 
@@ -180,6 +185,7 @@ export function captureEvidence(
         description: `Seluruh evidence ${serviceId} lengkap — Service Passport COMPLETE.`,
       },
       userName,
+      userRole,
     );
   }
 

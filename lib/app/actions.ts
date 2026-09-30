@@ -11,6 +11,7 @@ export const AUDIT_LABEL: Record<string, string> = {
   CLAIM_REVIEWED: "Klaim ditinjau",
   REVIEW_ACTION: "Aksi tinjauan",
   CLARIFICATION_REQUESTED: "Klarifikasi diminta",
+  ROLE_CHANGED: "Role diubah",
 };
 
 export const REVIEW_LABEL: Record<ReviewActionKind, string> = {

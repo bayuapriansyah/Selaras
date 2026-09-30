@@ -6,7 +6,7 @@ import { cn } from "cn";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { entries as auditEntries } from "@/lib/app/services/auditService";
-import { AUDIT_LABEL } from "@/lib/app/actions";
+import { AUDIT_LABEL, ROLE_LABEL } from "@/lib/app/actions";
 import { formatDateTime } from "@/lib/app/format";
 
 const ACTION_TONE: Record<string, string> = {
@@ -20,6 +20,7 @@ const ACTION_TONE: Record<string, string> = {
   CLAIM_REVIEWED: "border-amber-200 bg-amber-50 text-amber-700",
   REVIEW_ACTION: "border-amber-200 bg-amber-50 text-amber-700",
   CLARIFICATION_REQUESTED: "border-amber-200 bg-amber-50 text-amber-700",
+  ROLE_CHANGED: "border-sky-200 bg-sky-50 text-sky-700",
 };
 
 export default function AuditLogPage() {
@@ -99,16 +100,23 @@ export default function AuditLogPage() {
                   {e.entity} · {e.entityId}
                 </span>
               </span>
-              <span className="flex shrink-0 items-center gap-1.5 text-xs text-slate-500">
-                <span className="flex size-6 items-center justify-center rounded-full bg-sky-100 text-[10px] font-semibold text-sky-700">
-                  {e.user
-                    .split(" ")
-                    .map((w) => w[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()}
+              <span className="flex shrink-0 flex-col items-start gap-1 text-xs text-slate-500">
+                <span className="flex items-center gap-1.5">
+                  <span className="flex size-6 items-center justify-center rounded-full bg-sky-100 text-[10px] font-semibold text-sky-700">
+                    {e.user
+                      .split(" ")
+                      .map((w) => w[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </span>
+                  {e.user}
                 </span>
-                {e.user}
+                {e.role ? (
+                  <span className="ml-8 rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 font-mono text-[10px] tracking-wider text-slate-500">
+                    {ROLE_LABEL[e.role] ?? e.role}
+                  </span>
+                ) : null}
               </span>
             </li>
           ))}

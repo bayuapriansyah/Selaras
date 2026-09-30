@@ -23,6 +23,14 @@ import { patients, providers } from "@/data/app/seed";
 import { getTemplate } from "@/lib/app/selectors";
 import { passportRow } from "@/lib/app/services/passportService";
 import { makeQrToken } from "@/lib/app/qr";
+import { ROLE_LABEL } from "@/lib/app/actions";
+import {
+  CAPTURE_HELPER,
+  can,
+  captureDenyTitle,
+  captureKindPermission,
+  rolesLabel,
+} from "@/lib/app/permissions";
 
 function VerifyItem({
   label,
@@ -57,7 +65,7 @@ function VerifyItem({
 export default function ServiceWorkspacePage() {
   const params = useParams<{ serviceId: string }>();
   const serviceId = params.serviceId;
-  const { src, state, addEvidence } = useApp();
+  const { src, state, addEvidence, role } = useApp();
 
   const row = React.useMemo(
     () => passportRow(serviceId, src),
@@ -66,6 +74,7 @@ export default function ServiceWorkspacePage() {
 
   const [channel, setChannel] = React.useState<CaptureChannel | null>(null);
   const [note, setNote] = React.useState("");
+  const noteAllowed = can(role, "captureClinical");
 
   if (!row) {
     return (
@@ -262,10 +271,16 @@ export default function ServiceWorkspacePage() {
           )}
         </div>
 
+        <p className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-600">
+          {CAPTURE_HELPER[role]}
+        </p>
+
         <ol className="mt-4 flex flex-col gap-3">
           {steps.map((kind, index) => {
             const item = service.evidence.find((e) => e.kind === kind);
             const ok = item?.state === "present";
+            const perm = captureKindPermission(kind);
+            const allowed = can(role, perm);
             const addChannel = state.evidenceAdds
               .filter((a) => a.serviceId === serviceId && a.kind === kind)
               .slice(-1)[0]?.channel;
@@ -306,7 +321,9 @@ export default function ServiceWorkspacePage() {
                           }`
                         : locked
                           ? "Menunggu verifikasi QR"
-                          : "Siap dicatat"}
+                          : allowed
+                            ? "Siap dicatat"
+                            : `Butuh peran ${rolesLabel(perm)}`}
                     </p>
                   </div>
                 </div>
@@ -316,7 +333,14 @@ export default function ServiceWorkspacePage() {
                     type="button"
                     size="sm"
                     variant={locked ? "outline" : "default"}
-                    disabled={locked}
+                    disabled={locked || !allowed}
+                    title={
+                      locked
+                        ? "Terkunci — scan QR dulu"
+                        : allowed
+                          ? undefined
+                          : captureDenyTitle(role)
+                    }
                     className="h-8 shrink-0 rounded-full"
                     onClick={() => capture(kind)}
                   >
@@ -343,20 +367,31 @@ export default function ServiceWorkspacePage() {
                     ? `Tercatat ${noteItem.at ?? "-"}${
                         noteChannel ? ` · via ${noteChannel}` : ""
                       }`
-                    : template.required.includes("note")
-                      ? "Wajib — bagian dari evidence template layanan ini."
-                      : "Opsional — catatan bebas untuk tim berikutnya."}
+                    : !noteAllowed
+                      ? `Butuh peran ${rolesLabel("captureClinical")}`
+                      : template.required.includes("note")
+                        ? "Wajib — bagian dari evidence template layanan ini."
+                        : "Opsional — catatan bebas untuk tim berikutnya."}
                 </p>
               </div>
             </div>
             <Textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              disabled={locked}
+              disabled={locked || !noteAllowed}
+              title={
+                locked
+                  ? "Scan QR untuk membuka input catatan."
+                  : noteAllowed
+                    ? undefined
+                    : captureDenyTitle(role)
+              }
               placeholder={
                 locked
                   ? "Scan QR untuk membuka input catatan."
-                  : "Tulis catatan klinis singkat…"
+                  : !noteAllowed
+                    ? "Hanya Provider dan Admin yang mengisi catatan klinis."
+                    : "Tulis catatan klinis singkat…"
               }
               className="mt-3 min-h-[72px] bg-white text-sm"
             />
@@ -365,7 +400,14 @@ export default function ServiceWorkspacePage() {
                 type="button"
                 size="sm"
                 variant="outline"
-                disabled={locked || note.trim().length === 0}
+                disabled={locked || !noteAllowed || note.trim().length === 0}
+                title={
+                  locked
+                    ? "Terkunci — scan QR dulu"
+                    : noteAllowed
+                      ? undefined
+                      : captureDenyTitle(role)
+                }
                 className="h-8 rounded-full"
                 onClick={() => {
                   capture("note");

@@ -2,6 +2,7 @@ import type {
   ClaimStatus,
   ReviewAction,
   ReviewActionKind,
+  Role,
 } from "@/data/app/types";
 import { REVIEW_LABEL } from "@/lib/app/actions";
 import {
@@ -27,6 +28,7 @@ export function submitReview(
   action: ReviewActionKind,
   note: string,
   userName: string,
+  userRole: Role,
 ): PersistedState {
   const review: ReviewAction = {
     id: uid("RA"),
@@ -52,6 +54,7 @@ export function submitReview(
           : `Aksi tinjauan: ${REVIEW_LABEL[action]} untuk ${claimId}.`,
     },
     userName,
+    userRole,
   );
 
   const notification = {
