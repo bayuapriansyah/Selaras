@@ -1,0 +1,241 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* SELARAS brand scale */
+  --color-night: #0a0f0d;
+  --color-night-2: #141a17;
+  --color-forest-950: #06231a;
+  --color-forest-900: #0a3b2c;
+  --color-forest-800: #0f4a38;
+  --color-forest-700: #16614a;
+  --color-forest-600: #1c7a5c;
+  --color-leaf-500: #10b981;
+  --color-leaf-600: #059669;
+  --color-leaf-100: #e6f6ee;
+  --color-ivory: #faf9f4;
+  --color-ivory-deep: #f2f0e8;
+  --color-hairline: #e4e2d9;
+  --color-ink: #0d1512;
+  --color-ash: #626d68;
+  --color-review: #b45309;
+  --color-review-soft: #fdf4e3;
+  --color-critical: #b42318;
+  --color-critical-soft: #fdeeed;
+}
+
+:root {
+  --background: #faf9f4;
+  --foreground: #0d1512;
+  --card: #ffffff;
+  --card-foreground: #0d1512;
+  --popover: #ffffff;
+  --popover-foreground: #0d1512;
+  --primary: #0a3b2c;
+  --primary-foreground: #f6fbf8;
+  --secondary: #e9efe9;
+  --secondary-foreground: #0a3b2c;
+  --muted: #f2f0e8;
+  --muted-foreground: #64706a;
+  --accent: #e6f6ee;
+  --accent-foreground: #0a3b2c;
+  --destructive: #b42318;
+  --border: #e4e2d9;
+  --input: #dcdace;
+  --ring: #16614a;
+  --chart-1: #0a3b2c;
+  --chart-2: #10b981;
+  --chart-3: #b45309;
+  --chart-4: #16614a;
+  --chart-5: #0d1512;
+  --radius: 0.75rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0d1512;
+  --sidebar-primary: #0a3b2c;
+  --sidebar-primary-foreground: #f6fbf8;
+  --sidebar-accent: #f2f0e8;
+  --sidebar-accent-foreground: #0d1512;
+  --sidebar-border: #e4e2d9;
+  --sidebar-ring: #16614a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklch, #10b981 32%, transparent);
+  }
+  :focus-visible {
+    outline-offset: 2px;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform 0.18s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Hairline grid used as quiet texture behind hero and footer */
+@utility evidence-grid {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklch, #0a3b2c 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, #0a3b2c 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 40%,
+    #000 25%,
+    transparent 78%
+  );
+}
+
+/* Same texture tuned for the near-black shell: faint leaf lines */
+@utility evidence-grid-dark {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklch, #10b981 9%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, #10b981 9%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 40%,
+    #000 25%,
+    transparent 78%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Keyboard focus must be visible everywhere. Unlayered on purpose so it
+   wins over utility-level outline-none declarations. */
+:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+.bg-forest-900 :focus-visible,
+.bg-forest-950 :focus-visible,
+.bg-night :focus-visible,
+.bg-night:focus-visible,
+footer :focus-visible {
+  outline-color: var(--color-leaf-500) !important;
+}
+
+/* NALAR-inspired treatment for dark surfaces: frosted panel + leaf glow */
+
+@utility glow-leaf {
+  box-shadow:
+    0 0 24px color-mix(in srgb, #10b981 38%, transparent),
+    0 0 64px color-mix(in srgb, #10b981 12%, transparent);
+}
+
+/* Custom scrollbar (neutral so it reads on ivory and on forest) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f2f0e8;
+}
+::-webkit-scrollbar-thumb {
+  background: #b8b4a8;
+  border-radius: 999px;
+  border: 2px solid #f2f0e8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9d9a8e;
+}
