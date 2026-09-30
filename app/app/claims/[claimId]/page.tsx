@@ -15,6 +15,7 @@ import {
   Play,
   Send,
   Share2,
+  ShieldAlert,
   Sparkles,
 } from "lucide-react";
 import { useApp } from "@/components/app/store";
@@ -39,6 +40,7 @@ import {
   clarificationNote,
   problemSessions,
 } from "@/lib/app/clarification";
+import { paymentGate } from "@/lib/app/gate";
 import { can, ROLE_REVIEW_HELPER } from "@/lib/app/permissions";
 import type { ExplainResult } from "@/lib/app/explain";
 import { impactOf } from "@/lib/app/rules";
@@ -130,6 +132,7 @@ export default function ClaimDetailPage() {
   const [submitted, setSubmitted] = React.useState<string | null>(null);
   const [copilotSession, setCopilotSession] = React.useState<number | null>(null);
   const [copied, setCopied] = React.useState(false);
+  const [gateNotice, setGateNotice] = React.useState(false);
 
   React.useEffect(() => {
     let alive = true;
@@ -210,6 +213,7 @@ export default function ClaimDetailPage() {
   const notesBySession = new Map(
     problems.map((s) => [s.sessionId, clarificationNote(view, s.sessionId)]),
   );
+  const gate = paymentGate(score, view.baseStatus);
 
   const copyLetter = () => {
     if (!letter || typeof navigator.clipboard === "undefined") return;
@@ -588,7 +592,13 @@ export default function ClaimDetailPage() {
               size="sm"
               className="rounded-full"
               disabled={!canReview || reviewNote.trim().length === 0}
-              onClick={() => submit("MARK_SUPPORTED")}
+              onClick={() => {
+                if (gate.blocked) {
+                  setGateNotice(true);
+                  return;
+                }
+                submit("MARK_SUPPORTED");
+              }}
             >
               Tandai Didukung
             </Button>
@@ -628,6 +638,32 @@ export default function ClaimDetailPage() {
               </>
             ) : null}
           </p>
+
+          {gate.blocked ? (
+            <div
+              role="alert"
+              aria-label="Gerbang pra-pembayaran"
+              className="mt-3 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs text-red-800"
+            >
+              <ShieldAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+              <span>
+                <strong className="font-semibold">
+                  Gerbang pra-pembayaran aktif.
+                </strong>{" "}
+                {gate.reason} {gate.action}
+              </span>
+            </div>
+          ) : null}
+
+          {gateNotice && gate.blocked ? (
+            <p
+              role="status"
+              className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-800"
+            >
+              Aksi “Tandai Didukung” diblokir — klaim tetap ditahan hingga skor
+              di bawah {gate.threshold} atau konflik bukti diselesaikan.
+            </p>
+          ) : null}
 
           {submitted ? (
             <p
