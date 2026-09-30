@@ -7,16 +7,17 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  Brain,
   Check,
   CircleHelp,
   Copy,
+  Lightbulb,
   Loader2,
   Minus,
   Play,
   Send,
   Share2,
   ShieldAlert,
-  Sparkles,
 } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
@@ -272,7 +273,7 @@ export default function ClaimDetailPage() {
             </Button>
             <Button asChild size="sm" variant="outline" className="rounded-full">
               <Link href={`/app/claims/${claim.id}/ai`}>
-                <Sparkles aria-hidden="true" className="size-3.5" />
+                <Brain aria-hidden="true" className="size-3.5" />
                 AI
               </Link>
             </Button>
@@ -390,7 +391,7 @@ export default function ClaimDetailPage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-2.5">
             <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sky-600 text-white">
-              <Sparkles aria-hidden="true" className="size-4" />
+              <Brain aria-hidden="true" className="size-4" />
             </span>
             <div>
               <h2 className="text-sm font-semibold text-slate-900">Ringkasan AI</h2>
@@ -415,7 +416,7 @@ export default function ClaimDetailPage() {
               "Ringkas ulang"
             ) : (
               <>
-                <Sparkles aria-hidden="true" className="size-3.5" />
+                <Lightbulb aria-hidden="true" className="size-3.5" />
                 Jelaskan klaim
               </>
             )}

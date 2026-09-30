@@ -6,8 +6,8 @@ import {
   Database,
   KeyRound,
   RotateCcw,
+  Scale,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "cn";
 import { useApp } from "@/components/app/store";
@@ -316,7 +316,7 @@ export default function SettingsPage() {
               Graf: mode seed lokal saat env Neo4j kosong (fallback identik).
             </p>
             <p className="flex items-center gap-2">
-              <Sparkles aria-hidden="true" className="size-3.5 text-slate-400" />
+              <Scale aria-hidden="true" className="size-3.5 text-slate-400" />
               Penjelas: aturan deterministik, tanpa model eksternal (demo).
             </p>
             <p className="flex items-center gap-2">
