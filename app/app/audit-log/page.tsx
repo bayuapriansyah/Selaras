@@ -20,6 +20,8 @@ const ACTION_TONE: Record<string, string> = {
   CLAIM_REVIEWED: "border-amber-200 bg-amber-50 text-amber-700",
   REVIEW_ACTION: "border-amber-200 bg-amber-50 text-amber-700",
   CLARIFICATION_REQUESTED: "border-amber-200 bg-amber-50 text-amber-700",
+  QR_VERIFIED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  QR_REJECTED: "border-red-200 bg-red-50 text-red-700",
   SLA_REMINDER: "border-sky-200 bg-sky-50 text-sky-700",
   SLA_ESCALATED: "border-red-200 bg-red-50 text-red-700",
   ROLE_CHANGED: "border-sky-200 bg-sky-50 text-sky-700",

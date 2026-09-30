@@ -3,6 +3,7 @@
 import * as React from "react";
 import { currentUser as seedUser, users } from "@/data/app/seed";
 import type {
+  AuditEntry,
   CaptureChannel,
   ClaimStatus,
   EvidenceKind,
@@ -50,6 +51,9 @@ type AppContextValue = {
   ) => void;
   markAllRead: () => void;
   resetDemo: () => void;
+  logAudit: (
+    entry: Omit<AuditEntry, "id" | "at" | "user" | "role">,
+  ) => void;
   statusOf: (claimId: string, base: ClaimStatus) => ClaimStatus;
 };
 
@@ -229,6 +233,24 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [state.statusOverrides],
   );
 
+  const logAudit = React.useCallback(
+    (entry: Omit<AuditEntry, "id" | "at" | "user" | "role">) => {
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        return {
+          ...prev,
+          audit: pushAudit(
+            prev.audit,
+            entry,
+            u?.name ?? "Pengguna Demo",
+            prev.role,
+          ),
+        };
+      });
+    },
+    [setState],
+  );
+
   const value = React.useMemo<AppContextValue>(
     () => ({
       hydrated,
@@ -243,6 +265,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       submitReview,
       markAllRead,
       resetDemo,
+      logAudit,
       statusOf,
     }),
     [
@@ -257,6 +280,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       submitReview,
       markAllRead,
       resetDemo,
+      logAudit,
       statusOf,
     ],
   );

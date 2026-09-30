@@ -3,8 +3,15 @@
 import * as React from "react";
 import QRCode from "qrcode";
 import { BadgeCheck, QrCode, ScanLine, X } from "lucide-react";
-import type { CaptureChannel } from "@/data/app/types";
-import { parseQrToken } from "@/lib/app/qr";
+import type { CaptureChannel, Role } from "@/data/app/types";
+import {
+  QR_REASON_MESSAGE,
+  QR_TTL_MINUTES,
+  verifyQrToken,
+  type QrVerifyReason,
+} from "@/lib/app/qr";
+import { ROLE_LABEL } from "@/lib/app/actions";
+import { can } from "@/lib/app/permissions";
 import { Button } from "@/components/ui/button";
 
 type ScanResult = { rawValue?: string };
@@ -21,22 +28,39 @@ function getDetector(): BarcodeDetectorCtor | null {
 }
 
 type Props = {
-  token: string;
+  token: string | null;
   serviceId: string;
   channel: CaptureChannel | null;
+  role: Role;
   onVerified: (channel: CaptureChannel) => void;
+  onRejected?: (reason: QrVerifyReason) => void;
 };
 
-export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
+export function QrPanel({
+  token,
+  serviceId,
+  channel,
+  role,
+  onVerified,
+  onRejected,
+}: Props) {
   const [qrSrc, setQrSrc] = React.useState<string | null>(null);
   const [scanning, setScanning] = React.useState(false);
   const [scanNote, setScanNote] = React.useState<string | null>(null);
+  const [manual, setManual] = React.useState("");
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
   const timerRef = React.useRef<number | null>(null);
 
+  const canScan =
+    can(role, "captureOperational") || can(role, "captureClinical");
+  const scanTitle = canScan
+    ? undefined
+    : `${ROLE_LABEL[role] ?? role} tidak berwenang membuka sesi — serahkan ke Operator/Provider.`;
+
   React.useEffect(() => {
     let alive = true;
+    if (!token) return;
     QRCode.toDataURL(token, {
       margin: 1,
       width: 220,
@@ -74,20 +98,23 @@ export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
   }, [scanning]);
 
   const handleToken = React.useCallback(
-    (raw: string, via: CaptureChannel) => {
-      const parsed = parseQrToken(raw);
-      if (parsed === serviceId) {
-        stopScan();
+    async (raw: string, via: CaptureChannel) => {
+      const res = await verifyQrToken(raw, { serviceId, role });
+      stopScan();
+      if (res.ok) {
+        setScanNote(null);
         onVerified(via);
       } else {
-        setScanNote("Token tidak cocok dengan sesi layanan ini.");
+        setScanNote(QR_REASON_MESSAGE[res.reason]);
+        onRejected?.(res.reason);
       }
     },
-    [onVerified, serviceId, stopScan],
+    [onRejected, onVerified, role, serviceId, stopScan],
   );
 
   async function startScan() {
     setScanNote(null);
+    if (!canScan || !token) return;
 
     const Detector = getDetector();
     if (!Detector || !navigator.mediaDevices?.getUserMedia) {
@@ -108,8 +135,8 @@ export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
         if (!target) return;
         try {
           const found = await detector.detect(target);
-          const raw = found[0]?.rawValue;
-          if (raw) handleToken(raw, "QR");
+            const raw = found[0]?.rawValue;
+            if (raw) void handleToken(raw, "QR");
         } catch {
           // frame belum siap — lanjut
         }
@@ -145,11 +172,12 @@ export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
             <p className="text-sm font-semibold text-slate-900">
               Token point-of-care
             </p>
-            <p className="mt-0.5 font-mono text-[11px] tracking-wider text-slate-500">
-              {token}
+            <p className="mt-0.5 font-mono text-[11px] break-all tracking-wider text-slate-500">
+              {token ?? "Menyiapkan token…"}
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              Scan untuk membuka capture evidence — tanpa data pasien di QR.
+              Terikat: {ROLE_LABEL[role] ?? role} · berlaku {QR_TTL_MINUTES}{" "}
+              menit · tanpa data pasien di QR.
             </p>
           </div>
 
@@ -159,6 +187,8 @@ export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
               size="sm"
               variant="outline"
               className="h-8 rounded-full"
+              disabled={!canScan || token === null}
+              title={scanTitle}
               onClick={scanning ? stopScan : startScan}
             >
               {scanning ? (
@@ -177,7 +207,11 @@ export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
               type="button"
               size="sm"
               className="h-8 rounded-full"
-              onClick={() => handleToken(token, "QR")}
+              disabled={!canScan || token === null}
+              title={scanTitle}
+              onClick={() => {
+                if (token) void handleToken(token, "QR");
+              }}
             >
               <QrCode aria-hidden="true" className="size-3.5" />
               DEMO SCAN
@@ -188,6 +222,31 @@ export function QrPanel({ token, serviceId, channel, onVerified }: Props) {
             >
               NFC · siap integrasi
             </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="text"
+              value={manual}
+              onChange={(e) => setManual(e.target.value)}
+              disabled={!canScan}
+              aria-label="Token manual"
+              placeholder="Tempel token manual…"
+              className="h-8 min-w-0 flex-1 rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] text-slate-600 focus-visible:outline-2 focus-visible:outline-sky-400 disabled:bg-slate-50 disabled:text-slate-400"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="h-8 rounded-full"
+              disabled={!canScan || manual.trim().length === 0}
+              title={scanTitle}
+              onClick={() => {
+                void handleToken(manual, "QR");
+              }}
+            >
+              Verifikasi
+            </Button>
           </div>
 
           {scanNote ? (

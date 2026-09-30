@@ -22,7 +22,11 @@ import type { CaptureChannel, EvidenceKind } from "@/data/app/types";
 import { patients, providers } from "@/data/app/seed";
 import { getTemplate } from "@/lib/app/selectors";
 import { passportRow } from "@/lib/app/services/passportService";
-import { makeQrToken } from "@/lib/app/qr";
+import {
+  mintQrToken,
+  QR_REASON_MESSAGE,
+  type QrVerifyReason,
+} from "@/lib/app/qr";
 import { ROLE_LABEL } from "@/lib/app/actions";
 import {
   CAPTURE_HELPER,
@@ -65,7 +69,7 @@ function VerifyItem({
 export default function ServiceWorkspacePage() {
   const params = useParams<{ serviceId: string }>();
   const serviceId = params.serviceId;
-  const { src, state, addEvidence, role } = useApp();
+  const { src, state, addEvidence, role, logAudit } = useApp();
 
   const row = React.useMemo(
     () => passportRow(serviceId, src),
@@ -74,7 +78,23 @@ export default function ServiceWorkspacePage() {
 
   const [channel, setChannel] = React.useState<CaptureChannel | null>(null);
   const [note, setNote] = React.useState("");
+  const [qrToken, setQrToken] = React.useState<string | null>(null);
   const noteAllowed = can(role, "captureClinical");
+
+  React.useEffect(() => {
+    let alive = true;
+    const mint = () => {
+      void mintQrToken({ serviceId, role }).then((t) => {
+        if (alive) setQrToken(t);
+      });
+    };
+    mint();
+    const timer = window.setInterval(mint, 5 * 60_000);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+    };
+  }, [role, serviceId]);
 
   if (!row) {
     return (
@@ -108,7 +128,6 @@ export default function ServiceWorkspacePage() {
   }
 
   const { service, template, patient, provider } = row;
-  const token = makeQrToken(serviceId);
   const steps = EVIDENCE_ORDER.filter(
     (k) => template.required.includes(k) && k !== "note",
   ) as EvidenceKind[];
@@ -129,6 +148,25 @@ export default function ServiceWorkspacePage() {
   const noteChannel = state.evidenceAdds
     .filter((a) => a.serviceId === serviceId && a.kind === "note")
     .slice(-1)[0]?.channel;
+
+  function handleQrVerified(via: CaptureChannel) {
+    setChannel(via);
+    logAudit({
+      action: "QR_VERIFIED",
+      entity: "Service",
+      entityId: serviceId,
+      description: `Sesi ${serviceId} dibuka via scan ${via} · channel ${via} · terikat ${ROLE_LABEL[role] ?? role}.`,
+    });
+  }
+
+  function handleQrRejected(reason: QrVerifyReason) {
+    logAudit({
+      action: "QR_REJECTED",
+      entity: "Service",
+      entityId: serviceId,
+      description: `Scan QR ditolak (${QR_REASON_MESSAGE[reason]}) · peran ${ROLE_LABEL[role] ?? role}.`,
+    });
+  }
 
   function capture(kind: EvidenceKind, via?: CaptureChannel) {
     if (locked && !via) return;
@@ -228,10 +266,12 @@ export default function ServiceWorkspacePage() {
 
         <div className="mt-4">
           <QrPanel
-            token={token}
+            token={qrToken}
             serviceId={serviceId}
             channel={channel}
-            onVerified={setChannel}
+            role={role}
+            onVerified={handleQrVerified}
+            onRejected={handleQrRejected}
           />
         </div>
       </section>
