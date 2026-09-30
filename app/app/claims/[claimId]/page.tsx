@@ -9,9 +9,11 @@ import {
   ArrowRight,
   Check,
   CircleHelp,
+  Copy,
   Loader2,
   Minus,
   Play,
+  Send,
   Share2,
   Sparkles,
 } from "lucide-react";
@@ -32,6 +34,11 @@ import {
   view as claimView,
 } from "@/lib/app/services/claimService";
 import { REVIEW_LABEL, ROLE_LABEL } from "@/lib/app/actions";
+import {
+  buildClarificationLetter,
+  clarificationNote,
+  problemSessions,
+} from "@/lib/app/clarification";
 import { can, ROLE_REVIEW_HELPER } from "@/lib/app/permissions";
 import type { ExplainResult } from "@/lib/app/explain";
 import { impactOf } from "@/lib/app/rules";
@@ -121,6 +128,8 @@ export default function ClaimDetailPage() {
     claimId === GOLDEN_CLAIM_ID ? DEFAULT_REVIEWER_NOTE : "",
   );
   const [submitted, setSubmitted] = React.useState<string | null>(null);
+  const [copilotSession, setCopilotSession] = React.useState<number | null>(null);
+  const [copied, setCopied] = React.useState(false);
 
   React.useEffect(() => {
     let alive = true;
@@ -190,6 +199,38 @@ export default function ClaimDetailPage() {
     { label: "Incomplete", value: evaluation.incomplete, tone: "text-slate-600" },
     { label: "Contradicted", value: evaluation.contradicted, tone: "text-red-700" },
   ];
+
+  const problems = problemSessions(view);
+  const activeSessionId =
+    copilotSession ?? problems[0]?.sessionId ?? sessions[0]?.sessionId ?? null;
+  const letter =
+    activeSessionId != null
+      ? buildClarificationLetter(view, activeSessionId)
+      : "";
+  const notesBySession = new Map(
+    problems.map((s) => [s.sessionId, clarificationNote(view, s.sessionId)]),
+  );
+
+  const copyLetter = () => {
+    if (!letter || typeof navigator.clipboard === "undefined") return;
+    navigator.clipboard
+      .writeText(letter)
+      .then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => undefined);
+  };
+
+  const requestClarification = () => {
+    if (activeSessionId == null) return;
+    submitReview(
+      claimId,
+      "NEED_CLARIFICATION",
+      notesBySession.get(activeSessionId) ?? "Permintaan klarifikasi bukti.",
+    );
+    setSubmitted(REVIEW_LABEL["NEED_CLARIFICATION"]);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -784,6 +825,92 @@ export default function ClaimDetailPage() {
           </ol>
         </section>
       </div>
+
+      <section
+        aria-label="Clarification Copilot"
+        className="rounded-2xl border border-sky-200 bg-gradient-to-b from-sky-50/60 to-white p-5 shadow-sm"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900">
+              Clarification Copilot
+            </h2>
+            <p className="text-xs text-slate-500">
+              Draft surat klarifikasi dibangun dari aturan evidence — reviewer
+              tinggal sesuaikan, salin, dan kirim.
+            </p>
+          </div>
+          {problems.length > 1 ? (
+            <div
+              role="tablist"
+              aria-label="Pilih sesi bermasalah"
+              className="flex flex-wrap gap-1.5"
+            >
+              {problems.map((s) => (
+                <button
+                  key={s.sessionId}
+                  type="button"
+                  role="tab"
+                  aria-selected={s.sessionId === activeSessionId}
+                  onClick={() => {
+                    setCopilotSession(s.sessionId);
+                    setCopied(false);
+                  }}
+                  className={
+                    "inline-flex h-7 items-center rounded-full border px-2.5 font-mono text-[11px] tracking-wider transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 " +
+                    (s.sessionId === activeSessionId
+                      ? "border-sky-600 bg-sky-600 text-white"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-slate-300")
+                  }
+                >
+                  Sesi {String(s.sessionId).padStart(2, "0")}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <pre
+          aria-label="Draft surat klarifikasi"
+          className="mt-4 max-h-80 overflow-auto whitespace-pre-wrap rounded-xl border border-slate-200 bg-white/90 p-4 font-mono text-xs leading-relaxed text-slate-700"
+        >
+          {letter || "Tidak ada sesi yang membutuhkan klarifikasi."}
+        </pre>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="rounded-full"
+            onClick={copyLetter}
+            disabled={!letter}
+          >
+            <Copy aria-hidden="true" className="size-3.5" />
+            {copied ? "Draft tersalin" : "Salin draft"}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            className="rounded-full"
+            onClick={requestClarification}
+            disabled={!canReview || activeSessionId == null}
+          >
+            <Send aria-hidden="true" className="size-3.5" />
+            {REVIEW_LABEL["NEED_CLARIFICATION"]}
+          </Button>
+          {!canReview ? (
+            <span className="text-xs text-slate-500">
+              Peran {ROLE_LABEL[role]} tidak berwenang mengirim klarifikasi.
+            </span>
+          ) : null}
+          {submitted === REVIEW_LABEL["NEED_CLARIFICATION"] ? (
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700">
+              <Check aria-hidden="true" className="size-3.5" />
+              Klarifikasi tercatat di audit trail — status klaim menunggu
+              balasan provider.
+            </span>
+          ) : null}
+        </div>
+      </section>
     </div>
   );
 }
