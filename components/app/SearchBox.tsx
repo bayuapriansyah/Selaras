@@ -17,6 +17,7 @@ const PAGES: { label: string; sub: string; href: string }[] = [
   { label: "Pelayanan", sub: "Point of care", href: "/app/pelayanan" },
   { label: "Service Passport", sub: "Daftar passport", href: "/app/passport" },
   { label: "Klaim", sub: "Review queue", href: "/app/claims" },
+  { label: "Pengingat", sub: "SLA & reminder", href: "/app/reminders" },
   { label: "Analytics", sub: "Metrik", href: "/app/analytics" },
   { label: "Template Layanan", sub: "Evidence wajib", href: "/app/service-templates" },
   { label: "Log Audit", sub: "Riwayat aktivitas", href: "/app/audit-log" },

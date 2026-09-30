@@ -40,6 +40,7 @@ const NAV: { group: string; items: { label: string; href: string; icon: typeof B
       { label: "Pelayanan", href: "/app/pelayanan", icon: Stethoscope },
       { label: "Service Passport", href: "/app/passport", icon: FileCheck2 },
       { label: "Klaim", href: "/app/claims", icon: ClipboardList },
+      { label: "Pengingat", href: "/app/reminders", icon: Bell },
     ],
   },
   {

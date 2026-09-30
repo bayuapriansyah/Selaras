@@ -11,6 +11,8 @@ export const AUDIT_LABEL: Record<string, string> = {
   CLAIM_REVIEWED: "Klaim ditinjau",
   REVIEW_ACTION: "Aksi tinjauan",
   CLARIFICATION_REQUESTED: "Klarifikasi diminta",
+  SLA_REMINDER: "Pengingat SLA dikirim",
+  SLA_ESCALATED: "Eskalasi SLA ke Admin",
   ROLE_CHANGED: "Role diubah",
 };
 

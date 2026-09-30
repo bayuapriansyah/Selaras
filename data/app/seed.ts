@@ -1018,7 +1018,37 @@ const todayServices: Service[] = [
   }),
 ];
 
-export const allServices: Service[] = [...services, ...todayServices];
+const slaDemoServices: Service[] = [
+  makeService({
+    id: "SVC-08442-01",
+    patientId: "P-1002",
+    providerId: "T-031",
+    templateId: "TPL-PHYSIO",
+    date: "2026-09-29",
+    start: "09:00",
+    servicePoint: "Ruang Fisioterapi 2",
+    missing: {
+      completion: "Catatan selesai pelayanan belum diinput",
+      note: "Catatan klinis belum diinput",
+    },
+  }),
+  makeService({
+    id: "SVC-08442-02",
+    patientId: "P-1008",
+    providerId: "T-014",
+    templateId: "TPL-DENTAL",
+    date: "2026-09-29",
+    start: "10:30",
+    servicePoint: "Poli Gigi 1",
+    missing: { billing: "Billing belum diterbitkan" },
+  }),
+];
+
+export const allServices: Service[] = [
+  ...services,
+  ...todayServices,
+  ...slaDemoServices,
+];
 
 export const billings: Billing[] = services
   .filter((s) => s.status === "SELESAI")
@@ -1123,6 +1153,26 @@ export const reviewHistory: ReviewAction[] = [
 ];
 
 export const auditLog: AuditEntry[] = [
+  {
+    id: "AUD-0017",
+    at: `${APP_TODAY} 07:35`,
+    user: "Sistem",
+    action: "SLA_ESCALATED",
+    entity: "Service",
+    entityId: "SVC-08442-01",
+    description:
+      "Bukti pelayanan lewat tenggat diekskalasi ke Admin (kanal SYSTEM).",
+  },
+  {
+    id: "AUD-0016",
+    at: `${APP_TODAY} 07:30`,
+    user: "Sistem",
+    action: "SLA_REMINDER",
+    entity: "Service",
+    entityId: "SVC-08442-01",
+    description:
+      "Pengingat H-0 dikirim otomatis untuk bukti pelayanan 29 Sep (kanal SYSTEM).",
+  },
   {
     id: "AUD-0015",
     at: `${APP_TODAY} 07:24`,
@@ -1269,6 +1319,20 @@ export const auditLog: AuditEntry[] = [
 ];
 
 export const notifications: Notification[] = [
+  {
+    id: "NTF-0005",
+    title: "Eskalasi admin — bukti lewat SLA",
+    body: "Bukti pelayanan melewati tenggat; ditandai LATE dan diteruskan ke Admin.",
+    at: `${APP_TODAY} 07:35`,
+    read: false,
+  },
+  {
+    id: "NTF-0004",
+    title: "Pengingat H-0 bukti pelayanan",
+    body: "Bukti pelayanan 29 Sep jatuh tempo hari ini — lengkapi sebelum 17:00.",
+    at: `${APP_TODAY} 07:30`,
+    read: false,
+  },
   {
     id: "NTF-0001",
     title: "CLM-08421 menunggu tinjauan",
