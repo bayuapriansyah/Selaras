@@ -157,14 +157,29 @@ export type Claim = {
 
 export type SignalSeverity = "info" | "warning" | "critical";
 
+export type SignalCode =
+  | "EVIDENCE_GAP"
+  | "MISSING_COMPLETION"
+  | "TIMESTAMP_CONFLICT"
+  | "DUPLICATE_SESSION"
+  | "REPEAT_BILLING"
+  | "BILLING_BEFORE_PASSPORT"
+  | "PEER_OUTLIER";
+
+export type SignalModus = {
+  no: number;
+  label: string;
+};
+
 export type RiskSignal = {
   id: string;
   claimId: string;
   sessionId?: number;
-  code: "EVIDENCE_GAP" | "MISSING_COMPLETION" | "TIMESTAMP_CONFLICT";
+  code: SignalCode;
   severity: SignalSeverity;
   message: string;
   at: string;
+  modus?: SignalModus[];
 };
 
 export type ReviewActionKind =

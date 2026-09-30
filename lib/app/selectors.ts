@@ -24,6 +24,10 @@ import type {
   ServiceTemplate,
 } from "@/data/app/types";
 import { evaluateClaim, evaluateSession, passportStatusOf } from "./rules";
+import { computeClaimSignals, unionSignals } from "./signals";
+import type { SignalContext, SignalSession } from "./signals";
+import { riskScoreOf } from "./score";
+import type { RiskScore } from "./score";
 
 export type DataSource = {
   services: Service[];
@@ -82,9 +86,27 @@ export type ClaimView = {
   evaluation: ReturnType<typeof evaluateClaim>;
   sessions: SessionView[];
   signals: RiskSignal[];
+  score: RiskScore;
   reviews: ReviewAction[];
   baseStatus: ClaimStatus;
 };
+
+function signalContext(src: DataSource): SignalContext {
+  const sessionsByClaim: Record<string, SignalSession[]> = {};
+  for (const service of src.services) {
+    if (!service.claimId) continue;
+    const list = (sessionsByClaim[service.claimId] ??= []);
+    list.push({ sessionId: service.sessionId ?? 0, service });
+  }
+  for (const list of Object.values(sessionsByClaim)) {
+    list.sort((a, b) => a.sessionId - b.sessionId);
+  }
+  return {
+    claims,
+    sessionsByClaim,
+    facilityNames: Object.fromEntries(facilities.map((f) => [f.id, f.name])),
+  };
+}
 
 export function claimView(
   claimId: string,
@@ -118,13 +140,25 @@ export function claimView(
     sessions.map((s) => ({ sessionId: s.sessionId, evaluation: s.evaluation })),
   );
 
+  const computed = computeClaimSignals(
+    claim,
+    template,
+    sessions.map((s) => ({ sessionId: s.sessionId, service: s.service })),
+    signalContext(src),
+  );
+  const signals = unionSignals(
+    riskSignals.filter((s) => s.claimId === claimId),
+    computed,
+  );
+
   return {
     claim,
     template,
     patient: getPatient(claim.patientId),
     evaluation,
     sessions,
-    signals: riskSignals.filter((s) => s.claimId === claimId),
+    signals,
+    score: riskScoreOf(evaluation, signals),
     reviews: src.reviews
       .filter((r) => r.claimId === claimId)
       .sort((a, b) => b.at.localeCompare(a.at)),
@@ -138,6 +172,7 @@ export type QueueRow = {
   template: ServiceTemplate;
   evaluation: ReturnType<typeof evaluateClaim>;
   status: ClaimStatus;
+  score: RiskScore;
 };
 
 export function queueRows(
@@ -160,9 +195,14 @@ export function queueRows(
           status: claim.status,
         },
         status: statusOverride?.[claim.id] ?? view?.baseStatus ?? claim.status,
+        score: view?.score ?? riskScoreOf({ claimed: 0, supported: 0 }, []),
       };
     })
-    .sort((a, b) => b.claim.lastUpdated.localeCompare(a.claim.lastUpdated));
+    .sort(
+      (a, b) =>
+        b.score.score - a.score.score ||
+        b.claim.lastUpdated.localeCompare(a.claim.lastUpdated),
+    );
 }
 
 export type PassportRow = {
