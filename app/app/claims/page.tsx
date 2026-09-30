@@ -41,7 +41,7 @@ export default function ClaimsQueuePage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Klaim"
-        description="Review queue: daftar klaim terurut pembaruan terakhir, lengkap dengan komposisi evidence per sesi."
+        description="Review queue: klaim berisiko tertinggi diurutkan paling atas, lengkap dengan komposisi evidence per sesi."
         actions={
           <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
             {rows.length} klaim
@@ -102,6 +102,19 @@ export default function ClaimsQueuePage() {
                       {row.claim.id}
                     </span>
                     <StatusBadge status={row.status} />
+                    <span
+                      className={
+                        "inline-flex h-6 items-center gap-1 rounded-full border px-2 font-mono text-[10px] font-semibold tracking-wider " +
+                        (row.score.band === "TINGGI"
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : row.score.band === "SEDANG"
+                            ? "border-amber-200 bg-amber-50 text-amber-700"
+                            : "border-emerald-200 bg-emerald-50 text-emerald-700")
+                      }
+                      title={`Skor risiko ${row.score.score} · ambang gerbang ${row.score.threshold}`}
+                    >
+                      RISK {row.score.score}
+                    </span>
                   </span>
                   <span className="mt-1 block text-sm text-slate-700">
                     {row.template.name} · {row.patient?.display ?? row.claim.patientId} ·{" "}

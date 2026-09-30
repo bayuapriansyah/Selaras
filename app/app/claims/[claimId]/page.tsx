@@ -180,7 +180,7 @@ export default function ClaimDetailPage() {
     );
   }
 
-  const { claim, template, patient, evaluation, sessions, signals, reviews } = view;
+  const { claim, template, patient, evaluation, sessions, signals, reviews, score } = view;
   const status = statusOf(claimId, view.baseStatus);
   const facility = getFacility(claim.facilityId);
   const stats: { label: string; value: number; tone: string }[] = [
@@ -263,6 +263,79 @@ export default function ClaimDetailPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section
+        aria-label="Skor risiko"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900">Skor risiko</h2>
+            <p className="text-xs text-slate-500">
+              Setiap poin dapat ditelusuri ke sinyal dan sesi asalnya — bukan skor hitam-putih.
+            </p>
+          </div>
+          <div className="text-right">
+            <p
+              className={
+                "text-3xl font-semibold tabular-nums " +
+                (score.band === "TINGGI"
+                  ? "text-red-700"
+                  : score.band === "SEDANG"
+                    ? "text-amber-600"
+                    : "text-emerald-700")
+              }
+            >
+              {score.score}
+            </p>
+            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+              {score.band} · ambang gerbang {score.threshold}
+            </p>
+          </div>
+        </div>
+        <div
+          className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100"
+          role="img"
+          aria-label={`Skor risiko ${score.score} dari 100`}
+        >
+          <div
+            className={
+              "h-full rounded-full " +
+              (score.band === "TINGGI"
+                ? "bg-red-500"
+                : score.band === "SEDANG"
+                  ? "bg-amber-500"
+                  : "bg-emerald-500")
+            }
+            style={{ width: `${score.score}%` }}
+          />
+        </div>
+        <ul className="mt-3 flex flex-col gap-1.5" aria-label="Kontribusi skor">
+          {score.contributions.map((c, i) => (
+            <li
+              key={`${c.label}-${i}`}
+              className="flex items-start justify-between gap-3 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2"
+            >
+              <span className="min-w-0">
+                <span className="block font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-600">
+                  {c.label}
+                </span>
+                <span className="mt-0.5 block text-xs leading-relaxed text-slate-600">
+                  {c.detail}
+                </span>
+              </span>
+              <span className="shrink-0 rounded-full border border-slate-200 bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-slate-700">
+                +{c.points}
+              </span>
+            </li>
+          ))}
+          {score.contributions.length === 0 ? (
+            <li className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+              Tidak ada kontribusi risiko — skor 0.
+            </li>
+          ) : null}
+        </ul>
       </section>
 
       <section
@@ -656,6 +729,16 @@ export default function ClaimDetailPage() {
                       sesi {String(s.sessionId).padStart(2, "0")}
                     </span>
                   ) : null}
+                  {(s.modus ?? []).map((m) => (
+                    <span
+                      key={m.no}
+                      className="inline-flex items-center gap-1 rounded-full border border-slate-300/70 bg-white/80 px-2 py-0.5 text-[10px] font-medium text-slate-600"
+                      title="Pemetaan ke modus fraud resmi Healthkathon 2026 (kategori Fasilitas Kesehatan)"
+                    >
+                      <span className="font-mono font-semibold">#{m.no}</span>
+                      {m.label}
+                    </span>
+                  ))}
                 </div>
                 <p className="mt-1 text-sm">{s.message}</p>
                 <p className="mt-1 font-mono text-[10px] tracking-wider opacity-60">
