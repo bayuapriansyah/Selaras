@@ -18,15 +18,22 @@ import {
 } from "recharts";
 import {
   Activity,
+  Banknote,
   CircleAlert,
   Gauge,
   Layers,
+  ShieldAlert,
 } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { MetricCard } from "@/components/app/MetricCard";
-import { queue as queueRows } from "@/lib/app/services/claimService";
+import {
+  queue as queueRows,
+  view as claimView,
+} from "@/lib/app/services/claimService";
 import { passportRows } from "@/lib/app/services/passportService";
+import { getFacility } from "@/lib/app/selectors";
+import { FOCUS_MODUS } from "@/lib/app/signals";
 import { impactOf } from "@/lib/app/rules";
 import { formatDate } from "@/lib/app/format";
 
@@ -144,6 +151,79 @@ export default function AnalyticsPage() {
         )
       : 0;
 
+    const views = rows
+      .map((r) => claimView(r.claim.id, src))
+      .filter((v): v is NonNullable<typeof v> => Boolean(v));
+    const allSignals = views.flatMap((v) => v.signals);
+    const weightedRisk = Math.round(
+      rows.reduce(
+        (sum, r) =>
+          sum + (r.template.rate * r.evaluation.claimed * r.score.score) / 100,
+        0,
+      ),
+    );
+    const highRiskClaims = rows.filter((r) => r.score.band === "TINGGI").length;
+    const avgScore = rows.length
+      ? Math.round(
+          rows.reduce((a, r) => a + r.score.score, 0) / rows.length,
+        )
+      : 0;
+    const bandData = (["RENDAH", "SEDANG", "TINGGI"] as const).map((b) => ({
+      band: b,
+      count: rows.filter((r) => r.score.band === b).length,
+    }));
+
+    const facilityOf = new Map(
+      rows.map((r) => [r.claim.id, r.claim.facilityId] as const),
+    );
+    const outlierByFacility: Record<string, number> = {};
+    for (const s of allSignals) {
+      if (s.code !== "PEER_OUTLIER") continue;
+      const fid = facilityOf.get(s.claimId);
+      if (fid) outlierByFacility[fid] = (outlierByFacility[fid] ?? 0) + 1;
+    }
+    const grouped = new Map<
+      string,
+      { claims: number; scores: number[]; max: number; weighted: number }
+    >();
+    for (const r of rows) {
+      const g = grouped.get(r.claim.facilityId) ?? {
+        claims: 0,
+        scores: [],
+        max: 0,
+        weighted: 0,
+      };
+      g.claims += 1;
+      g.scores.push(r.score.score);
+      g.max = Math.max(g.max, r.score.score);
+      g.weighted +=
+        (r.template.rate * r.evaluation.claimed * r.score.score) / 100;
+      grouped.set(r.claim.facilityId, g);
+    }
+    const facilityRows = [...grouped.entries()]
+      .map(([id, g]) => {
+        const meta = getFacility(id);
+        return {
+          id,
+          name: meta?.name ?? id,
+          meta: `${meta?.kind ?? ""} · ${meta?.city ?? ""}`,
+          claims: g.claims,
+          avg: Math.round(g.scores.reduce((a, b) => a + b, 0) / g.scores.length),
+          max: g.max,
+          outliers: outlierByFacility[id] ?? 0,
+          weighted: Math.round(g.weighted),
+        };
+      })
+      .sort((a, b) => b.avg - a.avg || b.max - a.max);
+
+    const modusData = Object.values(FOCUS_MODUS).map((m) => ({
+      ...m,
+      count: allSignals.filter((s) =>
+        (s.modus ?? []).some((x) => x.no === m.no),
+      ).length,
+    }));
+    const modusMax = Math.max(1, ...modusData.map((m) => m.count));
+
     return {
       rows,
       statusData,
@@ -155,6 +235,14 @@ export default function AnalyticsPage() {
       totalSupported: sumSupported,
       reviewAmount: sumReviewAmount,
       avgCoverage,
+      weightedRisk,
+      highRiskClaims,
+      totalSignals: allSignals.length,
+      avgScore,
+      bandData,
+      facilityRows,
+      modusData,
+      modusMax,
     };
   }, [src, state.statusOverrides]);
 
@@ -200,6 +288,191 @@ export default function AnalyticsPage() {
           tone="slate"
         />
       </section>
+
+      <section aria-label="KPI risiko" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard
+          label="Risiko finansial tertimbang"
+          value={`Rp ${data.weightedRisk.toLocaleString("id-ID")}`}
+          hint="nilai klaim × skor risiko"
+          icon={Banknote}
+          tone="amber"
+        />
+        <MetricCard
+          label="Klaim berisiko tinggi"
+          value={data.highRiskClaims}
+          hint="skor ≥ 65 — wajib klarifikasi"
+          icon={ShieldAlert}
+          tone="slate"
+        />
+        <MetricCard
+          label="Sinyal terdeteksi"
+          value={data.totalSignals}
+          hint={`rata-rata skor portofolio ${data.avgScore}`}
+          icon={Activity}
+          tone="sky"
+        />
+        <MetricCard
+          label="Klaim berisiko sedang"
+          value={data.rows.filter((r) => r.score.band === "SEDANG").length}
+          hint={`rendah ${data.rows.filter((r) => r.score.band === "RENDAH").length} klaim`}
+          icon={CircleAlert}
+          tone="emerald"
+        />
+      </section>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <section
+          aria-label="Leaderboard risiko fasilitas"
+          className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">
+                Leaderboard risiko fasilitas
+              </h2>
+              <p className="text-xs text-slate-500">
+                Rata-rata skor per fasilitas · PEER_OUTLIER sebagai konteks, bukan
+                penanda modus.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {data.bandData.map((b) => (
+                <span
+                  key={b.band}
+                  className={
+                    "inline-flex h-6 items-center gap-1 rounded-full border px-2 font-mono text-[10px] font-semibold tracking-wider " +
+                    (b.band === "TINGGI"
+                      ? "border-red-200 bg-red-50 text-red-700"
+                      : b.band === "SEDANG"
+                        ? "border-amber-200 bg-amber-50 text-amber-700"
+                        : "border-emerald-200 bg-emerald-50 text-emerald-700")
+                  }
+                >
+                  {b.count} {b.band}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[620px] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="py-2 pr-3 text-left text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                    Fasilitas
+                  </th>
+                  <th className="px-2 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                    Klaim
+                  </th>
+                  <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                    Skor rata-rata
+                  </th>
+                  <th className="px-2 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                    Tertinggi
+                  </th>
+                  <th className="px-2 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                    Outlier
+                  </th>
+                  <th className="py-2 pl-2 text-right text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                    Rp tertimbang
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.facilityRows.map((f) => (
+                  <tr
+                    key={f.id}
+                    className="border-b border-slate-100 transition-colors hover:bg-slate-50/70"
+                  >
+                    <td className="py-2.5 pr-3">
+                      <p className="text-sm font-medium text-slate-800">
+                        {f.name}
+                      </p>
+                      <p className="text-[11px] text-slate-500">{f.meta}</p>
+                    </td>
+                    <td className="px-2 py-2.5 text-right font-mono text-xs tabular-nums text-slate-600">
+                      {f.claims}
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <span className="flex items-center gap-2">
+                        <span className="h-1.5 w-20 overflow-hidden rounded-full bg-slate-100">
+                          <span
+                            className={
+                              "block h-full rounded-full " +
+                              (f.avg >= 65
+                                ? "bg-red-500"
+                                : f.avg >= 35
+                                  ? "bg-amber-500"
+                                  : "bg-emerald-500")
+                            }
+                            style={{ width: `${f.avg}%` }}
+                          />
+                        </span>
+                        <span className="font-mono text-xs font-semibold tabular-nums text-slate-700">
+                          {f.avg}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-2 py-2.5 text-right font-mono text-xs tabular-nums text-slate-600">
+                      {f.max}
+                    </td>
+                    <td className="px-2 py-2.5 text-right">
+                      {f.outliers > 0 ? (
+                        <span className="inline-flex h-5 items-center rounded-full border border-amber-200 bg-amber-50 px-2 font-mono text-[10px] font-semibold text-amber-700">
+                          {f.outliers} peer
+                        </span>
+                      ) : (
+                        <span className="font-mono text-xs text-slate-300">—</span>
+                      )}
+                    </td>
+                    <td className="py-2.5 pl-2 text-right font-mono text-xs tabular-nums text-slate-700">
+                      Rp {f.weighted.toLocaleString("id-ID")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          aria-label="Subkategori fokus"
+          className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <h2 className="text-sm font-semibold text-slate-900">
+            Sinyal per subkategori fokus
+          </h2>
+          <p className="text-xs text-slate-500">
+            Lima subkategori fraud kategori Fasilitas Kesehatan — dihitung dari
+            chip modus pada seluruh sinyal.
+          </p>
+          <ul className="mt-4 flex flex-col gap-2.5">
+            {data.modusData.map((m) => (
+              <li
+                key={m.no}
+                className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/70 px-3.5 py-2.5"
+              >
+                <span className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full border border-slate-300/70 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-600">
+                  <span className="font-mono font-semibold">#{m.no}</span>
+                  {m.label}
+                </span>
+                <span className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-200">
+                  <span
+                    className="block h-full rounded-full bg-sky-600"
+                    style={{ width: `${Math.round((m.count / data.modusMax) * 100)}%` }}
+                  />
+                </span>
+                <span className="shrink-0 font-mono text-xs font-semibold tabular-nums text-slate-700">
+                  {m.count}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
+            Sinyal di luar lima fokus (konflik timestamp, outlier peer) tetap
+            terdeteksi sebagai konteks integritas, tanpa chip subkategori.
+          </p>
+        </section>
+      </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartCard
