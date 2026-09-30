@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useApp } from "@/components/app/store";
-import { queueRows } from "@/lib/app/selectors";
+import { queue as queueRows } from "@/lib/app/services/claimService";
 import { Input } from "@/components/ui/input";
 
 type Result =

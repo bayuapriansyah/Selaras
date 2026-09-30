@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildExplanation } from "@/lib/app/explain";
+import { explain } from "@/lib/app/services/claimService";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const result = buildExplanation(claimId);
+  const result = explain(claimId);
   if (!result) {
     return NextResponse.json(
       { error: "Claim tidak ditemukan", claimId },

@@ -7,7 +7,7 @@ import { cn } from "cn";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatusBadge } from "@/components/app/StatusBadge";
-import { queueRows } from "@/lib/app/selectors";
+import { queue as queueRows } from "@/lib/app/services/claimService";
 import { formatDateTime } from "@/lib/app/format";
 import type { ClaimStatus } from "@/data/app/types";
 

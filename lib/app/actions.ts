@@ -4,6 +4,7 @@ export const AUDIT_LABEL: Record<string, string> = {
   SERVICE_STARTED: "Pelayanan dimulai",
   SERVICE_COMPLETED: "Pelayanan selesai",
   EVIDENCE_ADDED: "Bukti ditambahkan",
+  CLINICAL_NOTE_ADDED: "Catatan klinis ditambahkan",
   BILLING_CREATED: "Billing dibuat",
   CLAIM_LINKED: "Klaim tertaut",
   SIGNAL_GENERATED: "Sinyal dihasilkan",

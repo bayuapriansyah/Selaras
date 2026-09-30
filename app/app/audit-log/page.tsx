@@ -5,7 +5,7 @@ import { ScrollText } from "lucide-react";
 import { cn } from "cn";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
-import { auditEntries } from "@/lib/app/selectors";
+import { entries as auditEntries } from "@/lib/app/services/auditService";
 import { AUDIT_LABEL } from "@/lib/app/actions";
 import { formatDateTime } from "@/lib/app/format";
 
@@ -13,6 +13,7 @@ const ACTION_TONE: Record<string, string> = {
   SERVICE_STARTED: "border-sky-200 bg-sky-50 text-sky-700",
   SERVICE_COMPLETED: "border-emerald-200 bg-emerald-50 text-emerald-700",
   EVIDENCE_ADDED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  CLINICAL_NOTE_ADDED: "border-emerald-200 bg-emerald-50 text-emerald-700",
   BILLING_CREATED: "border-slate-200 bg-slate-50 text-slate-600",
   CLAIM_LINKED: "border-slate-200 bg-slate-50 text-slate-600",
   SIGNAL_GENERATED: "border-red-200 bg-red-50 text-red-700",

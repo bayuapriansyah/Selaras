@@ -26,12 +26,13 @@ import {
 } from "@/data/app/seed";
 import { EVIDENCE_LABEL, EVIDENCE_ORDER } from "@/data/app/types";
 import type { EvidenceItem, EvidenceKind, ReviewActionKind } from "@/data/app/types";
+import { getFacility } from "@/lib/app/selectors";
 import {
-  claimView,
-  getFacility,
-} from "@/lib/app/selectors";
+  explain as buildExplanation,
+  view as claimView,
+} from "@/lib/app/services/claimService";
 import { REVIEW_LABEL } from "@/lib/app/actions";
-import { buildExplanation, type ExplainResult } from "@/lib/app/explain";
+import type { ExplainResult } from "@/lib/app/explain";
 import { impactOf } from "@/lib/app/rules";
 import type { ImpactResult } from "@/data/app/types";
 import { formatDateTime, periodLabel } from "@/lib/app/format";
@@ -221,6 +222,18 @@ export default function ClaimDetailPage() {
               <Link href={`/app/claims/${claim.id}/replay`}>
                 <Play aria-hidden="true" className="size-3.5" />
                 Replay
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="rounded-full">
+              <Link href={`/app/claims/${claim.id}/ai`}>
+                <Sparkles aria-hidden="true" className="size-3.5" />
+                AI
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="rounded-full">
+              <Link href={`/app/claims/${claim.id}/impact`}>
+                Dampak
+                <ArrowRight aria-hidden="true" className="size-3.5" />
               </Link>
             </Button>
             <Button asChild size="sm" variant="outline" className="rounded-full">
@@ -494,11 +507,17 @@ export default function ClaimDetailPage() {
           {submitted ? (
             <p
               role="status"
-              className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs text-emerald-800"
+              className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs text-emerald-800"
             >
               Aksi “{submitted}” tercatat — status klaim kini{" "}
               <span className="font-semibold">{statusOf(claimId, view.baseStatus)}</span>,
               riwayat & notifikasi diperbarui.
+              <Link
+                href="/app/audit-log"
+                className="font-medium underline underline-offset-2 hover:text-emerald-900 focus-visible:outline-2 focus-visible:outline-emerald-400"
+              >
+                Lihat di Audit Log
+              </Link>
             </p>
           ) : null}
         </section>

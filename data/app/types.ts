@@ -81,6 +81,8 @@ export type EvidenceState = "present" | "missing";
 
 export type EvidenceSource = "Operator" | "Provider" | "Sistem";
 
+export type CaptureChannel = "QR" | "NFC" | "MANUAL" | "SYSTEM";
+
 export type EvidenceItem = {
   kind: EvidenceKind;
   state: EvidenceState;

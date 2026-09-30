@@ -17,7 +17,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { EVIDENCE_LABEL, EVIDENCE_ORDER } from "@/data/app/types";
 import type { EvidenceKind } from "@/data/app/types";
-import { claimView, getPatient, getTemplate } from "@/lib/app/selectors";
+import { getPatient, getTemplate } from "@/lib/app/selectors";
+import { view as claimView } from "@/lib/app/services/claimService";
 import { formatDate } from "@/lib/app/format";
 
 type Step = {
@@ -114,6 +115,30 @@ export default function ClaimReplayPage() {
   const isGroupStart = (idx: number) => groups.includes(idx);
   const sessionDate = (sid: number) =>
     view.sessions.find((s) => s.sessionId === sid)?.service.date;
+
+  const firstBilling = steps.findIndex((s) => s.kind === "billing");
+  const firstClaim = steps.findIndex((s) => s.kind === "claim");
+  const railStages: { key: string; label: string; at: number }[] = [
+    { key: "patient", label: "Patient", at: 0 },
+    { key: "service", label: "Service", at: 1 },
+    { key: "evidence", label: "Evidence", at: 1 },
+    {
+      key: "passport",
+      label: "Passport",
+      at: groups.length > 1 ? groups[1] : steps.length,
+    },
+    {
+      key: "billing",
+      label: "Billing",
+      at: firstBilling >= 0 ? firstBilling + 1 : steps.length,
+    },
+    {
+      key: "claim",
+      label: "Claim",
+      at: firstClaim >= 0 ? firstClaim + 1 : steps.length,
+    },
+  ];
+  const currentStageIdx = railStages.findIndex((s) => cursor < s.at);
 
   return (
     <div className="flex flex-col gap-6">
@@ -235,6 +260,63 @@ export default function ClaimReplayPage() {
               sesi aktif
             </p>
           </div>
+        </div>
+
+        <div
+          aria-label="Rantai bukti Patient ke Claim"
+          className="mt-4 border-t border-slate-100 pt-4"
+        >
+          <p className="mb-3 text-[11px] tracking-wider text-slate-500 uppercase">
+            Rantai bukti
+          </p>
+          <ol className="flex flex-wrap items-center gap-y-3">
+            {railStages.map((stage, i) => {
+              const lit = cursor >= stage.at;
+              const isCurrent = currentStageIdx === i;
+              const isDone = lit && !isCurrent;
+              return (
+                <li key={stage.key} className="flex items-center">
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={
+                        "flex size-7 items-center justify-center rounded-full border font-mono text-[10px] font-semibold transition-colors " +
+                        (isDone
+                          ? "border-emerald-500 bg-emerald-500 text-white"
+                          : isCurrent
+                            ? "border-sky-500 bg-sky-50 text-sky-700 ring-2 ring-sky-200"
+                            : "border-slate-200 bg-slate-50 text-slate-400")
+                      }
+                    >
+                      {i + 1}
+                    </span>
+                    <span
+                      className={
+                        "font-mono text-[11px] tracking-wider " +
+                        (isDone
+                          ? "text-emerald-700"
+                          : isCurrent
+                            ? "font-semibold text-sky-700"
+                            : "text-slate-400")
+                      }
+                    >
+                      {stage.label}
+                    </span>
+                  </span>
+                  {i < railStages.length - 1 ? (
+                    <span
+                      aria-hidden="true"
+                      className={
+                        "mx-2 h-px w-6 sm:w-9 " +
+                        (cursor >= railStages[i + 1].at
+                          ? "bg-emerald-400"
+                          : "bg-slate-200")
+                      }
+                    />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
 

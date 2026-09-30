@@ -6,7 +6,9 @@ import { ArrowRight, FileCheck2 } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatusBadge } from "@/components/app/StatusBadge";
-import { passportRows } from "@/lib/app/selectors";
+import { PassportStageBadge } from "@/components/app/PassportStageBadge";
+import { passportRows } from "@/lib/app/services/passportService";
+import { passportStageOf } from "@/lib/app/rules";
 import { formatDate } from "@/lib/app/format";
 
 export default function PassportListPage() {
@@ -53,6 +55,12 @@ export default function PassportListPage() {
                     <span className="font-mono text-xs font-semibold tracking-wider text-slate-700">
                       {row.service.id}
                     </span>
+                    <PassportStageBadge
+                      stage={passportStageOf(
+                        row.service.evidence,
+                        row.template.required,
+                      )}
+                    />
                     <StatusBadge status={row.passport.status} />
                     <StatusBadge status={row.sessionStatus} />
                   </span>

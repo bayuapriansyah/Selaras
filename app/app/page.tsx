@@ -15,10 +15,8 @@ import { MetricCard } from "@/components/app/MetricCard";
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { GOLDEN_CLAIM_ID } from "@/data/app/seed";
-import {
-  auditEntries,
-  dashboardMetrics,
-} from "@/lib/app/selectors";
+import { entries as auditEntries } from "@/lib/app/services/auditService";
+import { dashboard as dashboardMetrics } from "@/lib/app/services/claimService";
 import { AUDIT_LABEL } from "@/lib/app/actions";
 import { formatDate, formatDateTime } from "@/lib/app/format";
 

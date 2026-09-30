@@ -25,7 +25,8 @@ import {
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { MetricCard } from "@/components/app/MetricCard";
-import { passportRows, queueRows } from "@/lib/app/selectors";
+import { queue as queueRows } from "@/lib/app/services/claimService";
+import { passportRows } from "@/lib/app/services/passportService";
 import { impactOf } from "@/lib/app/rules";
 import { formatDate } from "@/lib/app/format";
 

@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, useMotionValueEvent, useScroll, AnimatePresence } from "motion/react";
-import { Menu, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { Menu, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -28,9 +28,10 @@ export function Navbar() {
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   const active = useActiveSection(navHrefs);
 
-  // After hydration, sync with real scroll position
+  // After hydration, sync with real scroll position (async — avoids sync setState in effect)
   useEffect(() => {
-    setScrolled(window.scrollY > 20);
+    const t = setTimeout(() => setScrolled(window.scrollY > 20), 0);
+    return () => clearTimeout(t);
   }, []);
 
   useMotionValueEvent(scrollY, "change", (value) => {

@@ -6,12 +6,30 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, Database, Loader2, TriangleAlert } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { buildSeedGraph } from "@/lib/app/graph";
-import type { GraphEdge, GraphNode, GraphPayload } from "@/lib/app/graph";
+import type {
+  GraphEdge,
+  GraphNode,
+  GraphNodeKind,
+  GraphPayload,
+} from "@/lib/app/graph";
 
-const W = 880;
-const COL = { claim: 84, session: 300, evidence: 545, signal: 720 };
+const W = 1040;
+const COL = {
+  patient: 36,
+  claim: 134,
+  session: 348,
+  entity: 528,
+  evidence: 736,
+  signal: 954,
+};
 
 type Placed = { node: GraphNode; x: number; y: number };
+
+const EVIDENCE_KINDS = new Set(["evidence", "billing", "note"]);
+
+function truncate(label: string, max = 16): string {
+  return label.length > max ? `${label.slice(0, max - 1)}…` : label;
+}
 
 export default function ClaimGraphPage() {
   const params = useParams<{ claimId: string }>();
@@ -55,27 +73,49 @@ export default function ClaimGraphPage() {
     const byId = new Map<string, Placed>();
 
     const claimNode = payload.nodes.find((n) => n.kind === "claim");
-    const height = Math.max(280, 90 + sessions.length * 78);
+    const height = Math.max(320, 100 + sessions.length * 78);
     if (claimNode) {
       const p = { node: claimNode, x: COL.claim, y: height / 2 };
       placed.push(p);
       byId.set(claimNode.id, p);
     }
 
+    const patientNode = payload.nodes.find((n) => n.kind === "patient");
+    if (patientNode) {
+      const p = { node: patientNode, x: COL.patient, y: height / 2 };
+      placed.push(p);
+      byId.set(patientNode.id, p);
+    }
+
+    payload.nodes
+      .filter((n) => n.kind === "provider")
+      .forEach((n, i) => {
+        const p = { node: n, x: COL.entity, y: 36 + i * 30 };
+        placed.push(p);
+        byId.set(n.id, p);
+      });
+
+    const points = payload.nodes.filter((n) => n.kind === "servicePoint");
+    points.forEach((n, i) => {
+      const p = { node: n, x: COL.entity, y: height - 36 - (points.length - 1 - i) * 30 };
+      placed.push(p);
+      byId.set(n.id, p);
+    });
+
     sessions.forEach((s, i) => {
-      const y = 70 + i * 78 + 24;
+      const y = 76 + i * 78 + 24;
       const p = { node: s, x: COL.session, y };
       placed.push(p);
       byId.set(s.id, p);
     });
 
     payload.nodes
-      .filter((n) => n.kind === "evidence")
+      .filter((n) => EVIDENCE_KINDS.has(n.kind))
       .forEach((n) => {
         const parent = payload.edges.find((e) => e.to === n.id)?.from;
         const pp = parent ? byId.get(parent) : undefined;
         const sameSession = payload.nodes.filter(
-          (x) => x.kind === "evidence" && x.sessionId === n.sessionId,
+          (x) => EVIDENCE_KINDS.has(x.kind) && x.sessionId === n.sessionId,
         );
         const idx = sameSession.findIndex((x) => x.id === n.id);
         const center = pp?.y ?? 0;
@@ -103,8 +143,32 @@ export default function ClaimGraphPage() {
     const a = layout.byId.get(e.from);
     const b = layout.byId.get(e.to);
     if (!a || !b) return null;
-    const x1 = a.x + (a.node.kind === "claim" ? 30 : a.node.kind === "session" ? 18 : 8);
-    const x2 = b.x - (b.node.kind === "session" ? 18 : b.node.kind === "signal" ? 10 : 9);
+    const entityKind = (k: GraphNodeKind) =>
+      k === "provider" || k === "servicePoint";
+    const x1 =
+      a.x +
+      (a.node.kind === "claim"
+        ? 30
+        : a.node.kind === "session"
+          ? 18
+          : a.node.kind === "patient"
+            ? 24
+            : entityKind(a.node.kind)
+              ? 48
+              : 8);
+    const x2 =
+      b.x -
+      (b.node.kind === "session"
+        ? 18
+        : b.node.kind === "signal"
+          ? 10
+          : b.node.kind === "claim"
+            ? 30
+            : b.node.kind === "patient"
+              ? 24
+              : entityKind(b.node.kind)
+                ? 48
+                : 9);
     const mid = (x1 + x2) / 2;
     return `M ${x1} ${a.y} C ${mid} ${a.y}, ${mid} ${b.y}, ${x2} ${b.y}`;
   }
@@ -113,6 +177,10 @@ export default function ClaimGraphPage() {
     if (n.kind === "claim") return "#0284c7";
     if (n.kind === "session") return "#475569";
     if (n.kind === "signal") return "#dc2626";
+    if (n.kind === "patient") return "#0369a1";
+    if (n.kind === "provider") return "#475569";
+    if (n.kind === "servicePoint") return "#64748b";
+    if (n.kind === "billing") return "#475569";
     return n.missing ? "#d97706" : "#059669";
   };
 
@@ -134,8 +202,9 @@ export default function ClaimGraphPage() {
             Graf Evidence
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            Klaim → sesi → evidence → sinyal. Node putus-putus = evidence belum
-            tercatat.
+            Klaim → sesi → evidence → sinyal, plus pasien, provider, titik
+            layanan, billing, dan catatan klinis. Node putus-putus = evidence
+            belum tercatat.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -197,14 +266,70 @@ export default function ClaimGraphPage() {
                     d={d}
                     fill="none"
                     stroke={e.label === "SIGNAL" ? "#fca5a5" : "#e2e8f0"}
-                    strokeWidth={e.label === "HAS_SESSION" ? 2 : 1.5}
+                    strokeWidth={e.label === "HAS_SERVICE" ? 2 : 1.5}
                     strokeDasharray={e.label === "SIGNAL" ? "4 3" : undefined}
                     markerEnd="url(#arrow)"
-                  />
+                  >
+                    <title>{e.label}</title>
+                  </path>
                 );
               })}
 
               {layout.placed.map(({ node, x, y }) => {
+                if (node.kind === "patient") {
+                  return (
+                    <g key={node.id}>
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r={24}
+                        fill="#e0f2fe"
+                        stroke="#0369a1"
+                        strokeWidth={1.5}
+                      />
+                      <text
+                        x={x}
+                        y={y + 4}
+                        textAnchor="middle"
+                        fontSize={9}
+                        fontWeight={700}
+                        fill="#0369a1"
+                        fontFamily="monospace"
+                      >
+                        PASIEN
+                      </text>
+                      <title>{`${node.label} · ${node.detail ?? ""}`}</title>
+                    </g>
+                  );
+                }
+                if (node.kind === "provider" || node.kind === "servicePoint") {
+                  const isProvider = node.kind === "provider";
+                  return (
+                    <g key={node.id}>
+                      <rect
+                        x={x - 48}
+                        y={y - 12}
+                        width={96}
+                        height={24}
+                        rx={12}
+                        fill={isProvider ? "#f8fafc" : "#f1f5f9"}
+                        stroke={isProvider ? "#475569" : "#94a3b8"}
+                        strokeWidth={1.5}
+                      />
+                      <text
+                        x={x}
+                        y={y + 3.5}
+                        textAnchor="middle"
+                        fontSize={9}
+                        fill={isProvider ? "#334155" : "#475569"}
+                        fontFamily="monospace"
+                      >
+                        {truncate(isProvider ? node.label : node.label, 15)}
+                      </text>
+                      <title>{`${node.kind === "provider" ? "Provider" : "Titik layanan"} · ${node.label}`}</title>
+                    </g>
+                  );
+                }
                 if (node.kind === "claim") {
                   return (
                     <g key={node.id}>
@@ -268,7 +393,13 @@ export default function ClaimGraphPage() {
                       cx={x}
                       cy={y}
                       r={6}
-                      fill={node.missing ? "#fef3c7" : "#d1fae5"}
+                      fill={
+                        node.missing
+                          ? "#fef3c7"
+                          : node.kind === "billing"
+                            ? "#f1f5f9"
+                            : "#d1fae5"
+                      }
                       stroke={color(node)}
                       strokeWidth={1.5}
                       strokeDasharray={node.missing ? "2 2" : undefined}
@@ -298,10 +429,23 @@ export default function ClaimGraphPage() {
             <span className="size-2.5 rounded-full bg-sky-600" /> klaim
           </span>
           <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-full border-2 border-sky-700 bg-sky-100" />{" "}
+            pasien
+          </span>
+          <span className="inline-flex items-center gap-1.5">
             <span className="size-2.5 rounded-full bg-slate-500" /> sesi
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-emerald-600" /> evidence tercatat
+            <span className="h-2.5 w-4 rounded-full border border-slate-500 bg-slate-100" />{" "}
+            provider · titik layanan
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-full bg-emerald-600" /> evidence
+            tercatat
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-full border border-slate-600 bg-slate-100" />{" "}
+            billing · catatan
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="size-2.5 rounded-full border border-dashed border-amber-600 bg-amber-100" />

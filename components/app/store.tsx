@@ -1,145 +1,46 @@
 "use client";
 
 import * as React from "react";
-import {
-  APP_TODAY,
-  currentUser as seedUser,
-  users,
-} from "@/data/app/seed";
-import { EVIDENCE_LABEL, EVIDENCE_ORDER } from "@/data/app/types";
+import { currentUser as seedUser, users } from "@/data/app/seed";
 import type {
-  AuditEntry,
+  CaptureChannel,
   ClaimStatus,
   EvidenceKind,
-  EvidenceSource,
-  Notification,
-  ReviewAction,
   ReviewActionKind,
   Role,
-  Service,
   User,
 } from "@/data/app/types";
-import { getTemplate, seedSource, type DataSource } from "@/lib/app/selectors";
-import { REVIEW_LABEL } from "@/lib/app/actions";
+import { seedSource, type DataSource } from "@/lib/app/selectors";
+import {
+  applyEvidenceAdds,
+  initialPersistedState,
+  type PersistedState,
+  type StartServiceInput,
+} from "@/lib/app/appState";
+import {
+  captureEvidence,
+  startService as startServiceReducer,
+} from "@/lib/app/services/serviceService";
+import { submitReview as submitReviewReducer } from "@/lib/app/services/reviewService";
+
+export type { EvidenceAdd, StartServiceInput } from "@/lib/app/appState";
 
 const STORAGE_KEY = "selaras-app-v1";
 
-export type EvidenceAdd = {
-  serviceId: string;
-  kind: EvidenceKind;
-  at: string;
-  source: EvidenceSource;
-};
-
-type Persisted = {
-  role: Role;
-  createdServices: Service[];
-  evidenceAdds: EvidenceAdd[];
-  statusOverrides: Record<string, ClaimStatus>;
-  reviews: ReviewAction[];
-  audit: AuditEntry[];
-  notifications: Notification[];
-  readIds: string[];
-  nextSeq: number;
-};
-
-const initialState: Persisted = {
-  role: "reviewer",
-  createdServices: [],
-  evidenceAdds: [],
-  statusOverrides: {},
-  reviews: [],
-  audit: [],
-  notifications: [],
-  readIds: [],
-  nextSeq: 1,
-};
-
-function clockHM(): string {
-  return new Date().toTimeString().slice(0, 5);
-}
-
-function nowStamp(): string {
-  return `${APP_TODAY} ${clockHM()}`;
-}
-
-function uid(prefix: string): string {
-  return `${prefix}-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4)}`;
-}
-
-function applyAdds(service: Service, adds: EvidenceAdd[]): Service {
-  const mine = adds.filter((a) => a.serviceId === service.id);
-  if (mine.length === 0) return service;
-
-  const required = getTemplate(service.templateId).required;
-  let changed = false;
-
-  const evidence = service.evidence.map((e) => {
-    const add = mine.find((a) => a.kind === e.kind);
-    if (!add || e.state === "present") return e;
-    changed = true;
-    return {
-      ...e,
-      state: "present" as const,
-      at: add.at,
-      source: add.source,
-    };
-  });
-
-  const newEvents = mine
-    .filter(
-      (a) =>
-        !service.events.some(
-          (ev) => ev.id === `EV-${service.id}-${a.kind.toUpperCase()}`,
-        ),
-    )
-    .map((a) => ({
-      id: `EV-${service.id}-${a.kind.toUpperCase()}`,
-      serviceId: service.id,
-      kind: a.kind,
-      at: a.at,
-      source: a.source,
-      description: `${EVIDENCE_LABEL[a.kind]} tercatat`,
-    }));
-
-  if (!changed && newEvents.length === 0) return service;
-
-  const events = [...service.events, ...newEvents].sort((a, b) =>
-    a.at.localeCompare(b.at),
-  );
-  const complete = required.every(
-    (k) => evidence.find((e) => e.kind === k)?.state === "present",
-  );
-
-  return {
-    ...service,
-    evidence,
-    events,
-    status: complete ? "SELESAI" : service.status,
-    endTime:
-      complete && !service.endTime
-        ? (evidence.find((e) => e.kind === "claim")?.at ?? service.startTime)
-        : service.endTime,
-  };
-}
-
-export type StartServiceInput = {
-  patientId: string;
-  providerId: string;
-  templateId: string;
-  servicePoint: string;
-};
-
 type AppContextValue = {
   hydrated: boolean;
-  state: Persisted;
+  state: PersistedState;
   src: DataSource;
   user: User;
   role: Role;
   unread: number;
   setRole: (role: Role) => void;
   startService: (input: StartServiceInput) => string;
-  addEvidence: (serviceId: string, kind: EvidenceKind) => void;
+  addEvidence: (
+    serviceId: string,
+    kind: EvidenceKind,
+    channel?: CaptureChannel,
+  ) => void;
   submitReview: (
     claimId: string,
     action: ReviewActionKind,
@@ -152,16 +53,19 @@ type AppContextValue = {
 
 const AppContext = React.createContext<AppContextValue | null>(null);
 
-let cacheState: Persisted = initialState;
+let cacheState: PersistedState = initialPersistedState;
 let cacheLoaded = false;
 const listeners = new Set<() => void>();
 
-function loadCache(): Persisted {
+function loadCache(): PersistedState {
   if (!cacheLoaded && typeof window !== "undefined") {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        cacheState = { ...initialState, ...(JSON.parse(raw) as Partial<Persisted>) };
+        cacheState = {
+          ...initialPersistedState,
+          ...(JSON.parse(raw) as Partial<PersistedState>),
+        };
       }
     } catch {
       // storage tidak tersedia — pakai state awal
@@ -171,8 +75,8 @@ function loadCache(): Persisted {
   return cacheState;
 }
 
-function getServerSnapshot(): Persisted {
-  return initialState;
+function getServerSnapshot(): PersistedState {
+  return initialPersistedState;
 }
 
 function subscribeCache(cb: () => void) {
@@ -182,7 +86,7 @@ function subscribeCache(cb: () => void) {
   };
 }
 
-function commitCache(next: Persisted) {
+function commitCache(next: PersistedState) {
   cacheState = next;
   if (typeof window !== "undefined") {
     try {
@@ -208,7 +112,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setState = React.useCallback(
-    (updater: (prev: Persisted) => Persisted) => {
+    (updater: (prev: PersistedState) => PersistedState) => {
       commitCache(updater(loadCache()));
     },
     [],
@@ -218,7 +122,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     const base = [
       ...seedSource.services,
       ...state.createdServices,
-    ].map((s) => applyAdds(s, state.evidenceAdds));
+    ].map((s) => applyEvidenceAdds(s, state.evidenceAdds));
 
     return {
       services: base,
@@ -247,198 +151,33 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [src.notifications, state.readIds],
   );
 
-  const pushAudit = (
-    list: AuditEntry[],
-    entry: Omit<AuditEntry, "id" | "at" | "user">,
-    userName: string,
-  ): AuditEntry[] => [
-    { id: uid("AUD"), at: nowStamp(), user: userName, ...entry },
-    ...list,
-  ];
-
   const startService = React.useCallback(
     (input: StartServiceInput): string => {
-      const seq = state.nextSeq;
-      const key = String(seq).padStart(2, "0");
-      const id = `SVC-085${key}-01`;
-      const start = clockHM();
-      const template = getTemplate(input.templateId);
-
-      const evidence = template.required.map((kind) =>
-        kind === "arrival"
-          ? {
-              kind,
-              state: "present" as const,
-              at: start,
-              citation: `E-${key}-01`,
-              source: "Operator" as const,
-            }
-          : {
-              kind,
-              state: "missing" as const,
-              citation: `E-${key}-${String(
-                EVIDENCE_ORDER.indexOf(kind) + 1,
-              ).padStart(2, "0")}`,
-              note: "Belum tercatat",
-            },
-      );
-
-      const service: Service = {
-        id,
-        patientId: input.patientId,
-        providerId: input.providerId,
-        facilityId: template.id === "TPL-LAB" ? "FAC-02" : "FAC-01",
-        templateId: input.templateId,
-        servicePoint: input.servicePoint,
-        date: APP_TODAY,
-        startTime: start,
-        status: "AKTIF",
-        evidence,
-        events: [
-          {
-            id: `EV-${id}-START`,
-            serviceId: id,
-            kind: "start",
-            at: start,
-            source: "Operator",
-            description: "Pelayanan dimulai",
-          },
-          {
-            id: `EV-${id}-ARRIVAL`,
-            serviceId: id,
-            kind: "arrival",
-            at: start,
-            source: "Operator",
-            description: "Kedatangan pasien tercatat",
-          },
-        ],
-      };
-
-      setState((prev) => ({
-        ...prev,
-        nextSeq: prev.nextSeq + 1,
-        createdServices: [...prev.createdServices, service],
-        audit: pushAudit(
-          prev.audit,
-          {
-            action: "SERVICE_STARTED",
-            entity: "Service",
-            entityId: id,
-            description: `Pelayanan ${template.name.toLowerCase()} dimulai untuk ${input.patientId}.`,
-          },
-          user.name,
-        ),
-      }));
-
+      let id = "";
+      setState((prev) => {
+        const result = startServiceReducer(prev, input, user.name);
+        id = result.serviceId;
+        return result.state;
+      });
       return id;
     },
-    [setState, state.nextSeq, user.name],
+    [setState, user.name],
   );
 
   const addEvidence = React.useCallback(
-    (serviceId: string, kind: EvidenceKind) => {
-      const at = clockHM();
-      const source: EvidenceSource =
-        kind === "billing" || kind === "claim" ? "Sistem" : "Provider";
-
-      setState((prev) => {
-        const service = [
-          ...seedSource.services,
-          ...prev.createdServices,
-        ].find((s) => s.id === serviceId);
-        if (!service) return prev;
-
-        const required = getTemplate(service.templateId).required;
-        const willBeComplete = required.every((k) => {
-          if (k !== kind) {
-            return service.evidence.find((e) => e.kind === k)?.state === "present";
-          }
-          return true;
-        });
-
-        let audit = pushAudit(
-          prev.audit,
-          {
-            action: "EVIDENCE_ADDED",
-            entity: "Evidence",
-            entityId: `${serviceId}#${kind}`,
-            description: `${EVIDENCE_LABEL[kind]} tercatat untuk ${serviceId}.`,
-          },
-          user.name,
-        );
-
-        if (willBeComplete && service.status === "AKTIF") {
-          audit = pushAudit(
-            audit,
-            {
-              action: "SERVICE_COMPLETED",
-              entity: "Passport",
-              entityId: serviceId,
-              description: `Seluruh evidence ${serviceId} lengkap — Service Passport COMPLETE.`,
-            },
-            user.name,
-          );
-        }
-
-        return {
-          ...prev,
-          evidenceAdds: [
-            ...prev.evidenceAdds,
-            { serviceId, kind, at, source },
-          ],
-          audit,
-        };
-      });
+    (serviceId: string, kind: EvidenceKind, channel?: CaptureChannel) => {
+      setState((prev) =>
+        captureEvidence(prev, serviceId, kind, user.name, channel) ?? prev,
+      );
     },
     [setState, user.name],
   );
 
   const submitReview = React.useCallback(
     (claimId: string, action: ReviewActionKind, note: string) => {
-      const statusMap: Record<ReviewActionKind, ClaimStatus> = {
-        NEED_CLARIFICATION: "NEEDS CLARIFICATION",
-        MARK_SUPPORTED: "SUPPORTED",
-        RETURN_FOR_REVIEW: "NEEDS REVIEW",
-      };
-
-      setState((prev) => {
-        const review: ReviewAction = {
-          id: uid("RA"),
-          claimId,
-          action,
-          note,
-          by: user.name,
-          at: nowStamp(),
-        };
-        const audit = pushAudit(
-          prev.audit,
-          {
-            action: "REVIEW_ACTION",
-            entity: "Review",
-            entityId: claimId,
-            description: `Aksi tinjauan: ${REVIEW_LABEL[action]} untuk ${claimId}.`,
-          },
-          user.name,
-        );
-        const notification: Notification = {
-          id: uid("NTF"),
-          title: `${claimId} — ${REVIEW_LABEL[action]}`,
-          body: note.slice(0, 120),
-          at: nowStamp(),
-          read: false,
-        };
-
-        return {
-          ...prev,
-          statusOverrides: {
-            ...prev.statusOverrides,
-            [claimId]: statusMap[action],
-          },
-          reviews: [review, ...prev.reviews],
-          audit,
-          notifications: [notification, ...prev.notifications],
-        };
-      });
+      setState((prev) =>
+        submitReviewReducer(prev, claimId, action, note, user.name),
+      );
     },
     [setState, user.name],
   );
@@ -456,7 +195,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // abaikan
     }
-    setState(() => initialState);
+    setState(() => initialPersistedState);
   }, [setState]);
 
   const setRole = React.useCallback((role: Role) => {

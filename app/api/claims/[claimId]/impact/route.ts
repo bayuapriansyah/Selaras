@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { claimView } from "@/lib/app/selectors";
-import { impactOf } from "@/lib/app/rules";
+import {
+  impact as claimImpact,
+  view as claimDetails,
+} from "@/lib/app/services/claimService";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +11,7 @@ type Params = { params: Promise<{ claimId: string }> };
 
 export async function GET(_req: Request, ctx: Params) {
   const { claimId } = await ctx.params;
-  const view = claimView(claimId);
+  const view = claimDetails(claimId);
 
   if (!view) {
     return NextResponse.json(
@@ -18,11 +20,13 @@ export async function GET(_req: Request, ctx: Params) {
     );
   }
 
-  const impact = impactOf(
-    view.template.rate,
-    view.evaluation.claimed,
-    view.evaluation.supported,
-  );
+  const impact = claimImpact(claimId);
+  if (!impact) {
+    return NextResponse.json(
+      { error: "Claim tidak ditemukan", claimId },
+      { status: 404 },
+    );
+  }
 
   return NextResponse.json(
     {

@@ -1,8 +1,16 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, CircleAlert, Plus, Stethoscope } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  CircleAlert,
+  Plus,
+  ScanLine,
+  Stethoscope,
+} from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -14,7 +22,8 @@ import {
   providers,
   templates,
 } from "@/data/app/seed";
-import { getTemplate, servicesToday } from "@/lib/app/selectors";
+import { getTemplate } from "@/lib/app/selectors";
+import { servicesToday } from "@/lib/app/services/passportService";
 
 const SERVICE_POINTS = [
   "Ruang Fisioterapi 1",
@@ -86,7 +95,7 @@ export default function PelayananPage() {
 
   function onStart() {
     const id = startService({ patientId, providerId, templateId, servicePoint });
-    router.push(`/app/passport/${id}`);
+    router.push(`/app/pelayanan/${id}`);
   }
 
   return (
@@ -224,7 +233,14 @@ export default function PelayananPage() {
                 </div>
 
                 {s.status === "AKTIF" ? (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                    <Link
+                      href={`/app/pelayanan/${s.id}`}
+                      className="inline-flex h-7 items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2.5 text-[11px] font-medium text-sky-700 transition-colors hover:border-sky-300 hover:bg-sky-100 focus-visible:outline-2 focus-visible:outline-sky-400"
+                    >
+                      <ScanLine aria-hidden="true" className="size-3" />
+                      Buka workspace QR
+                    </Link>
                     {tpl.required.map((kind) => {
                       const item = s.evidence.find((e) => e.kind === kind);
                       const ok = item?.state === "present";
@@ -269,6 +285,12 @@ export default function PelayananPage() {
                     >
                       Lihat passport
                     </a>
+                    <Link
+                      href={`/app/pelayanan/${s.id}`}
+                      className="inline-flex h-7 items-center rounded-full border border-slate-200 bg-white px-2.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-sky-300 hover:text-sky-700 focus-visible:outline-2 focus-visible:outline-sky-400"
+                    >
+                      Buka workspace QR
+                    </Link>
                     {missing.length > 0 ? (
                       <span className="inline-flex h-7 items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 text-[11px] text-amber-700">
                         <CircleAlert aria-hidden="true" className="size-3" />

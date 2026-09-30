@@ -7,10 +7,19 @@ import { ArrowLeft, ArrowRight, Check, CircleAlert, Plus } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatusBadge } from "@/components/app/StatusBadge";
+import {
+  PassportNextActionChip,
+  PassportStageBadge,
+} from "@/components/app/PassportStageBadge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { EVIDENCE_LABEL } from "@/data/app/types";
-import { getPatient, getProvider, passportRow } from "@/lib/app/selectors";
+import { getPatient, getProvider } from "@/lib/app/selectors";
+import {
+  passportNextAction,
+  passportStageOf,
+} from "@/lib/app/rules";
+import { passportRow } from "@/lib/app/services/passportService";
 import { formatDate, formatDateTime } from "@/lib/app/format";
 
 export default function PassportDetailPage() {
@@ -42,6 +51,8 @@ export default function PassportDetailPage() {
   const { service, template, passport, sessionStatus } = row;
   const patient = getPatient(service.patientId);
   const provider = getProvider(service.providerId);
+  const stage = passportStageOf(service.evidence, template.required);
+  const next = passportNextAction(service.evidence, template.required);
   const present = service.evidence.filter(
     (e) => e.state === "present" && template.required.includes(e.kind),
   ).length;
@@ -69,6 +80,8 @@ export default function PassportDetailPage() {
         }`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            <PassportStageBadge stage={stage} />
+            {next ? <PassportNextActionChip action={next} /> : null}
             <StatusBadge status={passport.status} />
             <StatusBadge status={sessionStatus} />
           </div>

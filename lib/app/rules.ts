@@ -134,3 +134,44 @@ export function impactOf(
     label: "Simulasi berbasis data sintetis.",
   };
 }
+
+export type PassportStage =
+  | "INCOMPLETE"
+  | "PARTIALLY SUPPORTED"
+  | "SUPPORTED";
+
+export type PassportNextAction =
+  | "CAPTURE TREATMENT"
+  | "CAPTURE COMPLETION"
+  | "LENGKAPI EVIDENCE";
+
+function hasPresent(kind: EvidenceKind, evidence: EvidenceItem[]): boolean {
+  return evidence.find((e) => e.kind === kind)?.state === "present";
+}
+
+export function passportStageOf(
+  evidence: EvidenceItem[],
+  required: EvidenceKind[],
+): PassportStage {
+  const missing = required.filter((k) => !hasPresent(k, evidence));
+  if (missing.length === 0) return "SUPPORTED";
+  const clinicalDone = required.includes("treatment")
+    ? hasPresent("treatment", evidence)
+    : hasPresent("completion", evidence);
+  return clinicalDone ? "PARTIALLY SUPPORTED" : "INCOMPLETE";
+}
+
+export function passportNextAction(
+  evidence: EvidenceItem[],
+  required: EvidenceKind[],
+): PassportNextAction | null {
+  const stage = passportStageOf(evidence, required);
+  if (stage === "SUPPORTED") return null;
+  if (required.includes("treatment") && !hasPresent("treatment", evidence)) {
+    return "CAPTURE TREATMENT";
+  }
+  if (required.includes("completion") && !hasPresent("completion", evidence)) {
+    return "CAPTURE COMPLETION";
+  }
+  return "LENGKAPI EVIDENCE";
+}

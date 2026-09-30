@@ -9,12 +9,28 @@ export type ExplainGap = {
   kinds: string[];
 };
 
+export type ExplainSectionKey =
+  | "WHAT_WE_KNOW"
+  | "IS_MISSING"
+  | "IS_SUPPORTED"
+  | "WHY_REVIEW"
+  | "WHAT_TO_CHECK";
+
+export type ExplainSection = {
+  key: ExplainSectionKey;
+  eyebrow: string;
+  title: string;
+  items: string[];
+  emptyNote: string;
+};
+
 export type ExplainResult = {
   claimId: string;
   headline: string;
   paragraphs: string[];
   bullets: { label: string; value: string }[];
   gaps: ExplainGap[];
+  sections: ExplainSection[];
   recommendation: string;
   disclaimer: string;
   generatedAt: string;
@@ -103,6 +119,71 @@ export function buildExplanation(
           ? "Rekomendasi: minta klarifikasi ke provider untuk melengkapi evidence yang kurang pada sesi terkait, lalu evaluasi ulang."
           : "Rekomendasi: verifikasi manual sesi yang ditandai sebelum menutup klaim.";
 
+  const sections: ExplainSection[] = [
+    {
+      key: "WHAT_WE_KNOW",
+      eyebrow: "WHAT WE KNOW",
+      title: "Apa yang kami tahu",
+      items: [
+        paragraphs[0],
+        `Sesi diajukan ${evaluation.claimed}, sesi didukung ${evaluation.supported}, sesi menunggu tinjauan ${pending}.`,
+        `Tarif per sesi Rp ${template.rate.toLocaleString("id-ID")} · total diajukan Rp ${impact.currentAmount.toLocaleString("id-ID")}.`,
+        `${view.sessions.length} sesi tercatat pada klaim ini.`,
+      ],
+      emptyNote: "Belum ada data klaim untuk diringkas.",
+    },
+    {
+      key: "IS_MISSING",
+      eyebrow: "IS MISSING",
+      title: "Apa yang hilang",
+      items: gaps.map(
+        (g) =>
+          `Sesi ${String(g.sessionId).padStart(2, "0")} — ${listText(g.kinds)} belum tercatat.`,
+      ),
+      emptyNote: "Tidak ada evidence wajib yang hilang.",
+    },
+    {
+      key: "IS_SUPPORTED",
+      eyebrow: "IS SUPPORTED",
+      title: "Apa yang didukung",
+      items: [
+        `${evaluation.supported} dari ${evaluation.claimed} sesi sudah didukung evidence lengkap.`,
+        `Nilai yang siap diproses Rp ${impact.supportedAmount.toLocaleString("id-ID")}.`,
+      ],
+      emptyNote: "Belum ada sesi yang seluruh evidence-nya lengkap.",
+    },
+    {
+      key: "WHY_REVIEW",
+      eyebrow: "WHY REVIEW",
+      title: "Mengapa perlu ditinjau",
+      items:
+        signals.length > 0
+          ? signals.map(
+              (s) =>
+                `${s.code} — ${s.message} (sesi ${s.sessionId ?? "-"})`,
+            )
+          : pending > 0
+            ? [
+                `${pending} sesi masih dalam antrean verifikasi manual reviewer.`,
+              ]
+            : [],
+      emptyNote: "Tidak ada sinyal risiko — tidak ada alasan tinjauan khusus.",
+    },
+    {
+      key: "WHAT_TO_CHECK",
+      eyebrow: "WHAT TO CHECK",
+      title: "Yang perlu diperiksa",
+      items: [
+        ...gaps.map(
+          (g) =>
+            `Lengkapi ${listText(g.kinds)} pada sesi ${String(g.sessionId).padStart(2, "0")} bersama provider.`,
+        ),
+        recommendation,
+      ],
+      emptyNote: "Tidak ada pemeriksaan lanjutan yang diperlukan.",
+    },
+  ];
+
   return {
     claimId,
     headline,
@@ -114,6 +195,7 @@ export function buildExplanation(
       { label: "Sinyal risiko", value: String(signals.length) },
     ],
     gaps,
+    sections,
     recommendation,
     disclaimer:
       "Ringkasan otomatis dari aturan evidence (demo, tanpa model eksternal). Bukan nasihat medis.",
