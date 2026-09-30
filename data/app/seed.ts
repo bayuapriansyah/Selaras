@@ -17,6 +17,7 @@ import type {
   User,
 } from "./types";
 import { EVIDENCE_LABEL, EVIDENCE_ORDER } from "./types";
+import { evaluateClaim, evaluateSession } from "@/lib/app/rules";
 
 export const APP_TODAY = "2026-09-30";
 
@@ -159,6 +160,30 @@ export const facilities: Facility[] = [
     kind: "Laboratorium",
     city: "Jakarta Pusat",
   },
+  {
+    id: "FAC-03",
+    name: "RS Mitra Medika",
+    kind: "Rumah Sakit",
+    city: "Bandung",
+  },
+  {
+    id: "FAC-04",
+    name: "Klinik Sehat Bersama",
+    kind: "Klinik",
+    city: "Depok",
+  },
+  {
+    id: "FAC-05",
+    name: "Klinik Pratama Cendana",
+    kind: "Klinik",
+    city: "Bekasi",
+  },
+  {
+    id: "FAC-06",
+    name: "RSIA Puspa Sehat",
+    kind: "Rumah Sakit",
+    city: "Tangerang",
+  },
 ];
 
 export const providers: Provider[] = [
@@ -186,6 +211,72 @@ export const providers: Provider[] = [
     profession: "Radiografer",
     facilityId: "FAC-01",
   },
+  {
+    id: "T-101",
+    name: "Nia Puspita",
+    profession: "Fisioterapis",
+    facilityId: "FAC-03",
+  },
+  {
+    id: "T-102",
+    name: "Yoga Prasetya",
+    profession: "Fisioterapis",
+    facilityId: "FAC-03",
+  },
+  {
+    id: "T-111",
+    name: "Rina Marlina",
+    profession: "Fisioterapis",
+    facilityId: "FAC-04",
+  },
+  {
+    id: "T-112",
+    name: "Hendra Wijaya",
+    profession: "Dokter Umum",
+    facilityId: "FAC-04",
+  },
+  {
+    id: "T-113",
+    name: "Lina Kartika",
+    profession: "Dokter Gigi",
+    facilityId: "FAC-04",
+  },
+  {
+    id: "T-121",
+    name: "Fajar Setiawan",
+    profession: "Fisioterapis",
+    facilityId: "FAC-05",
+  },
+  {
+    id: "T-122",
+    name: "Andini Pertiwi",
+    profession: "Dokter Gigi",
+    facilityId: "FAC-05",
+  },
+  {
+    id: "T-123",
+    name: "Bayu Saputra",
+    profession: "Dokter Umum",
+    facilityId: "FAC-05",
+  },
+  {
+    id: "T-131",
+    name: "Citra Dewi",
+    profession: "Analis Laboratorium",
+    facilityId: "FAC-06",
+  },
+  {
+    id: "T-132",
+    name: "Reza Fahlevi",
+    profession: "Radiografer",
+    facilityId: "FAC-06",
+  },
+  {
+    id: "T-133",
+    name: "Maya Anggraini",
+    profession: "Dokter Umum",
+    facilityId: "FAC-06",
+  },
 ];
 
 export const patients: Patient[] = [
@@ -197,6 +288,32 @@ export const patients: Patient[] = [
   { id: "P-1002", display: "Pasien P-1002", gender: "P", birthYear: 1992 },
   { id: "P-1008", display: "Pasien P-1008", gender: "L", birthYear: 1981 },
   { id: "P-1055", display: "Pasien P-1055", gender: "P", birthYear: 1999 },
+  { id: "P-2001", display: "Pasien P-2001", gender: "L", birthYear: 1990 },
+  { id: "P-2002", display: "Pasien P-2002", gender: "P", birthYear: 1985 },
+  { id: "P-2003", display: "Pasien P-2003", gender: "L", birthYear: 1978 },
+  { id: "P-2004", display: "Pasien P-2004", gender: "P", birthYear: 1996 },
+  { id: "P-2005", display: "Pasien P-2005", gender: "L", birthYear: 1972 },
+  { id: "P-2006", display: "Pasien P-2006", gender: "P", birthYear: 1988 },
+  { id: "P-2007", display: "Pasien P-2007", gender: "L", birthYear: 1993 },
+  { id: "P-2008", display: "Pasien P-2008", gender: "P", birthYear: 1981 },
+  { id: "P-2009", display: "Pasien P-2009", gender: "L", birthYear: 1999 },
+  { id: "P-2010", display: "Pasien P-2010", gender: "P", birthYear: 1976 },
+  { id: "P-2011", display: "Pasien P-2011", gender: "L", birthYear: 1984 },
+  { id: "P-2012", display: "Pasien P-2012", gender: "P", birthYear: 2001 },
+  { id: "P-2013", display: "Pasien P-2013", gender: "L", birthYear: 1995 },
+  { id: "P-2014", display: "Pasien P-2014", gender: "P", birthYear: 1987 },
+  { id: "P-2015", display: "Pasien P-2015", gender: "L", birthYear: 1968 },
+  { id: "P-2016", display: "Pasien P-2016", gender: "P", birthYear: 1992 },
+  { id: "P-2017", display: "Pasien P-2017", gender: "L", birthYear: 2003 },
+  { id: "P-2018", display: "Pasien P-2018", gender: "P", birthYear: 1980 },
+  { id: "P-2019", display: "Pasien P-2019", gender: "L", birthYear: 1989 },
+  { id: "P-2020", display: "Pasien P-2020", gender: "P", birthYear: 1997 },
+  { id: "P-2021", display: "Pasien P-2021", gender: "L", birthYear: 1974 },
+  { id: "P-2022", display: "Pasien P-2022", gender: "P", birthYear: 2005 },
+  { id: "P-2023", display: "Pasien P-2023", gender: "L", birthYear: 1991 },
+  { id: "P-2024", display: "Pasien P-2024", gender: "P", birthYear: 1983 },
+  { id: "P-2025", display: "Pasien P-2025", gender: "L", birthYear: 1970 },
+  { id: "P-2026", display: "Pasien P-2026", gender: "P", birthYear: 1998 },
 ];
 
 export const templates: ServiceTemplate[] = [
@@ -289,6 +406,7 @@ function makeService(params: {
   patientId: string;
   providerId: string;
   templateId: string;
+  facilityId?: string;
   date: string;
   start: string;
   servicePoint: string;
@@ -311,7 +429,9 @@ function makeService(params: {
     id: params.id,
     patientId: params.patientId,
     providerId: params.providerId,
-    facilityId: params.templateId === "TPL-LAB" ? "FAC-02" : "FAC-01",
+    facilityId:
+      params.facilityId ??
+      (params.templateId === "TPL-LAB" ? "FAC-02" : "FAC-01"),
     templateId: params.templateId,
     servicePoint: params.servicePoint,
     date: params.date,
@@ -358,11 +478,13 @@ type ClaimSpec = {
   patientId: string;
   templateId: string;
   providerId: string;
+  facilityId?: string;
   servicePoint: string;
   starts: string[];
   startDate: number;
   missing?: Partial<Record<EvidenceKind, string>>[];
   conflictSession?: number;
+  updated?: string;
 };
 
 function makeClaimServices(spec: ClaimSpec): Service[] {
@@ -374,6 +496,7 @@ function makeClaimServices(spec: ClaimSpec): Service[] {
       patientId: spec.patientId,
       providerId: spec.providerId,
       templateId: spec.templateId,
+      facilityId: spec.facilityId,
       date: `2026-09-${String(spec.startDate + i).padStart(2, "0")}`,
       start,
       servicePoint: spec.servicePoint,
@@ -454,6 +577,361 @@ const claimSpecs: ClaimSpec[] = [
   },
 ];
 
+const CLONE_MISSING = { completion: "Belum dikonfirmasi provider" };
+const PHANTOM_MISSING: Partial<Record<EvidenceKind, string>> = {
+  treatment: "Tidak ada jejak tindakan pada sesi ini",
+  note: "Catatan klinis tidak ditemukan",
+  completion: "Penyelesaian tidak tercatat",
+};
+
+const cohortSpecs: ClaimSpec[] = [
+  {
+    id: "CLM-08601",
+    patientId: "P-2001",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-121",
+    facilityId: "FAC-05",
+    servicePoint: "Fisioterapi Cendana",
+    starts: ["09:00", "10:00", "11:00"],
+    startDate: 10,
+    missing: [{}, CLONE_MISSING, {}],
+    updated: "2026-09-29 15:20",
+  },
+  {
+    id: "CLM-08602",
+    patientId: "P-2001",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-121",
+    facilityId: "FAC-05",
+    servicePoint: "Fisioterapi Cendana",
+    starts: ["10:00", "13:00"],
+    startDate: 11,
+    updated: "2026-09-29 15:25",
+  },
+  {
+    id: "CLM-08603",
+    patientId: "P-2002",
+    templateId: "TPL-DENTAL",
+    providerId: "T-122",
+    facilityId: "FAC-05",
+    servicePoint: "Poli Gigi Cendana",
+    starts: ["09:30", "10:30", "11:30"],
+    startDate: 13,
+    missing: [{}, {}, { note: "Catatan klinis belum diinput" }],
+    updated: "2026-09-29 15:30",
+  },
+  {
+    id: "CLM-08604",
+    patientId: "P-2002",
+    templateId: "TPL-DENTAL",
+    providerId: "T-122",
+    facilityId: "FAC-05",
+    servicePoint: "Poli Gigi Cendana",
+    starts: ["11:30", "14:00"],
+    startDate: 15,
+    updated: "2026-09-29 15:35",
+  },
+  {
+    id: "CLM-08605",
+    patientId: "P-2003",
+    templateId: "TPL-LAB",
+    providerId: "T-131",
+    facilityId: "FAC-06",
+    servicePoint: "Laboratorium Puspa",
+    starts: ["08:00", "08:40", "09:20", "10:00"],
+    startDate: 12,
+    updated: "2026-09-29 15:40",
+  },
+  {
+    id: "CLM-08606",
+    patientId: "P-2003",
+    templateId: "TPL-LAB",
+    providerId: "T-131",
+    facilityId: "FAC-06",
+    servicePoint: "Laboratorium Puspa",
+    starts: ["10:40", "11:20", "12:00"],
+    startDate: 14,
+    updated: "2026-09-29 15:45",
+  },
+  {
+    id: "CLM-08607",
+    patientId: "P-2004",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-133",
+    facilityId: "FAC-06",
+    servicePoint: "Poli Umum Puspa",
+    starts: ["13:00", "13:45", "14:30", "15:15"],
+    startDate: 16,
+    missing: [{}, { note: "Catatan klinis belum diinput" }, {}, {}],
+    updated: "2026-09-29 15:50",
+  },
+  {
+    id: "CLM-08608",
+    patientId: "P-2004",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-133",
+    facilityId: "FAC-06",
+    servicePoint: "Poli Umum Puspa",
+    starts: ["16:00", "16:45"],
+    startDate: 19,
+    updated: "2026-09-29 15:55",
+  },
+  {
+    id: "CLM-08609",
+    patientId: "P-2005",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-111",
+    facilityId: "FAC-04",
+    servicePoint: "Fisioterapi Bersama",
+    starts: ["09:00", "10:00", "11:00"],
+    startDate: 20,
+    missing: [PHANTOM_MISSING, PHANTOM_MISSING, PHANTOM_MISSING],
+    updated: `${APP_TODAY} 07:20`,
+  },
+  {
+    id: "CLM-08610",
+    patientId: "P-2006",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-101",
+    facilityId: "FAC-03",
+    servicePoint: "Fisioterapi Ruang Melati",
+    starts: ["09:00", "10:00", "11:00", "13:00"],
+    startDate: 5,
+    missing: [
+      {},
+      { note: "Catatan klinis belum diinput", completion: "Belum dikonfirmasi" },
+      { note: "Catatan klinis belum diinput", completion: "Belum dikonfirmasi" },
+      { completion: "Belum dikonfirmasi" },
+    ],
+    updated: `${APP_TODAY} 07:22`,
+  },
+  {
+    id: "CLM-08611",
+    patientId: "P-2007",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-101",
+    facilityId: "FAC-03",
+    servicePoint: "Fisioterapi Ruang Melati",
+    starts: ["08:30", "09:30"],
+    startDate: 5,
+    updated: "2026-09-29 14:10",
+  },
+  {
+    id: "CLM-08612",
+    patientId: "P-2008",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-102",
+    facilityId: "FAC-03",
+    servicePoint: "Fisioterapi Ruang Anggrek",
+    starts: ["08:30", "09:30"],
+    startDate: 7,
+    updated: "2026-09-29 14:15",
+  },
+  {
+    id: "CLM-08613",
+    patientId: "P-2009",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-101",
+    facilityId: "FAC-03",
+    servicePoint: "Fisioterapi Ruang Melati",
+    starts: ["10:00", "11:00"],
+    startDate: 9,
+    updated: "2026-09-29 14:20",
+  },
+  {
+    id: "CLM-08614",
+    patientId: "P-2010",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-102",
+    facilityId: "FAC-03",
+    servicePoint: "Fisioterapi Ruang Anggrek",
+    starts: ["13:30", "14:30"],
+    startDate: 11,
+    updated: "2026-09-29 14:25",
+  },
+  {
+    id: "CLM-08615",
+    patientId: "P-2011",
+    templateId: "TPL-RADIOLOGY",
+    providerId: "T-132",
+    facilityId: "FAC-06",
+    servicePoint: "Radiologi Puspa",
+    starts: ["08:15", "09:30", "11:00"],
+    startDate: 22,
+    conflictSession: 2,
+    updated: `${APP_TODAY} 07:24`,
+  },
+  {
+    id: "CLM-08616",
+    patientId: "P-2012",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-112",
+    facilityId: "FAC-04",
+    servicePoint: "Poli Umum Bersama",
+    starts: ["08:00", "08:45", "09:30", "10:15"],
+    startDate: 2,
+    updated: "2026-09-29 12:16",
+  },
+  {
+    id: "CLM-08617",
+    patientId: "P-2013",
+    templateId: "TPL-DENTAL",
+    providerId: "T-113",
+    facilityId: "FAC-04",
+    servicePoint: "Poli Gigi Bersama",
+    starts: ["10:00", "10:45", "11:30"],
+    startDate: 2,
+    missing: [{}, CLONE_MISSING, {}],
+    updated: "2026-09-29 12:17",
+  },
+  {
+    id: "CLM-08618",
+    patientId: "P-2014",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-111",
+    facilityId: "FAC-04",
+    servicePoint: "Fisioterapi Bersama",
+    starts: ["13:00", "14:00"],
+    startDate: 4,
+    updated: "2026-09-29 12:18",
+  },
+  {
+    id: "CLM-08619",
+    patientId: "P-2015",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-112",
+    facilityId: "FAC-04",
+    servicePoint: "Poli Umum Bersama",
+    starts: ["08:00", "08:45"],
+    startDate: 6,
+    missing: [{ provider: "Verifikasi provider belum masuk" }, {}],
+    updated: "2026-09-29 12:19",
+  },
+  {
+    id: "CLM-08620",
+    patientId: "P-2016",
+    templateId: "TPL-DENTAL",
+    providerId: "T-122",
+    facilityId: "FAC-05",
+    servicePoint: "Poli Gigi Cendana",
+    starts: ["09:00", "09:45", "10:30", "11:15"],
+    startDate: 18,
+    updated: "2026-09-29 12:20",
+  },
+  {
+    id: "CLM-08621",
+    patientId: "P-2017",
+    templateId: "TPL-PHYSIO",
+    providerId: "T-121",
+    facilityId: "FAC-05",
+    servicePoint: "Fisioterapi Cendana",
+    starts: ["13:00", "14:00", "15:00"],
+    startDate: 18,
+    missing: [{}, {}, CLONE_MISSING],
+    updated: "2026-09-29 12:21",
+  },
+  {
+    id: "CLM-08622",
+    patientId: "P-2018",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-123",
+    facilityId: "FAC-05",
+    servicePoint: "Poli Umum Cendana",
+    starts: ["08:15", "09:00"],
+    startDate: 20,
+    updated: "2026-09-29 12:22",
+  },
+  {
+    id: "CLM-08623",
+    patientId: "P-2019",
+    templateId: "TPL-RADIOLOGY",
+    providerId: "T-132",
+    facilityId: "FAC-06",
+    servicePoint: "Radiologi Puspa",
+    starts: ["13:00", "14:15", "15:30"],
+    startDate: 8,
+    updated: "2026-09-29 12:23",
+  },
+  {
+    id: "CLM-08624",
+    patientId: "P-2020",
+    templateId: "TPL-LAB",
+    providerId: "T-131",
+    facilityId: "FAC-06",
+    servicePoint: "Laboratorium Puspa",
+    starts: ["07:45", "08:30", "09:15"],
+    startDate: 22,
+    missing: [{}, { note: "Catatan klinis belum diinput" }, {}],
+    updated: "2026-09-29 12:24",
+  },
+  {
+    id: "CLM-08625",
+    patientId: "P-2021",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-133",
+    facilityId: "FAC-06",
+    servicePoint: "Poli Umum Puspa",
+    starts: ["16:00", "16:45"],
+    startDate: 24,
+    updated: "2026-09-29 12:25",
+  },
+  {
+    id: "CLM-08626",
+    patientId: "P-2022",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-112",
+    facilityId: "FAC-04",
+    servicePoint: "Poli Umum Bersama",
+    starts: ["10:00", "10:45", "11:30"],
+    startDate: 8,
+    updated: "2026-09-29 12:26",
+  },
+  {
+    id: "CLM-08627",
+    patientId: "P-2023",
+    templateId: "TPL-DENTAL",
+    providerId: "T-113",
+    facilityId: "FAC-04",
+    servicePoint: "Poli Gigi Bersama",
+    starts: ["13:30", "14:15"],
+    startDate: 10,
+    updated: "2026-09-29 12:27",
+  },
+  {
+    id: "CLM-08628",
+    patientId: "P-2024",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-123",
+    facilityId: "FAC-05",
+    servicePoint: "Poli Umum Cendana",
+    starts: ["08:00", "09:00", "10:00"],
+    startDate: 24,
+    updated: "2026-09-29 12:28",
+  },
+  {
+    id: "CLM-08629",
+    patientId: "P-2025",
+    templateId: "TPL-RADIOLOGY",
+    providerId: "T-132",
+    facilityId: "FAC-06",
+    servicePoint: "Radiologi Puspa",
+    starts: ["13:00", "14:15"],
+    startDate: 26,
+    updated: "2026-09-29 12:29",
+  },
+  {
+    id: "CLM-08630",
+    patientId: "P-2026",
+    templateId: "TPL-OUTPATIENT",
+    providerId: "T-123",
+    facilityId: "FAC-05",
+    servicePoint: "Poli Umum Cendana",
+    starts: ["11:00", "11:45"],
+    startDate: 26,
+    updated: "2026-09-29 12:30",
+  },
+];
+
 function buildClaim(
   spec: ClaimSpec,
   services: Service[],
@@ -472,7 +950,9 @@ function buildClaim(
     id: spec.id,
     patientId: spec.patientId,
     templateId: spec.templateId,
-    facilityId: spec.templateId === "TPL-LAB" ? "FAC-02" : "FAC-01",
+    facilityId:
+      spec.facilityId ??
+      (spec.templateId === "TPL-LAB" ? "FAC-02" : "FAC-01"),
     periodFrom: `2026-09-${String(spec.startDate).padStart(2, "0")}`,
     periodTo: `2026-09-${String(spec.startDate + spec.starts.length - 1).padStart(2, "0")}`,
     status,
@@ -487,7 +967,15 @@ const otherServices: Service[] = claimSpecs.flatMap((spec) =>
   makeClaimServices(spec),
 );
 
-export const services: Service[] = [...goldenServicesList, ...otherServices];
+const cohortServices: Service[] = cohortSpecs.flatMap((spec) =>
+  makeClaimServices(spec),
+);
+
+export const services: Service[] = [
+  ...goldenServicesList,
+  ...otherServices,
+  ...cohortServices,
+];
 
 const todayServices: Service[] = [
   makeService({
@@ -547,6 +1035,26 @@ export const billings: Billing[] = services
     };
   });
 
+function deriveClaimStatus(spec: ClaimSpec, list: Service[]): Claim["status"] {
+  const template = templates.find((t) => t.id === spec.templateId);
+  return evaluateClaim(
+    list.map((s) => ({
+      sessionId: s.sessionId as number,
+      evaluation: evaluateSession(s.evidence, template?.required ?? []),
+    })),
+  ).status;
+}
+
+const cohortClaims: Claim[] = cohortSpecs.map((spec, i) => {
+  const list = cohortServices.filter((s) => s.claimId === spec.id);
+  return buildClaim(
+    spec,
+    list,
+    spec.updated ?? `2026-09-29 12:${String(i).padStart(2, "0")}`,
+    deriveClaimStatus(spec, list),
+  );
+});
+
 export const claims: Claim[] = [
   buildClaim(
     { id: GOLDEN_CLAIM_ID, patientId: GOLDEN_PATIENT_ID, templateId: "TPL-PHYSIO", providerId: "T-031", servicePoint: "Ruang Fisioterapi 2", starts: SESSION_STARTS, startDate: 1 },
@@ -559,6 +1067,7 @@ export const claims: Claim[] = [
   buildClaim(claimSpecs[2], otherServices.filter((s) => s.claimId === "CLM-08433"), `${APP_TODAY} 07:09`, "NEEDS REVIEW"),
   buildClaim(claimSpecs[3], otherServices.filter((s) => s.claimId === "CLM-08416"), `${APP_TODAY} 07:15`, "CONTRADICTED"),
   buildClaim(claimSpecs[4], otherServices.filter((s) => s.claimId === "CLM-08409"), `2026-09-28 16:40`, "SUPPORTED"),
+  ...cohortClaims,
 ];
 
 export const riskSignals: RiskSignal[] = [
@@ -614,6 +1123,34 @@ export const reviewHistory: ReviewAction[] = [
 ];
 
 export const auditLog: AuditEntry[] = [
+  {
+    id: "AUD-0015",
+    at: `${APP_TODAY} 07:24`,
+    user: "Sistem",
+    action: "SIGNAL_GENERATED",
+    entity: "Signal",
+    entityId: "SIGC-08615-TIMESTAMP_CONFLICT-02",
+    description: "Sinyal konflik timestamp dihasilkan untuk CLM-08615.",
+  },
+  {
+    id: "AUD-0014",
+    at: `${APP_TODAY} 07:22`,
+    user: "Sistem",
+    action: "SIGNAL_GENERATED",
+    entity: "Signal",
+    entityId: "SIGC-08610-PEER_OUTLIER-C",
+    description: "Sinyal outlier peer menghasilkan untuk CLM-08610.",
+  },
+  {
+    id: "AUD-0013",
+    at: `${APP_TODAY} 07:20`,
+    user: "Sistem",
+    action: "SIGNAL_GENERATED",
+    entity: "Signal",
+    entityId: "SIGC-08609-BILLING_BEFORE_PASSPORT-01",
+    description:
+      "Sinyal billing tanpa jejak klinis dihasilkan untuk CLM-08609.",
+  },
   {
     id: "AUD-0012",
     at: `${APP_TODAY} 07:16`,
