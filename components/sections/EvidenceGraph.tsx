@@ -56,9 +56,9 @@ export function EvidenceGraph() {
           id="graph-title"
           title={
             <>
-              From scattered events to{" "}
+              Dari peristiwa yang tersebar menuju{" "}
               <span className="text-sky-600">
-                one connected episode.
+                satu episode yang terhubung.
               </span>
             </>
           }
@@ -75,8 +75,8 @@ export function EvidenceGraph() {
             >
               {(
                 [
-                  { id: "story", label: "Story View", icon: Waypoints },
-                  { id: "graph", label: "Graph View", icon: Network },
+                  { id: "story", label: "Tampilan Cerita", icon: Waypoints },
+                  { id: "graph", label: "Tampilan Graf", icon: Network },
                 ] as const
               ).map((item) => {
                 const isActive = mode === item.id;
@@ -102,7 +102,7 @@ export function EvidenceGraph() {
             </div>
 
             <span className="font-mono text-[10.5px] tracking-wider text-slate-500 uppercase font-medium">
-              ✦ Synthetic Demonstration Graph
+              ✦ Graf Demonstrasi Sintetis
             </span>
           </div>
 
@@ -273,7 +273,7 @@ export function EvidenceGraph() {
 
                     <div className="mt-5 border-t border-slate-100 pt-4">
                       <p className="font-mono text-xs font-bold tracking-wider text-sky-700 uppercase">
-                        Evidence Connections
+                        Koneksi Evidence
                       </p>
                       <ul className="mt-3 flex flex-col gap-2">
                         {relatedEdges.map((edge) => (

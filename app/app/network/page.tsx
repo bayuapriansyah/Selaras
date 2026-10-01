@@ -80,8 +80,8 @@ export default function NetworkPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="SELARAS Network — Integrity Mesh"
-        description="Network Risk Intelligence di atas Local Node: satu pola tervalidasi menyebar ke seluruh jaringan sebagai adaptive verification. Satu temuan. Menjadi perlindungan bersama."
+        title="Jaringan SELARAS — Integrity Mesh"
+        description="Intelijen Risiko Jaringan di atas Node Lokal: satu pola tervalidasi menyebar ke seluruh jaringan sebagai verifikasi adaptif. Satu temuan. Menjadi perlindungan bersama."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
@@ -93,7 +93,7 @@ export default function NetworkPage() {
                 className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 text-xs font-medium text-emerald-800 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-400"
               >
                 <Send aria-hidden="true" className="size-3.5" />
-                Publish Queue ({publishQueue.length})
+                Antrean Publikasi ({publishQueue.length})
               </Link>
             ) : null}
           </div>
@@ -102,44 +102,44 @@ export default function NetworkPage() {
 
       <section aria-label="Metrik jaringan" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <MetricCard
-          label="Connected facilities"
+          label="Faskes terhubung"
           value={stats.connectedFacilities}
           hint="Faskes simulasi A–D (4 faskes)"
           icon={Network}
           tone="default"
         />
         <MetricCard
-          label="Active risk signatures"
+          label="Risk Signature aktif"
           value={stats.activeSignatures}
           hint={`${stats.pendingSignatures} menunggu publikasi`}
           icon={ShieldCheck}
           tone="emerald"
         />
         <MetricCard
-          label="Network matches"
+          label="Match jaringan"
           value={totalMatches}
           hint={`${stats.pendingMatches} match siap saat dipublikasikan`}
           icon={Waypoints}
           tone={totalMatches > 0 ? "amber" : "slate"}
         />
         <MetricCard
-          label="Claims evaluated"
+          label="Klaim dievaluasi"
           value={stats.claimsEvaluated}
           hint="Klaim di 4 faskes jaringan"
           icon={ClipboardList}
           tone="default"
         />
         <MetricCard
-          label="Step-up verifications"
+          label="Verifikasi step-up"
           value={stats.stepUpVerifications}
-          hint={`${stats.verificationPass} pass · ${stats.verificationClarify} klarifikasi · ${stats.verificationHuman} human`}
+          hint={`${stats.verificationPass} lolos · ${stats.verificationClarify} klarifikasi · ${stats.verificationHuman} tinjauan manusia`}
           icon={Activity}
           tone="sky"
         />
         <MetricCard
-          label="Emerging patterns"
+          label="Pola muncul"
           value={emerging}
-          hint={`${pending.length} draft · ${publishQueue.length} siap publish`}
+          hint={`${pending.length} usulan · ${publishQueue.length} siap publikasi`}
           icon={Sparkles}
           tone="amber"
         />
@@ -153,16 +153,16 @@ export default function NetworkPage() {
 
       <ImmunityVisual view={immunity} />
 
-      <section aria-label="Emerging patterns" className="flex flex-col gap-3">
+      <section aria-label="Pola muncul" className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-semibold tracking-tight text-slate-900">
-            Emerging patterns
+            Pola muncul
           </h2>
           <Link
             href="/app/network/publish"
             className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
           >
-            Governance inbox →
+            Kotak masuk tata kelola →
           </Link>
         </div>
         {emerging === 0 ? (
@@ -194,7 +194,7 @@ export default function NetworkPage() {
             {publishQueue.map((s) => (
               <article
                 key={s.id}
-                aria-label={`Antrean publish ${s.id}`}
+                aria-label={`Antrean publikasi ${s.id}`}
                 className="flex flex-col gap-2 rounded-2xl border border-sky-200 bg-sky-50/60 p-4 shadow-sm"
               >
                 <div className="flex items-center justify-between gap-2">
@@ -202,7 +202,7 @@ export default function NetworkPage() {
                     {s.id} · v{s.version}
                   </span>
                   <span className="inline-flex items-center rounded-full border border-sky-200 bg-white px-2.5 py-0.5 font-mono text-[10px] tracking-wider text-sky-700">
-                    SIAP PUBLISH
+                    SIAP PUBLIKASI
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900">{s.name}</p>
@@ -211,7 +211,7 @@ export default function NetworkPage() {
                   href="/app/network/publish"
                   className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline"
                 >
-                  Buka publish queue →
+                  Buka antrean publikasi →
                 </Link>
               </article>
             ))}
@@ -219,10 +219,10 @@ export default function NetworkPage() {
         )}
       </section>
 
-      <section aria-label="Registry risk signature" className="flex flex-col gap-3">
+      <section aria-label="Registri Risk Signature" className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-semibold tracking-tight text-slate-900">
-            Risk signature registry
+            Registri Risk Signature
           </h2>
           <Link
             href="/app/network/signatures"
@@ -235,19 +235,19 @@ export default function NetworkPage() {
       </section>
 
       <section
-        aria-label="Learning loop"
+        aria-label="Siklus belajar"
         className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-          Learning Loop
+          Siklus Belajar
         </p>
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
           {[
             "1 · Sinyal lokal terdeteksi",
             "2 · Usulan Risk Signature",
             "3 · Validasi reviewer",
-            "4 · Publish ke jaringan",
-            "5 · Feedback verifikasi",
+            "4 · Publikasikan ke jaringan",
+            "5 · Umpan balik verifikasi",
             "6 · Pola diperbarui / pensiun",
           ].map((step, i) => (
             <React.Fragment key={step}>
@@ -263,15 +263,15 @@ export default function NetworkPage() {
           ))}
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
-          Feedback PASS/NEEDS CLARIFICATION/HUMAN REVIEW → statistik false
-          positive → signature di-upgrade (v+1) atau RETIRED. Tidak ada klaim
-          otomatis ditolak; selalu ada jalur human-in-the-loop.
+          Umpan balik LOLOS/PERLU KLARIFIKASI/TINJAUAN MANUSIA → statistik
+          false positive → signature ditingkatkan (v+1) atau TIDAK BERLAKU.
+          Tidak ada klaim otomatis ditolak; selalu ada jalur tinjauan manusia.
         </p>
       </section>
 
       <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
         Semua data di halaman ini adalah simulasi jaringan sintetis (4 faskes)
-        — bukan data JKN nyata. Network layer hanya menambah rekomendasi
+        — bukan data JKN nyata. Lapisan jaringan hanya menambah rekomendasi
         (LOCAL STATUS + NETWORK STATUS + RECOMMENDED ACTION); skor, ranking, dan
         perilaku klaim yang sudah ada tidak berubah.
       </p>

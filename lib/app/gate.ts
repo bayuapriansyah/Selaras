@@ -28,7 +28,7 @@ export function paymentGate(
       threshold: GATE_THRESHOLD,
       reason: `Skor risiko ${score.score} mencapai ambang gerbang ${GATE_THRESHOLD} — klaim ditahan sebelum pembayaran.`,
       action:
-        "Minta klarifikasi via Clarification Copilot dan lengkapi evidence; gerbang terbuka otomatis saat skor turun di bawah 65.",
+        "Minta klarifikasi via Kopilot Klarifikasi dan lengkapi evidence; gerbang terbuka otomatis saat skor turun di bawah 65.",
     };
   }
   if (status === "CONTRADICTED") {
@@ -37,7 +37,7 @@ export function paymentGate(
       score: score.score,
       threshold: GATE_THRESHOLD,
       reason:
-        "Status klaim CONTRADICTED — bukti saling bertentangan pada sesi berjalan.",
+        "Status klaim BERTENTANGAN — bukti saling bertentangan pada sesi berjalan.",
       action:
         "Selesaikan konflik timestamp pada sesi terkait sebelum klaim ditandai didukung.",
     };

@@ -11,7 +11,7 @@ import { Reveal } from "@/components/layout/Reveal";
 const PILLARS = [
   {
     icon: Lock,
-    title: "Privacy",
+    title: "Privasi",
     desc: "Identitas pasien disamarkan menjadi synthetic identifier. Tidak ada data peserta JKN riil yang digunakan tanpa izin resmi.",
   },
   {
@@ -88,16 +88,16 @@ export function GovernanceSection() {
       <div className="mx-auto max-w-[88rem] px-5 lg:px-8 relative z-10">
         <div className="max-w-3xl">
           <div className="flex items-center gap-3 mb-5">
-            <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">08 / Governance</span>
+            <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">08 / Tata Kelola</span>
             <div className="h-px w-12 bg-slate-200" />
           </div>
           <SectionHeading
             id="governance-title"
             title={
               <>
-                Governance is{" "}
+                Tata kelola adalah{" "}
                 <span className="text-sky-600">
-                  an integral part of the product.
+                  bagian integral dari produk.
                 </span>
               </>
             }
@@ -130,7 +130,7 @@ export function GovernanceSection() {
                 <div className="flex-1 min-w-0">
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-800">
                     <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    SECURITY & COMPLIANCE
+                    KEAMANAN & KEPATUHAN
                   </div>
                   <h3 className="mt-2 text-lg font-bold text-slate-950">
                     Perlindungan Privasi Pasien Berstandar Enkripsi Faskes
@@ -140,10 +140,10 @@ export function GovernanceSection() {
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <span className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-[10px] text-slate-700 font-medium">
-                      ✓ Non-PII Synthetic ID
+                      ✓ ID Sintetis Non-PII
                     </span>
                     <span className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-[10px] text-slate-700 font-medium">
-                      ✓ Tamper-Proof Audit
+                      ✓ Audit Anti-Manipulasi
                     </span>
                   </div>
                 </div>
@@ -161,7 +161,7 @@ export function GovernanceSection() {
                       aria-hidden="true"
                       className="size-2 animate-pulse rounded-full bg-emerald-600"
                     />
-                    Governance KPI
+                    KPI Tata Kelola
                   </p>
                   <p className="mt-2 text-xl font-bold text-emerald-950">
                     Yang diukur, bukan yang diklaim.

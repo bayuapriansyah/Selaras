@@ -29,30 +29,30 @@ const METRICS = [
 const VERIFICATION_STEPS = [
   {
     icon: UserCheck,
-    title: "Patient Check-in",
+    title: "Check-in Pasien",
     desc: "Biometrik & NIK terverifikasi",
-    status: "VERIFIED",
+    status: "TERVERIFIKASI",
     badgeColor: "text-emerald-700 bg-emerald-50 border-emerald-200",
   },
   {
     icon: Stethoscope,
-    title: "Provider Auth",
+    title: "Autentikasi Provider",
     desc: "Kredensial SIP nakes aktif",
     status: "VALID",
     badgeColor: "text-emerald-700 bg-emerald-50 border-emerald-200",
   },
   {
     icon: Activity,
-    title: "Clinical Action",
+    title: "Tindakan Klinis",
     desc: "Sesi fisioterapi 38m tercatat",
-    status: "RECORDED",
+    status: "TERCATAT",
     badgeColor: "text-sky-700 bg-sky-50 border-sky-200",
   },
   {
     icon: FileCheck2,
     title: "SOAP & Billing Hash",
     desc: "Rekam medis terkunci SHA-256",
-    status: "LOCKED",
+    status: "TERKUNCI",
     badgeColor: "text-amber-700 bg-amber-50 border-amber-200",
   },
 ];
@@ -128,7 +128,7 @@ export function Hero() {
             </span>
             <span className="hidden sm:inline h-3 w-px bg-slate-300" />
             <span className="hidden sm:inline font-mono text-[10px] text-slate-500 uppercase tracking-wider">
-              Service Integrity Layer
+              Lapisan Integritas Pelayanan
             </span>
           </div>
         </Reveal>
@@ -220,7 +220,7 @@ export function Hero() {
             </div>
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 font-mono text-[10px] text-emerald-700 font-semibold">
-                <Check className="size-3" /> Live Engine Synced
+                <Check className="size-3" /> Mesin Live Tersinkron
               </span>
               <span className="font-mono text-[11px] text-slate-500 font-medium hidden md:inline">
                 BPJS VClaim / SATUSEHAT
@@ -235,7 +235,7 @@ export function Hero() {
               <div>
                 <div className="flex items-center justify-between">
                   <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-sky-700">
-                    Live Point-of-Care Pipeline
+                    Pipeline Point-of-Care Langsung
                   </p>
                   <span className="font-mono text-[10px] text-slate-500 font-medium">
                     ID: EV-2026-FASKES
@@ -281,9 +281,9 @@ export function Hero() {
               <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 font-mono text-[10px] text-slate-700">
                 <div className="flex items-center justify-between text-slate-500 mb-1.5">
                   <span className="flex items-center gap-1.5 font-semibold">
-                    <Lock className="size-3 text-sky-700" /> Tamper-evident Seal
+                    <Lock className="size-3 text-sky-700" /> Segel Anti-Tamper
                   </span>
-                  <span className="text-emerald-700 font-bold">PASSED 100%</span>
+                  <span className="text-emerald-700 font-bold">LOLOS 100%</span>
                 </div>
                 <div className="truncate text-slate-800 bg-slate-100 px-2 py-1 rounded border border-slate-200 font-medium">
                   sha256: 9b2d8f1e4c70a31481e3a95c47fb1...

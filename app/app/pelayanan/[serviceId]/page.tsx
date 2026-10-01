@@ -100,7 +100,7 @@ export default function ServiceWorkspacePage() {
     return (
       <div className="flex flex-col gap-6">
         <PageHeader
-          title="Workspace pelayanan"
+          title="Ruang kerja pelayanan"
           description="Sesi layanan tidak ditemukan."
           actions={
             <Button asChild size="sm" variant="outline" className="rounded-full">
@@ -155,7 +155,7 @@ export default function ServiceWorkspacePage() {
       action: "QR_VERIFIED",
       entity: "Service",
       entityId: serviceId,
-      description: `Sesi ${serviceId} dibuka via scan ${via} · channel ${via} · terikat ${ROLE_LABEL[role] ?? role}.`,
+      description: `Sesi ${serviceId} dibuka via scan ${via} · kanal ${via} · terikat ${ROLE_LABEL[role] ?? role}.`,
     });
   }
 
@@ -176,7 +176,7 @@ export default function ServiceWorkspacePage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={`Workspace ${template.name}`}
+        title={`Ruang kerja ${template.name}`}
         description={`${serviceId} · ${patientName} · ${service.servicePoint}`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -283,7 +283,7 @@ export default function ServiceWorkspacePage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">
-              Capture evidence
+              Catat evidence
             </h2>
             <p className="text-xs text-slate-500">
               {template.required.length - missing.length}/
@@ -464,7 +464,7 @@ export default function ServiceWorkspacePage() {
         <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-slate-500">
             Setelah seluruh langkah lengkap, Service Passport berstatus
-            COMPLETE dan evidence siap mengunci klaim.
+            LENGKAP dan evidence siap mengunci klaim.
           </p>
           {done ? (
             <Button asChild size="sm" className="shrink-0 rounded-full">

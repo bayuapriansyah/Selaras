@@ -41,8 +41,8 @@ export default function NetworkPublishPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Publish Queue & Governance"
-        description="Alur tata kelola Risk Signature: DRAFT → APPROVED → VALIDATED → PUBLISH → ACTIVE. Reviewer memutuskan pola; Admin yang memublikasikan ke jaringan."
+        title="Antrean Publikasi & Tata Kelola"
+        description="Alur tata kelola Risk Signature: USULAN → DISETUJUI → DIVALIDASI → PUBLIKASI → AKTIF. Reviewer memutuskan pola; Admin yang memublikasikan ke jaringan."
         actions={
           <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
             {NETWORK_SIMULATION_LABEL}
@@ -52,10 +52,10 @@ export default function NetworkPublishPage() {
 
       <section aria-label="Alur tata kelola" className="flex flex-wrap gap-2">
         {[
-          "DRAFT (usulan)",
-          "APPROVED (reviewer)",
-          "VALIDATED (antre publish)",
-          "ACTIVE (jaringan)",
+          "USULAN (belum ditinjau)",
+          "DISETUJUI (reviewer)",
+          "DIVALIDASI (antre publikasi)",
+          "AKTIF (jaringan)",
         ].map((step, i) => (
           <React.Fragment key={step}>
             <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 font-mono text-[11px] tracking-wider text-slate-700 shadow-sm">
@@ -100,22 +100,22 @@ export default function NetworkPublishPage() {
         )}
         {!canDecide ? (
           <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-            Role {role} tidak memiliki izin &quot;Review &amp; aksi klaim&quot;
+            Peran {role} tidak memiliki izin &quot;Review &amp; aksi klaim&quot;
             untuk memutuskan proposal. Beralih ke Reviewer/Admin di Pengaturan.
           </p>
         ) : null}
       </section>
 
-      <section aria-label="Antrean publish" className="flex flex-col gap-3">
+      <section aria-label="Antrean publikasi" className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold tracking-tight text-slate-900">
-          2 · Siap publish ke jaringan{" "}
+          2 · Siap publikasi ke jaringan{" "}
           <span className="font-mono text-xs font-normal text-slate-400">
             ({queue.length})
           </span>
         </h2>
         {queue.length === 0 ? (
           <p className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-500 shadow-sm">
-            Tidak ada signature VALIDATED yang menunggu publikasi.
+            Tidak ada signature DIVALIDASI yang menunggu publikasi.
           </p>
         ) : (
           <div className="flex flex-col gap-3">
@@ -128,7 +128,7 @@ export default function NetworkPublishPage() {
               return (
                 <article
                   key={sig.id}
-                  aria-label={`Antrean publish ${sig.id}`}
+                  aria-label={`Antrean publikasi ${sig.id}`}
                   className={cn(
                     "flex flex-col gap-3 rounded-2xl border p-4 shadow-sm transition-colors sm:flex-row sm:items-center sm:justify-between",
                     isPublished
@@ -143,7 +143,7 @@ export default function NetworkPublishPage() {
                       </span>
                       <SeverityBadge severity={sig.severity} />
                       <span className="inline-flex items-center rounded-full border border-sky-200 bg-white px-2.5 py-0.5 font-mono text-[10px] tracking-wider text-sky-700">
-                        VALIDATED
+                        DIVALIDASI
                       </span>
                     </div>
                     <p className="mt-1 text-sm font-semibold text-slate-900">
@@ -169,7 +169,7 @@ export default function NetworkPublishPage() {
                   ) : (
                     <button
                       type="button"
-                      aria-label={`Publish ${sig.id}`}
+                      aria-label={`Publikasikan ${sig.id}`}
                       disabled={!canPublish}
                       onClick={() => {
                         publishSignature(sig.id);
@@ -183,7 +183,7 @@ export default function NetworkPublishPage() {
                       )}
                     >
                       <Send aria-hidden="true" className="size-3.5" />
-                      Publish
+                      Publikasikan
                     </button>
                   )}
                 </article>
@@ -193,7 +193,7 @@ export default function NetworkPublishPage() {
         )}
         {!canPublish ? (
           <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-            Hanya Admin yang dapat memublikasikan signature (permission
+            Hanya Admin yang dapat memublikasikan signature (izin
             &quot;Publikasikan Risk Signature&quot;).
           </p>
         ) : null}
@@ -237,7 +237,7 @@ export default function NetworkPublishPage() {
                   }
                   className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline"
                 >
-                  {p.originClaimId ? `Klaim asal ${p.originClaimId} →` : "Dashboard →"}
+                  {p.originClaimId ? `Klaim asal ${p.originClaimId} →` : "Dasbor →"}
                 </Link>
               </article>
             ))}
@@ -246,9 +246,9 @@ export default function NetworkPublishPage() {
       </section>
 
       <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
-        Setiap keputusan (approve/reject/revision) dan setiap publikasi tercatat
-        di Log Audit dengan entity &quot;Network&quot;. Setelah RS-017
-        dipublikasikan, dashboard network, match list, dan halaman klaim
+        Setiap keputusan (setujui/tolak/revisi) dan setiap publikasi tercatat
+        di Log Audit dengan entitas &quot;Network&quot;. Setelah RS-017
+        dipublikasikan, dasbor jaringan, daftar match, dan halaman klaim
         terkait langsung menampilkan perubahannya.
       </p>
     </div>
@@ -302,7 +302,7 @@ function ProposalCard({
           ))}
         </div>
         <p className="mt-2 text-xs text-slate-500">
-          Control: {proposal.recommendedControl}
+          Kontrol: {proposal.recommendedControl}
           {proposal.originClaimId
             ? ` · asal ${proposal.originClaimId}${
                 proposal.originFacilityId
@@ -336,7 +336,7 @@ function ProposalCard({
             onClick={() => onDecide("APPROVED")}
             className="inline-flex h-9 items-center rounded-full border border-emerald-300 bg-emerald-50 px-4 text-xs font-medium text-emerald-800 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-400 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-white disabled:text-slate-400"
           >
-            Approve
+            Setujui
           </button>
           <button
             type="button"
@@ -352,7 +352,7 @@ function ProposalCard({
             onClick={() => onDecide("REJECTED")}
             className="inline-flex h-9 items-center rounded-full border border-red-300 bg-red-50 px-4 text-xs font-medium text-red-800 hover:bg-red-100 focus-visible:outline-2 focus-visible:outline-red-400 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-white disabled:text-slate-400"
           >
-            Reject
+            Tolak
           </button>
         </div>
       </div>

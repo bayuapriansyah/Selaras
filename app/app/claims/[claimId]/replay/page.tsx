@@ -96,8 +96,8 @@ export default function ClaimReplayPage() {
         <Button asChild variant="outline" size="sm" className="rounded-full">
           <Link href="/app/claims">
             <ArrowLeft aria-hidden="true" className="size-3.5" />
-            Review queue
-          </Link>
+                Antrean tinjauan
+              </Link>
         </Button>
       </div>
     );
@@ -119,8 +119,8 @@ export default function ClaimReplayPage() {
   const firstBilling = steps.findIndex((s) => s.kind === "billing");
   const firstClaim = steps.findIndex((s) => s.kind === "claim");
   const railStages: { key: string; label: string; at: number }[] = [
-    { key: "patient", label: "Patient", at: 0 },
-    { key: "service", label: "Service", at: 1 },
+    { key: "patient", label: "Pasien", at: 0 },
+    { key: "service", label: "Layanan", at: 1 },
     { key: "evidence", label: "Evidence", at: 1 },
     {
       key: "passport",
@@ -134,7 +134,7 @@ export default function ClaimReplayPage() {
     },
     {
       key: "claim",
-      label: "Claim",
+      label: "Klaim",
       at: firstClaim >= 0 ? firstClaim + 1 : steps.length,
     },
   ];
@@ -155,7 +155,7 @@ export default function ClaimReplayPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Replay Episode
+            Episode Replay
           </h1>
           <p className="mt-1 text-sm text-slate-500">
             {template.name} · {patient?.display ?? view.claim.patientId} ·{" "}
@@ -250,7 +250,7 @@ export default function ClaimReplayPage() {
             >
               {revealedGaps}
             </p>
-            <p className="text-[11px] tracking-wider text-slate-500 uppercase">gap</p>
+            <p className="text-[11px] tracking-wider text-slate-500 uppercase">celah</p>
           </div>
           <div>
             <p className="text-lg font-semibold text-slate-900 tabular-nums">
@@ -263,7 +263,7 @@ export default function ClaimReplayPage() {
         </div>
 
         <div
-          aria-label="Rantai bukti Patient ke Claim"
+          aria-label="Rantai bukti Pasien ke Klaim"
           className="mt-4 border-t border-slate-100 pt-4"
         >
           <p className="mb-3 text-[11px] tracking-wider text-slate-500 uppercase">
@@ -321,7 +321,7 @@ export default function ClaimReplayPage() {
       </section>
 
       <section
-        aria-label="Timeline replay"
+          aria-label="Timeline bukti"
         className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <h2 className="text-sm font-semibold text-slate-900">Timeline bukti</h2>
@@ -380,7 +380,7 @@ export default function ClaimReplayPage() {
                         <span className="font-mono">{step.citation}</span> · {step.source}
                       </>
                     ) : (
-                      "Belum tercatat — masuk antrean review"
+                      "Belum tercatat — masuk antrean tinjauan"
                     )}
                   </span>
                 </div>
@@ -402,7 +402,9 @@ export default function ClaimReplayPage() {
         {done ? (
           <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
             Replay selesai — {revealed.length} bukti terekam
-            {revealedGaps > 0 ? `, ${revealedGaps} gap menunggu tindak lanjut.` : ", tanpa gap."}
+            {revealedGaps > 0
+            ? `, ${revealedGaps} celah menunggu tindak lanjut.`
+            : ", tanpa celah."}
           </p>
         ) : null}
       </section>

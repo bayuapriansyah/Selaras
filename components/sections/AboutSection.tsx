@@ -28,16 +28,16 @@ export function AboutSection() {
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-7">
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">09 / About</span>
+              <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">09 / Tentang</span>
               <div className="h-px w-12 bg-slate-200" />
             </div>
             <SectionHeading
               id="about-title"
               title={
                 <>
-                  A service-to-claim{" "}
+                  Lapisan evidence intelligence{" "}
                   <span className="text-sky-600">
-                    evidence intelligence layer.
+                    dari pelayanan ke klaim.
                   </span>
                 </>
               }

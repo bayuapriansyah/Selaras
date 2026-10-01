@@ -42,6 +42,17 @@ function listText(items: string[]): string {
   return `${items.slice(0, -1).join(", ")} dan ${items[items.length - 1]}`;
 }
 
+const STATUS_DISPLAY: Record<string, string> = {
+  SUPPORTED: "Didukung",
+  "NEEDS REVIEW": "Perlu tinjauan",
+  INCOMPLETE: "Belum lengkap",
+  CONTRADICTED: "Bertentangan",
+  "NEEDS CLARIFICATION": "Perlu klarifikasi",
+  DRAFT: "Draf",
+  ACTIVE: "Aktif",
+  COMPLETE: "Lengkap",
+};
+
 export function buildExplanation(
   claimId: string,
   src: DataSource = seedSource,
@@ -122,7 +133,7 @@ export function buildExplanation(
   const sections: ExplainSection[] = [
     {
       key: "WHAT_WE_KNOW",
-      eyebrow: "WHAT WE KNOW",
+      eyebrow: "Yang kita tahu",
       title: "Apa yang kami tahu",
       items: [
         paragraphs[0],
@@ -134,7 +145,7 @@ export function buildExplanation(
     },
     {
       key: "IS_MISSING",
-      eyebrow: "IS MISSING",
+      eyebrow: "Yang hilang",
       title: "Apa yang hilang",
       items: gaps.map(
         (g) =>
@@ -144,7 +155,7 @@ export function buildExplanation(
     },
     {
       key: "IS_SUPPORTED",
-      eyebrow: "IS SUPPORTED",
+      eyebrow: "Yang didukung",
       title: "Apa yang didukung",
       items: [
         `${evaluation.supported} dari ${evaluation.claimed} sesi sudah didukung evidence lengkap.`,
@@ -154,7 +165,7 @@ export function buildExplanation(
     },
     {
       key: "WHY_REVIEW",
-      eyebrow: "WHY REVIEW",
+      eyebrow: "Mengapa ditinjau",
       title: "Mengapa perlu ditinjau",
       items:
         signals.length > 0
@@ -171,7 +182,7 @@ export function buildExplanation(
     },
     {
       key: "WHAT_TO_CHECK",
-      eyebrow: "WHAT TO CHECK",
+      eyebrow: "Yang perlu diperiksa",
       title: "Yang perlu diperiksa",
       items: [
         ...gaps.map(
@@ -189,7 +200,7 @@ export function buildExplanation(
     headline,
     paragraphs,
     bullets: [
-      { label: "Status evaluasi", value: evaluation.status },
+      { label: "Status evaluasi", value: STATUS_DISPLAY[evaluation.status] ?? evaluation.status },
       { label: "Sesi didukung", value: `${evaluation.supported}/${evaluation.claimed}` },
       { label: "Antrean tinjauan", value: `Rp ${impact.reviewAmount.toLocaleString("id-ID")}` },
       { label: "Sinyal risiko", value: String(signals.length) },

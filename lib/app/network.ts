@@ -410,5 +410,5 @@ export function facilityNodeLabel(facilityId: string): string {
   const idx = MESH_FACILITY_IDS.indexOf(facilityId);
   const node = NODES[idx] ?? "-";
   const f = facilities.find((x) => x.id === facilityId);
-  return f ? `${f.name} (Facility ${node})` : `Facility ${node}`;
+  return f ? `${f.name} (Faskes ${node})` : `Faskes ${node}`;
 }

@@ -29,11 +29,11 @@ export const PERMISSIONS: Permission[] = [
 ];
 
 export const PERMISSION_LABEL: Record<Permission, string> = {
-  startService: "Start service",
+  startService: "Mulai pelayanan",
   captureOperational: "Catat evidence operasional",
   captureClinical: "Catat evidence klinis",
   captureSystem: "Catat billing / klaim",
-  reviewClaim: "Review & aksi klaim",
+  reviewClaim: "Tinjau & aksi klaim",
   proposeSignature: "Usulkan Risk Signature",
   publishSignature: "Publikasikan Risk Signature",
   resetDemo: "Reset demo",
@@ -76,11 +76,11 @@ export function captureKindPermission(kind: EvidenceKind): Permission {
 
 export const ROLE_REVIEW_HELPER: Record<Role, string> = {
   operator:
-    "Operator dapat mencatat evidence pelayanan, tetapi tidak memiliki kewenangan untuk mengambil keputusan review klaim.",
+    "Operator dapat mencatat evidence pelayanan, tetapi tidak memiliki kewenangan untuk mengambil keputusan tinjauan klaim.",
   provider:
-    "Provider dapat melengkapi evidence klinis dan merespons klarifikasi, tetapi tidak memiliki kewenangan untuk mengambil keputusan review klaim.",
+    "Provider dapat melengkapi evidence klinis dan merespons klarifikasi, tetapi tidak memiliki kewenangan untuk mengambil keputusan tinjauan klaim.",
   reviewer:
-    "Reviewer berwenang meninjau evidence dan mengambil tindakan review claim.",
+    "Reviewer berwenang meninjau evidence dan mengambil tindakan tinjauan klaim.",
   admin: "Admin memiliki akses administratif dan konfigurasi sistem.",
 };
 

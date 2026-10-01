@@ -68,7 +68,7 @@ export function EpisodeTimeline({
               </span>
               {gap ? (
                 <TriangleAlert
-                  aria-label="Evidence gap"
+                  aria-label="Celah evidence"
                   className="size-4 shrink-0 text-amber-600"
                 />
               ) : (

@@ -83,7 +83,7 @@ function Cell({ state, title }: { state: ReturnType<typeof cellState>; title?: s
     return (
       <span
         className="flex size-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"
-        title={title ?? "Present"}
+        title={title ?? "Ada"}
       >
         <Check aria-hidden="true" className="size-3.5" />
       </span>
@@ -113,6 +113,17 @@ const SIGNAL_TONE: Record<string, string> = {
   critical: "border-red-200 bg-red-50 text-red-700",
   warning: "border-amber-200 bg-amber-50 text-amber-700",
   info: "border-sky-200 bg-sky-50 text-sky-700",
+};
+
+const STATUS_TEXT: Record<string, string> = {
+  SUPPORTED: "DIDUKUNG",
+  "NEEDS REVIEW": "PERLU TINJAUAN",
+  INCOMPLETE: "BELUM LENGKAP",
+  CONTRADICTED: "BERTENTANGAN",
+  "NEEDS CLARIFICATION": "PERLU KLARIFIKASI",
+  DRAFT: "DRAF",
+  ACTIVE: "AKTIF",
+  COMPLETE: "LENGKAP",
 };
 
 export default function ClaimDetailPage() {
@@ -187,7 +198,7 @@ export default function ClaimDetailPage() {
         <Button asChild variant="outline" size="sm" className="rounded-full">
           <Link href="/app/claims">
             <ArrowLeft aria-hidden="true" className="size-3.5" />
-            Kembali ke review queue
+            Kembali ke antrean tinjauan
           </Link>
         </Button>
       </div>
@@ -196,13 +207,14 @@ export default function ClaimDetailPage() {
 
   const { claim, template, patient, evaluation, sessions, signals, reviews, score } = view;
   const status = statusOf(claimId, view.baseStatus);
+  const statusText = STATUS_TEXT[status] ?? status;
   const facility = getFacility(claim.facilityId);
   const stats: { label: string; value: number; tone: string }[] = [
     { label: "Total sesi", value: evaluation.claimed, tone: "text-slate-900" },
     { label: "Didukung", value: evaluation.supported, tone: "text-emerald-700" },
     { label: "Perlu tinjauan", value: evaluation.needsReview, tone: "text-amber-700" },
-    { label: "Incomplete", value: evaluation.incomplete, tone: "text-slate-600" },
-    { label: "Contradicted", value: evaluation.contradicted, tone: "text-red-700" },
+    { label: "Belum lengkap", value: evaluation.incomplete, tone: "text-slate-600" },
+    { label: "Bertentangan", value: evaluation.contradicted, tone: "text-red-700" },
   ];
 
   const problems = problemSessions(view);
@@ -246,7 +258,7 @@ export default function ClaimDetailPage() {
           className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 transition-colors hover:text-sky-700 focus-visible:outline-2 focus-visible:outline-sky-400"
         >
           <ArrowLeft aria-hidden="true" className="size-3.5" />
-          Review queue
+          Antrean tinjauan
         </Link>
       </div>
 
@@ -465,7 +477,7 @@ export default function ClaimDetailPage() {
             {explain.gaps.length > 0 ? (
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="text-[11px] font-medium tracking-wider text-slate-500 uppercase">
-                  Gap:
+                  Celah:
                 </span>
                 {explain.gaps.map((g) => (
                   <span
@@ -675,7 +687,7 @@ export default function ClaimDetailPage() {
               className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs text-emerald-800"
             >
               Aksi “{submitted}” tercatat — status klaim kini{" "}
-              <span className="font-semibold">{statusOf(claimId, view.baseStatus)}</span>,
+              <span className="font-semibold">{statusText}</span>,
               riwayat & notifikasi diperbarui.
               <Link
                 href="/app/audit-log"
@@ -689,12 +701,12 @@ export default function ClaimDetailPage() {
       </div>
 
       <section
-        aria-label="Evidence matrix"
+        aria-label="Matriks Bukti"
         className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">Evidence matrix</h2>
+            <h2 className="text-sm font-semibold text-slate-900">Matriks Bukti</h2>
             <p className="text-xs text-slate-500">
               Kehadiran evidence wajib per sesi — klik ikon passpor untuk buka detail.
             </p>
@@ -704,13 +716,13 @@ export default function ClaimDetailPage() {
               <span className="flex size-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
                 <Check className="size-2.5" />
               </span>
-              present
+              ada
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="flex size-4 items-center justify-center rounded-full bg-amber-100 text-amber-700">
                 <CircleHelp className="size-2.5" />
               </span>
-              missing
+              hilang
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="flex size-4 items-center justify-center rounded-full bg-red-100 text-red-700">
@@ -867,16 +879,16 @@ export default function ClaimDetailPage() {
       </div>
 
       <section
-        aria-label="Clarification Copilot"
+        aria-label="Kopilot Klarifikasi"
         className="rounded-2xl border border-sky-200 bg-gradient-to-b from-sky-50/60 to-white p-5 shadow-sm"
       >
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">
-              Clarification Copilot
+              Kopilot Klarifikasi
             </h2>
             <p className="text-xs text-slate-500">
-              Draft surat klarifikasi dibangun dari aturan evidence — reviewer
+              Draf surat klarifikasi dibangun dari aturan evidence — reviewer
               tinggal sesuaikan, salin, dan kirim.
             </p>
           </div>
@@ -910,7 +922,7 @@ export default function ClaimDetailPage() {
           ) : null}
         </div>
         <pre
-          aria-label="Draft surat klarifikasi"
+          aria-label="Draf surat klarifikasi"
           className="mt-4 max-h-80 overflow-auto whitespace-pre-wrap rounded-xl border border-slate-200 bg-white/90 p-4 font-mono text-xs leading-relaxed text-slate-700"
         >
           {letter || "Tidak ada sesi yang membutuhkan klarifikasi."}
@@ -925,7 +937,7 @@ export default function ClaimDetailPage() {
             disabled={!letter}
           >
             <Copy aria-hidden="true" className="size-3.5" />
-            {copied ? "Draft tersalin" : "Salin draft"}
+            {copied ? "Draf tersalin" : "Salin draf"}
           </Button>
           <Button
             type="button"

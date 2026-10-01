@@ -27,13 +27,13 @@ export default function PassportListPage() {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex h-8 items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 font-mono text-[11px] tracking-wider text-emerald-700">
-              {complete} COMPLETE
+              {complete} LENGKAP
             </span>
             <span className="inline-flex h-8 items-center rounded-full border border-sky-200 bg-sky-50 px-3 font-mono text-[11px] tracking-wider text-sky-700">
-              {active} ACTIVE
+              {active} AKTIF
             </span>
             <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-slate-50 px-3 font-mono text-[11px] tracking-wider text-slate-500">
-              {draft} DRAFT
+              {draft} DRAF
             </span>
           </div>
         }

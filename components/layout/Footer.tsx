@@ -32,7 +32,7 @@ export function Footer() {
               Healthkathon BPJS Kesehatan 2026
             </span>
             <span aria-hidden="true" className="h-3 w-px bg-slate-300" />
-            <span>Service Integrity Layer Prototype</span>
+            <span>Prototipe Lapisan Integritas Pelayanan</span>
           </div>
           <p className="max-w-xl text-xs leading-relaxed text-slate-500">
             Data demonstrasi pada prototype ini bersifat sintetis (synthetic illustration) untuk keperluan simulasi arsitektur sistem integritas klaim.

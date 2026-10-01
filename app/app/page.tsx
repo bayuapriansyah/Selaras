@@ -147,7 +147,7 @@ export default function DashboardPage() {
                     ? ` · ${golden.evaluation.needsReview} perlu tinjauan`
                     : ""}
                   {golden.evaluation.incomplete > 0
-                    ? ` · ${golden.evaluation.incomplete} incomplete`
+                    ? ` · ${golden.evaluation.incomplete} belum lengkap`
                     : ""}
                 </p>
               </div>

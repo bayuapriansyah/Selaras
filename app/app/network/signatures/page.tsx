@@ -23,11 +23,11 @@ const FILTERS: ("ALL" | SignatureStatus)[] = [
 
 const FILTER_LABEL: Record<string, string> = {
   ALL: "Semua",
-  ACTIVE: "Active",
-  VALIDATED: "Validated",
-  MONITORED: "Monitored",
-  UPDATED: "Updated",
-  RETIRED: "Retired",
+  ACTIVE: "Aktif",
+  VALIDATED: "Divalidasi",
+  MONITORED: "Dipantau",
+  UPDATED: "Diperbarui",
+  RETIRED: "Tidak berlaku",
 };
 
 export default function SignaturesPage() {
@@ -68,8 +68,8 @@ export default function SignaturesPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Risk Signature Registry"
-        description="Pola risiko tervalidasi yang berlaku di jaringan simulasi. Setiap signature punya lifecycle sendiri: VALIDATED → ACTIVE → MONITORED/UPDATED → RETIRED."
+        title="Registri Risk Signature"
+        description="Pola risiko tervalidasi yang berlaku di jaringan simulasi. Setiap signature punya siklus hidup sendiri: DIVALIDASI → AKTIF → DIPANTAU/DIPERBARUI → TIDAK BERLAKU."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
@@ -81,7 +81,7 @@ export default function SignaturesPage() {
                 className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 text-xs font-medium text-emerald-800 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-400"
               >
                 <Send aria-hidden="true" className="size-3.5" />
-                Publish Queue ({publishQueue.length})
+                Antrean Publikasi ({publishQueue.length})
               </Link>
             ) : null}
           </div>
@@ -131,7 +131,7 @@ export default function SignaturesPage() {
       <section aria-label="Status ringkas" className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
           <p className="text-[11px] font-semibold tracking-wider text-emerald-800 uppercase">
-            Active
+            Aktif
           </p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-900">
             {stats.activeSignatures}
@@ -142,7 +142,7 @@ export default function SignaturesPage() {
         </div>
         <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4">
           <p className="text-[11px] font-semibold tracking-wider text-sky-800 uppercase">
-            Menunggu publish
+            Menunggu publikasi
           </p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-sky-900">
             {stats.pendingSignatures}

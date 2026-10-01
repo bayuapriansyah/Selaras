@@ -11,13 +11,13 @@ import { queue as queueRows } from "@/lib/app/services/claimService";
 import { formatDateTime } from "@/lib/app/format";
 import type { ClaimStatus } from "@/data/app/types";
 
-const FILTERS: { key: string; label: ClaimStatus | "ALL" }[] = [
-  { key: "all", label: "ALL" },
-  { key: "sup", label: "SUPPORTED" },
-  { key: "rev", label: "NEEDS REVIEW" },
-  { key: "inc", label: "INCOMPLETE" },
-  { key: "con", label: "CONTRADICTED" },
-  { key: "cla", label: "NEEDS CLARIFICATION" },
+const FILTERS: { key: string; label: ClaimStatus | "ALL"; text: string }[] = [
+  { key: "all", label: "ALL", text: "SEMUA" },
+  { key: "sup", label: "SUPPORTED", text: "DIDUKUNG" },
+  { key: "rev", label: "NEEDS REVIEW", text: "PERLU TINJAUAN" },
+  { key: "inc", label: "INCOMPLETE", text: "BELUM LENGKAP" },
+  { key: "con", label: "CONTRADICTED", text: "BERTENTANGAN" },
+  { key: "cla", label: "NEEDS CLARIFICATION", text: "PERLU KLARIFIKASI" },
 ];
 
 export default function ClaimsQueuePage() {
@@ -41,7 +41,7 @@ export default function ClaimsQueuePage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Klaim"
-        description="Review queue: klaim berisiko tertinggi diurutkan paling atas, lengkap dengan komposisi evidence per sesi."
+        description="Antrean tinjauan: klaim berisiko tertinggi diurutkan paling atas, lengkap dengan komposisi evidence per sesi."
         actions={
           <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
             {rows.length} klaim
@@ -71,7 +71,7 @@ export default function ClaimsQueuePage() {
                   : "border-slate-200 bg-white text-slate-600 hover:border-slate-300",
               )}
             >
-              {f.label}
+              {f.text}
               <span
                 className={cn(
                   "rounded-full px-1.5 py-0.5 text-[10px]",
@@ -113,7 +113,7 @@ export default function ClaimsQueuePage() {
                       }
                       title={`Skor risiko ${row.score.score} · ambang gerbang ${row.score.threshold}`}
                     >
-                      RISK {row.score.score}
+                      RISIKO {row.score.score}
                     </span>
                   </span>
                   <span className="mt-1 block text-sm text-slate-700">

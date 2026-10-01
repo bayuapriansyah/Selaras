@@ -33,20 +33,33 @@ const RESULT_OPTIONS: {
 }[] = [
   {
     value: "PASS",
-    label: "PASS · episode unik & lengkap",
+    label: "LOLOS · episode unik & lengkap",
     tone: "border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100",
   },
   {
     value: "NEEDS_CLARIFICATION",
-    label: "NEEDS CLARIFICATION · minta bukti",
+    label: "PERLU KLARIFIKASI · minta bukti",
     tone: "border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100",
   },
   {
     value: "HUMAN_REVIEW",
-    label: "HUMAN REVIEW · eskalasi reviewer",
+    label: "TINJAUAN MANUSIA · eskalasi reviewer",
     tone: "border-red-300 bg-red-50 text-red-800 hover:bg-red-100",
   },
 ];
+
+const RESULT_TEXT: Record<string, string> = {
+  PASS: "lolos",
+  NEEDS_CLARIFICATION: "perlu klarifikasi",
+  HUMAN_REVIEW: "tinjauan manusia",
+};
+
+const OUTCOME_TEXT: Record<string, string> = {
+  CONFIRMED: "pola dikonfirmasi",
+  CLEARED: "klaim bersih",
+  FALSE_POSITIVE: "false positive",
+  NEEDS_MORE_DATA: "perlu data lebih",
+};
 
 export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
   const {
@@ -108,14 +121,14 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
 
   return (
     <section
-      aria-label="Ringkasan jaringan network"
+      aria-label="Ringkasan jaringan"
       className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Network aria-hidden="true" className="size-4 text-slate-400" />
           <h2 className="text-sm font-semibold text-slate-900">
-            Network status — adaptive verification
+            Status jaringan — verifikasi adaptif
           </h2>
         </div>
         <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-[10px] tracking-wider text-slate-600">
@@ -126,7 +139,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-            Local status
+            Status lokal
           </p>
           <p className="mt-1 text-sm font-semibold text-slate-900">
             {localStatus}
@@ -144,7 +157,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
           )}
         >
           <p className="text-[11px] font-medium tracking-[0.12em] text-amber-700 uppercase">
-            Network status
+            Status jaringan
           </p>
           <p className="mt-1 text-sm font-semibold text-slate-900">
             {ADAPTIVE_LEVEL_LABEL[net.level]}
@@ -161,7 +174,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
         </div>
         <div className="rounded-xl border border-sky-200 bg-sky-50 p-3">
           <p className="text-[11px] font-medium tracking-[0.12em] text-sky-700 uppercase">
-            Recommended action
+            Rekomendasi aksi
           </p>
           <p className="mt-1 text-sm font-semibold text-sky-900">
             {ADAPTIVE_ACTION[net.level]}
@@ -173,7 +186,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
       {net.matches.length > 0 ? (
         <div className="flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50/60 p-3">
           <p className="text-[11px] font-semibold tracking-wider text-amber-800 uppercase">
-            Checklist match
+            Rincian match
           </p>
           {net.matches.map((m) => {
             const sig = networkSvc.signatureById(
@@ -269,7 +282,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
             className="w-full rounded-full border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 sm:w-auto"
           >
             <ShieldCheck aria-hidden="true" className="size-4" />
-            START VERIFICATION — {activeMatch.signatureId}
+            MULAI VERIFIKASI — {activeMatch.signatureId}
           </Button>
         )
       ) : null}
@@ -278,7 +291,8 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
           <div>
             <p className="text-xs font-semibold text-emerald-900">
-              Verifikasi {latest.result} — {latest.outcome}
+              Verifikasi {RESULT_TEXT[latest.result] ?? latest.result} —{" "}
+              {OUTCOME_TEXT[latest.outcome] ?? latest.outcome}
             </p>
             <p className="mt-0.5 font-mono text-[10px] tracking-wider text-emerald-700">
               {latest.signatureId} · {latest.by} · {formatDateTime(latest.at)}
@@ -306,7 +320,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
             href="/app/network/publish"
             className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline"
           >
-            Ke publish queue →
+            Ke antrean publikasi →
           </Link>
         </div>
       ) : null}
@@ -316,13 +330,13 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
             <p className="text-xs text-emerald-900">
               Proposal <span className="font-mono">{proposeDone}</span> tercatat
-              sebagai DRAFT.
+              sebagai USULAN.
             </p>
             <Link
               href="/app/network/publish"
               className="text-xs font-medium text-emerald-800 underline-offset-2 hover:underline"
             >
-              Buka governance inbox →
+              Buka kotak masuk tata kelola →
             </Link>
           </div>
         ) : null}
@@ -368,7 +382,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
                     ),
                     recommendedControl:
                       form.control.trim() ||
-                      "Step-up verification manual oleh reviewer",
+                      "Verifikasi step-up manual oleh reviewer",
                     severity: form.severity,
                     serviceScope: `${claim.template.name} · ${
                       facilityNodeLabel(claim.claim.facilityId)
@@ -410,7 +424,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
                 </label>
                 <div className="flex flex-wrap gap-2">
                   <label className="flex flex-col gap-1 text-[11px] font-medium text-slate-600">
-                    Severity
+                    Tingkat risiko
                     <select
                       value={form.severity}
                       onChange={(e) =>
@@ -421,20 +435,20 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
                       }
                       className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-900 focus-visible:outline-2 focus-visible:outline-sky-400"
                     >
-                      <option value="LOW">Low</option>
-                      <option value="MEDIUM">Medium</option>
-                      <option value="HIGH">High</option>
+                      <option value="LOW">Rendah</option>
+                      <option value="MEDIUM">Sedang</option>
+                      <option value="HIGH">Tinggi</option>
                     </select>
                   </label>
                   <label className="min-w-0 flex-1 flex-col gap-1 text-[11px] font-medium text-slate-600">
-                    Recommended control
+                    Rekomendasi kontrol
                     <input
                       type="text"
                       value={form.control}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, control: e.target.value }))
                       }
-                      placeholder="Opsional — default step-up verification"
+                      placeholder="Opsional — verifikasi step-up bawaan"
                       className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-900 focus-visible:outline-2 focus-visible:outline-sky-400"
                     />
                   </label>
@@ -460,7 +474,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
         ) : null}
 
         <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
-          Lapisan network hanya menambah rekomendasi. Skor, status klaim, dan
+          Lapisan jaringan hanya menambah rekomendasi. Skor, status klaim, dan
           antrean prioritas reviewer tetap sama seperti sebelumnya.
         </p>
       </div>

@@ -42,7 +42,7 @@ export default function ClaimAiPage() {
             <Button asChild size="sm" variant="outline" className="rounded-full">
               <Link href="/app/claims">
                 <ArrowLeft aria-hidden="true" className="size-3.5" />
-                Review queue
+                Antrean tinjauan
               </Link>
             </Button>
           }
@@ -165,14 +165,14 @@ export default function ClaimAiPage() {
         ))}
 
         <section
-          aria-label="Disclaimer"
+          aria-label="Penafian"
           className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2"
         >
           <p className="text-xs leading-relaxed text-slate-500">
             {result.disclaimer}
           </p>
           <p className="mt-1 font-mono text-[10px] tracking-wider text-slate-400">
-            {hydrated ? `generatedAt ${result.generatedAt}` : "generatedAt —"}
+            {hydrated ? `Dibuat ${result.generatedAt}` : "Dibuat —"}
           </p>
         </section>
       </div>

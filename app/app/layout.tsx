@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: "%s · SELARAS",
   },
   description:
-    "Sistem internal SELARAS: point of care, service passport, dan review klaim berbasis evidence.",
+    "Sistem internal SELARAS: titik layanan, service passport, dan tinjauan klaim berbasis evidence.",
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

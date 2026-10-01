@@ -18,73 +18,73 @@ type Lane = {
 const LANES: Lane[] = [
   {
     index: "01",
-    name: "Physiotherapy",
-    local: "Fisioterapi",
+    name: "Fisioterapi",
+    local: "Physiotherapy",
     tag: "MVP",
     footprint: [
-      "Appointment",
-      "Provider assignment",
+      "Janji temu",
+      "Penugasan provider",
       "Treatment",
-      "Clinical note",
-      "Completion",
+      "Catatan klinis",
+      "Penyelesaian",
     ],
     bars: [10, 20, 30, 16, 26, 12, 24, 18, 28, 14],
   },
   {
     index: "02",
-    name: "Radiology",
-    local: "Radiologi",
+    name: "Radiologi",
+    local: "Radiology",
     tag: "Roadmap",
-    footprint: ["Order", "Acquisition", "Read", "Report", "Authorization"],
+    footprint: ["Perintah", "Akuisisi", "Pembacaan", "Laporan", "Otorisasi"],
     bars: [8, 16, 26, 32, 18, 22, 14, 28, 20, 12],
   },
   {
     index: "03",
-    name: "Laboratory",
-    local: "Laboratorium",
+    name: "Laboratorium",
+    local: "Laboratory",
     tag: "Roadmap",
-    footprint: ["Order", "Specimen", "Analysis", "Result", "Verification"],
+    footprint: ["Perintah", "Spesimen", "Analisis", "Hasil", "Verifikasi"],
     bars: [12, 24, 18, 30, 22, 16, 26, 20, 14, 28],
   },
   {
     index: "04",
-    name: "Pharmacy",
-    local: "Farmasi",
+    name: "Farmasi",
+    local: "Pharmacy",
     tag: "Roadmap",
     footprint: [
-      "Prescription",
-      "Dispense",
-      "Administration",
-      "Inventory",
-      "Reconciliation",
+      "Resep",
+      "Penebusan",
+      "Pemberian",
+      "Inventaris",
+      "Rekonsiliasi",
     ],
     bars: [26, 14, 22, 18, 30, 12, 20, 24, 16, 28],
   },
   {
     index: "05",
-    name: "Medical Devices",
-    local: "Alat Kesehatan",
+    name: "Alat Kesehatan",
+    local: "Medical Devices",
     tag: "Roadmap",
     footprint: [
-      "Indication",
-      "Device log",
-      "Usage record",
-      "Maintenance",
-      "Handover",
+      "Indikasi",
+      "Log perangkat",
+      "Rekam penggunaan",
+      "Pemeliharaan",
+      "Serah terima",
     ],
     bars: [18, 28, 12, 24, 20, 30, 16, 10, 26, 22],
   },
   {
     index: "06",
-    name: "Inpatient",
-    local: "Rawat Inap",
+    name: "Rawat Inap",
+    local: "Inpatient",
     tag: "Roadmap",
     footprint: [
-      "Admission",
-      "Ward event",
-      "Procedure",
-      "Medication",
-      "Discharge",
+      "Admisi",
+      "Event ruangan",
+      "Prosedur",
+      "Obat",
+      "Pulang",
     ],
     bars: [30, 22, 16, 26, 14, 28, 20, 24, 12, 18],
   },
@@ -103,7 +103,7 @@ export function ScaleSection() {
     >
       <div className="mx-auto max-w-[88rem] px-5 lg:px-8">
         <div className="flex items-center gap-3 mb-5">
-          <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">07 / Scale</span>
+          <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">07 / Skala</span>
           <div className="h-px w-12 bg-slate-200" />
         </div>
         <div className="flex flex-wrap items-end justify-between gap-6">
@@ -111,9 +111,9 @@ export function ScaleSection() {
             id="scale-title"
             title={
               <>
-                One fingerprint template per{" "}
+                Satu template sidik jari untuk{" "}
                 <span className="text-sky-600">
-                  healthcare service line.
+                  setiap lini layanan kesehatan.
                 </span>
               </>
             }
@@ -122,7 +122,7 @@ export function ScaleSection() {
             className="max-w-2xl"
           />
           <p className="font-mono text-xs font-bold tracking-wider text-sky-700 uppercase">
-            ✦ Scalable Architecture
+            ✦ Arsitektur Skalabel
           </p>
         </div>
 

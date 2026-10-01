@@ -127,20 +127,20 @@ export const MESH_FACILITIES: NetworkFacility[] = [
 
 export const MESH_FACILITY_IDS = MESH_FACILITIES.map((f) => f.id);
 
-export const NETWORK_SIMULATION_LABEL = "Prototype Network Simulation";
+export const NETWORK_SIMULATION_LABEL = "Simulasi Jaringan Prototipe";
 
 export const ADAPTIVE_ACTION: Record<AdaptiveLevel, string> = {
-  LEVEL1: "PASS",
-  LEVEL2: "REQUEST ADDITIONAL EVIDENCE",
-  LEVEL3: "STEP-UP VERIFICATION",
-  LEVEL4: "HUMAN REVIEW",
+  LEVEL1: "LOLOS",
+  LEVEL2: "MINTA BUKTI TAMBAHAN",
+  LEVEL3: "VERIFIKASI LANJUTAN",
+  LEVEL4: "TINJAUAN MANUSIA",
 };
 
 export const ADAPTIVE_LEVEL_LABEL: Record<AdaptiveLevel, string> = {
   LEVEL1: "Level 1 — Normal",
-  LEVEL2: "Level 2 — Evidence Gap",
-  LEVEL3: "Level 3 — Network Match",
-  LEVEL4: "Level 4 — Multi Signal",
+  LEVEL2: "Level 2 — Kekurangan Bukti",
+  LEVEL3: "Level 3 — Match Jaringan",
+  LEVEL4: "Level 4 — Multi Sinyal",
 };
 
 export const VERIFICATION_RESULT_OUTCOME: Record<
@@ -153,24 +153,24 @@ export const VERIFICATION_RESULT_OUTCOME: Record<
 };
 
 export const PROPOSAL_STATUS_LABEL: Record<ProposalStatus, string> = {
-  DRAFT: "DRAFT",
-  REVISION_REQUESTED: "REVISION REQUESTED",
-  APPROVED: "APPROVED",
-  REJECTED: "REJECTED",
+  DRAFT: "USULAN",
+  REVISION_REQUESTED: "REVISI DIMINTA",
+  APPROVED: "DISETUJUI",
+  REJECTED: "DITOLAK",
 };
 
 export const SIGNATURE_STATUS_LABEL: Record<SignatureStatus, string> = {
-  VALIDATED: "VALIDATED",
-  ACTIVE: "ACTIVE",
-  MONITORED: "MONITORED",
-  UPDATED: "UPDATED",
-  RETIRED: "RETIRED",
+  VALIDATED: "DIVALIDASI",
+  ACTIVE: "AKTIF",
+  MONITORED: "DIPANTAU",
+  UPDATED: "DIPERBARUI",
+  RETIRED: "TIDAK BERLAKU",
 };
 
 export const SEVERITY_LABEL: Record<SignatureSeverity, string> = {
-  LOW: "Low",
-  MEDIUM: "Medium",
-  HIGH: "High",
+  LOW: "Rendah",
+  MEDIUM: "Sedang",
+  HIGH: "Tinggi",
 };
 
 export const signatureSeeds: RiskSignature[] = [

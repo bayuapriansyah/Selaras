@@ -9,13 +9,13 @@ export const metadata: Metadata = {
   description:
     "SELARAS membentuk bukti pelayanan sejak titik layanan dan memastikan jejak pelayanan selaras dengan billing dan klaim.",
   keywords: [
-    "healthcare service integrity",
-    "claim verification",
+    "integritas layanan kesehatan",
+    "verifikasi klaim",
     "JKN",
-    "service evidence",
-    "claim reconciliation",
-    "healthcare risk",
-    "Indonesia healthcare technology",
+    "bukti layanan",
+    "rekonsiliasi klaim",
+    "risiko kesehatan",
+    "teknologi kesehatan Indonesia",
   ],
   applicationName: "SELARAS",
   authors: [{ name: "SELARAS" }],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SELARAS | Bukti Pelayanan Sebelum Klaim",
     description:
-      "Evidence intelligence layer untuk integritas pelayanan kesehatan. Setiap pelayanan meninggalkan bukti sebelum menjadi klaim.",
+      "Lapisan evidence intelligence untuk integritas pelayanan kesehatan. Setiap pelayanan meninggalkan bukti sebelum menjadi klaim.",
   },
 };
 

@@ -17,6 +17,19 @@ const RESULT_TONE: Record<string, string> = {
   HUMAN_REVIEW: "border-red-200 bg-red-50 text-red-700",
 };
 
+const RESULT_LABEL: Record<string, string> = {
+  PASS: "LOLOS",
+  NEEDS_CLARIFICATION: "PERLU KLARIFIKASI",
+  HUMAN_REVIEW: "TINJAUAN MANUSIA",
+};
+
+const OUTCOME_LABEL: Record<string, string> = {
+  CONFIRMED: "pola dikonfirmasi",
+  CLEARED: "klaim bersih",
+  FALSE_POSITIVE: "false positive",
+  NEEDS_MORE_DATA: "perlu data lebih",
+};
+
 export default function NetworkMatchesPage() {
   const { src, networkRuntime } = useApp();
 
@@ -46,7 +59,7 @@ export default function NetworkMatchesPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Network Matches"
+        title="Match Jaringan"
         description="Klaim yang terdeteksi oleh Risk Signature aktif. Match hanya menambah rekomendasi — skor dan status klaim asli tidak berubah."
         actions={
           <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
@@ -72,12 +85,12 @@ export default function NetworkMatchesPage() {
             {pendingMatches.length}
           </p>
           <p className="mt-0.5 text-[11px] text-sky-600">
-            Dari {stats.pendingSignatures} signature VALIDATED
+            Dari {stats.pendingSignatures} signature DIVALIDASI
           </p>
         </div>
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
           <p className="text-[11px] font-semibold tracking-wider text-emerald-700 uppercase">
-            Verifikasi PASS
+            Verifikasi lolos
           </p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-900">
             {stats.verificationPass}
@@ -95,7 +108,7 @@ export default function NetworkMatchesPage() {
           </p>
           <p className="mt-0.5 text-[11px] text-amber-600">
             {stats.verificationClarify} klarifikasi · {stats.verificationHuman}{" "}
-            human review
+            tinjauan manusia
           </p>
         </div>
       </section>
@@ -111,7 +124,7 @@ export default function NetworkMatchesPage() {
               href="/app/network/publish"
               className="font-medium text-sky-700 underline-offset-2 hover:underline"
             >
-              Publish Queue
+              Antrean Publikasi
             </Link>{" "}
             untuk melihat klaim terlindungi di sini.
           </p>
@@ -164,7 +177,7 @@ export default function NetworkMatchesPage() {
                                   "border-slate-200 bg-slate-50 text-slate-600",
                               )}
                             >
-                              {fb.result}
+                              {RESULT_LABEL[fb.result] ?? fb.result}
                             </span>
                           ) : (
                             <span className="font-mono text-[10px] tracking-wider text-slate-400">
@@ -218,7 +231,7 @@ export default function NetworkMatchesPage() {
                   href="/app/network/publish"
                   className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline"
                 >
-                  Ke publish queue →
+                  Ke antrean publikasi →
                 </Link>
               </article>
             ))}
@@ -237,7 +250,7 @@ export default function NetworkMatchesPage() {
         {feedbacks.length === 0 ? (
           <p className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-500 shadow-sm">
             Belum ada verifikasi step-up. Buka klaim dengan match aktif untuk
-            memulai verifikasi adaptive.
+            memulai verifikasi adaptif.
           </p>
         ) : (
           <div className="flex flex-col gap-2">
@@ -248,10 +261,11 @@ export default function NetworkMatchesPage() {
               >
                 <div className="min-w-0">
                   <p className="font-mono text-[11px] tracking-wider text-slate-500">
-                    {f.claimId} · {f.signatureId} · {f.result}
+                    {f.claimId} · {f.signatureId} ·{" "}
+                    {RESULT_LABEL[f.result] ?? f.result}
                   </p>
                   <p className="mt-0.5 text-xs text-slate-700">
-                    {f.note ? f.note : `Outcome: ${f.outcome}`}
+                    {f.note ? f.note : `Hasil: ${OUTCOME_LABEL[f.outcome] ?? f.outcome}`}
                   </p>
                   <p className="mt-0.5 font-mono text-[10px] tracking-wider text-slate-400">
                     {f.by} · {formatDateTime(f.at)}
@@ -272,7 +286,7 @@ export default function NetworkMatchesPage() {
       <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
         Match &amp; status “NETWORK STATUS” ditampilkan sebagai lapisan tambahan.
         Status klaim asli (SUPPORTED / gap) dan antrean prioritas reviewer tetap
-        dihitung oleh mesin klaim yang lama — network tidak mengubahnya.
+        dihitung oleh mesin klaim yang lama — jaringan tidak mengubahnya.
       </p>
     </div>
   );

@@ -42,13 +42,13 @@ export default function SignatureDetailPage() {
       <div className="flex flex-col gap-6">
         <PageHeader
           title={`Risk Signature ${signatureId}`}
-          description="Signature tidak ditemukan di registry."
+          description="Signature tidak ditemukan di registri."
         />
         <Link
           href="/app/network/signatures"
           className="text-sm font-medium text-sky-700 underline-offset-2 hover:underline"
         >
-          ← Kembali ke registry
+          ← Kembali ke registri
         </Link>
       </div>
     );
@@ -66,7 +66,7 @@ export default function SignatureDetailPage() {
         className="inline-flex w-fit items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-sky-400"
       >
         <ArrowLeft aria-hidden="true" className="size-3.5" />
-        Risk Signature Registry
+        Registri Risk Signature
       </Link>
 
       <PageHeader
@@ -82,7 +82,7 @@ export default function SignatureDetailPage() {
             {canPublish ? (
               <button
                 type="button"
-                aria-label={`Publish ${sig.id} ke jaringan`}
+                aria-label={`Publikasikan ${sig.id} ke jaringan`}
                 onClick={() => {
                   publishSignature(sig.id);
                   setPublished(true);
@@ -90,13 +90,13 @@ export default function SignatureDetailPage() {
                 className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 text-xs font-medium text-emerald-800 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-400"
               >
                 <Send aria-hidden="true" className="size-3.5" />
-                Publish ke jaringan
+                Publikasikan ke jaringan
               </button>
             ) : null}
             {published || sig.status === "ACTIVE" ? (
               <span className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-100 px-3 text-xs font-medium text-emerald-800">
                 <ShieldCheck aria-hidden="true" className="size-3.5" />
-                {published ? "Terpublikasi — status ACTIVE" : "Sudah aktif"}
+                {published ? "Terpublikasi — status AKTIF" : "Sudah aktif"}
               </span>
             ) : null}
           </div>
@@ -110,7 +110,7 @@ export default function SignatureDetailPage() {
         <article className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div>
             <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-              Pattern
+              Pola
             </p>
             <p className="mt-1 text-sm leading-relaxed text-slate-800">
               {sig.pattern}
@@ -118,7 +118,7 @@ export default function SignatureDetailPage() {
           </div>
           <div>
             <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-              Detection conditions
+              Kondisi deteksi
             </p>
             <ul className="mt-1.5 flex flex-wrap gap-1.5">
               {sig.detectionConditions.map((c, i) => (
@@ -133,14 +133,14 @@ export default function SignatureDetailPage() {
           </div>
           <div>
             <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-              Recommended control
+              Rekomendasi kontrol
             </p>
             <p className="mt-1 text-sm text-slate-800">{sig.recommendedControl}</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-                Required evidence
+                Bukti yang diperlukan
               </p>
               <ul className="mt-1 flex flex-col gap-1 text-xs text-slate-700">
                 {sig.requiredEvidence.map((e) => (
@@ -150,7 +150,7 @@ export default function SignatureDetailPage() {
             </div>
             <div>
               <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-                Signal notes
+                Catatan sinyal
               </p>
               <ul className="mt-1 flex flex-col gap-1 text-xs text-slate-700">
                 {sig.signalNotes.map((n) => (
@@ -164,7 +164,7 @@ export default function SignatureDetailPage() {
         <article className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div>
             <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-              Governance
+              Tata Kelola
             </p>
             <dl className="mt-2 grid gap-2 text-xs sm:grid-cols-2">
               <div>
@@ -178,23 +178,23 @@ export default function SignatureDetailPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Created</dt>
+                <dt className="text-slate-500">Dibuat</dt>
                 <dd className="font-medium text-slate-900">
                   {formatDateTime(sig.createdAt)}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Last update</dt>
+                <dt className="text-slate-500">Pembaruan terakhir</dt>
                 <dd className="font-medium text-slate-900">
                   {formatDateTime(sig.updatedAt)}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Service scope</dt>
+                <dt className="text-slate-500">Cakupan layanan</dt>
                 <dd className="font-medium text-slate-900">{sig.serviceScope}</dd>
               </div>
               <div>
-                <dt className="text-slate-500">Origin faskes</dt>
+                <dt className="text-slate-500">Faskes asal</dt>
                 <dd className="font-medium text-slate-900">
                   {sig.originFacilityId
                     ? facilityNodeLabel(sig.originFacilityId)
@@ -202,7 +202,7 @@ export default function SignatureDetailPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">False positive rate</dt>
+                <dt className="text-slate-500">Tingkat false positive</dt>
                 <dd className="font-medium text-slate-900">
                   {sig.falsePositiveRate !== undefined
                     ? `${sig.falsePositiveRate}%`
@@ -210,7 +210,7 @@ export default function SignatureDetailPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Retired reason</dt>
+                <dt className="text-slate-500">Alasan pensiun</dt>
                 <dd className="font-medium text-slate-900">
                   {sig.retiredReason ?? "—"}
                 </dd>
@@ -251,7 +251,7 @@ export default function SignatureDetailPage() {
         </h2>
         {sig.status !== "ACTIVE" ? (
           <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
-            Signature belum ACTIVE — match akan muncul setelah publikasi.
+            Signature belum AKTIF — match akan muncul setelah publikasi.
             {sig.status === "VALIDATED"
               ? " Seorang Admin dapat mempublikasikannya dari tombol di atas."
               : ""}
@@ -280,7 +280,7 @@ export default function SignatureDetailPage() {
                   href={`/app/claims/${m.claimId}`}
                   className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
                 >
-                  Buka klaim + adaptive verification →
+                  Buka klaim + verifikasi adaptif →
                 </Link>
               </article>
             ))}

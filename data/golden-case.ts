@@ -115,26 +115,26 @@ export type ReasonerBlock = {
 
 export const reasonerBlocks: ReasonerBlock[] = [
   {
-    label: "What changed?",
-    value: "Treatment evidence missing",
+    label: "Apa yang berubah?",
+    value: "Treatment evidence hilang",
     tone: "gap",
   },
   {
-    label: "When?",
+    label: "Kapan?",
     value: "09:07",
   },
   {
-    label: "What supports it?",
-    items: ["Patient arrival", "Provider assignment", "Clinical note"],
+    label: "Apa yang menopangnya?",
+    items: ["Kedatangan pasien", "Penugasan provider", "Catatan klinis"],
   },
   {
-    label: "What is missing?",
-    items: ["Treatment event", "Completion event"],
+    label: "Apa yang hilang?",
+    items: ["Event treatment", "Event penyelesaian"],
     tone: "gap",
   },
   {
-    label: "Why review?",
+    label: "Mengapa perlu ditinjau?",
     value:
-      "Claim contains the service, but the evidence chain is incomplete.",
+      "Klaim memuat layanan tersebut, tetapi rantai evidence belum lengkap.",
   },
 ];

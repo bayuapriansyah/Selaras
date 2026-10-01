@@ -20,45 +20,45 @@ type Config = {
 
 const STATUS_CONFIG: Record<PassportStatus, Config> = {
   DRAFT: {
-    label: "Draft",
+    label: "Draf",
     soft: "border-hairline bg-ivory-deep text-ash",
     onDark: "border-white/25 bg-white/10 text-ivory/85",
     Icon: PencilLine,
   },
   ACTIVE: {
-    label: "Active",
+    label: "Aktif",
     soft: "border-leaf-500/30 bg-leaf-100 text-forest-800",
     onDark:
       "border-leaf-500/40 bg-leaf-500/15 text-leaf-100 shadow-[0_0_10px_rgba(16,185,129,0.35)]",
     Icon: Activity,
   },
   COMPLETE: {
-    label: "Complete",
+    label: "Lengkap",
     soft: "border-leaf-500/30 bg-leaf-100 text-forest-800",
     onDark:
       "border-leaf-500/40 bg-leaf-500/15 text-leaf-100 shadow-[0_0_10px_rgba(16,185,129,0.35)]",
     Icon: CheckCircle2,
   },
   SUPPORTED: {
-    label: "Supported",
+    label: "Didukung",
     soft: "border-forest-900 bg-forest-900 text-ivory",
     onDark: "border-ivory/25 bg-ivory text-forest-900",
     Icon: BadgeCheck,
   },
   INCOMPLETE: {
-    label: "Incomplete",
+    label: "Belum Lengkap",
     soft: "border-review/25 bg-review-soft text-review",
     onDark: "border-review/50 bg-review/20 text-[#fde6c4]",
     Icon: TriangleAlert,
   },
   REVIEW: {
-    label: "Review",
+    label: "Tinjauan",
     soft: "border-review/25 bg-review-soft text-review",
     onDark: "border-review/50 bg-review/20 text-[#fde6c4]",
     Icon: ScanSearch,
   },
   VERIFIED: {
-    label: "Verified",
+    label: "Terverifikasi",
     soft: "border-forest-900 bg-forest-900 text-ivory",
     onDark: "border-ivory/25 bg-ivory text-forest-900",
     Icon: ShieldCheck,

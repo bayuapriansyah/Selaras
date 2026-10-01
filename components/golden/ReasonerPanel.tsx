@@ -29,7 +29,7 @@ export function ReasonerPanel({
         </p>
         <span className="inline-flex h-6 items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 font-mono text-[10.5px] tracking-wider text-amber-800 uppercase font-semibold">
           <ShieldAlert aria-hidden="true" className="size-3 text-amber-600" />
-          Human review required
+          Perlu tinjauan manusia
         </span>
       </div>
 
@@ -85,7 +85,7 @@ export function ReasonerPanel({
             </button>
           </TooltipTrigger>
           <TooltipContent className="max-w-[18rem] bg-slate-900 border border-slate-700 text-white shadow-xl">
-            AI provides evidence-based assistance. Final decision remains with the reviewer.
+            AI memberikan bantuan berbasis evidence. Keputusan akhir tetap pada reviewer.
           </TooltipContent>
         </Tooltip>
         <p className="text-xs leading-relaxed text-slate-500">

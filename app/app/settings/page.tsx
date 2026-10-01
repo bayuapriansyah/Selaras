@@ -120,14 +120,14 @@ export default function SettingsPage() {
       </section>
 
       <section
-        aria-label="Permission matrix"
+        aria-label="Matriks izin"
         className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <h2 className="text-sm font-semibold text-slate-900">
-          Permission matrix · role-based demo
+          Matriks izin · demo berbasis role
         </h2>
         <p className="text-xs text-slate-500">
-          Prototype RBAC (mock auth demo) — bukan production authorization.
+          Prototipe RBAC (demo autentikasi mock) — bukan otorisasi produksi.
           Tabel dibangun langsung dari modul permission yang sama dengan yang
           dipakai UI, sehingga tidak bisa berbeda. Akses lihat halaman terbuka
           untuk semua role.

@@ -11,19 +11,19 @@ const STATE_STYLE: Record<
   { label: string; Icon: typeof CheckCircle2; icon: string; text: string }
 > = {
   supported: {
-    label: "Supported",
+    label: "Didukung",
     Icon: CheckCircle2,
     icon: "text-leaf-600",
     text: "text-forest-800",
   },
   gap: {
-    label: "Evidence gap",
+    label: "Celah evidence",
     Icon: TriangleAlert,
     icon: "text-review",
     text: "text-review",
   },
   pending: {
-    label: "Pending",
+    label: "Tertunda",
     Icon: CircleDashed,
     icon: "text-ash",
     text: "text-ash",

@@ -62,17 +62,17 @@ export function PassportSection() {
 
   const data: PassportData = {
     id: "SRV-1025-08",
-    service: "Physiotherapy",
+    service: "Fisioterapi",
     patient: "P-1025",
     provider: "T-031",
     window: "14:03 · 14:41",
     evidence: [
-      { id: "identity", label: "Identity", state: scenario.states[0] },
+      { id: "identity", label: "Identitas", state: scenario.states[0] },
       { id: "provider", label: "Provider", state: scenario.states[1] },
-      { id: "point", label: "Service Point", state: scenario.states[2] },
+      { id: "point", label: "Titik Layanan", state: scenario.states[2] },
       { id: "treatment", label: "Treatment", state: scenario.states[3] },
-      { id: "note", label: "Clinical Note", state: scenario.states[4] },
-      { id: "completion", label: "Completion", state: scenario.states[5] },
+      { id: "note", label: "Catatan Klinis", state: scenario.states[4] },
+      { id: "completion", label: "Penyelesaian", state: scenario.states[5] },
     ],
     coverage: scenario.coverage,
     status: scenario.status,
@@ -93,9 +93,9 @@ export function PassportSection() {
           id="passport-title"
           title={
             <>
-              One service.{" "}
+              Satu pelayanan.{" "}
               <span className="text-sky-600">
-                One deterministic evidence story.
+                Satu cerita evidence deterministik.
               </span>
             </>
           }
@@ -117,7 +117,7 @@ export function PassportSection() {
                 </div>
               </motion.div>
               <p className="mt-4 font-mono text-[10.5px] tracking-wider text-slate-600 uppercase font-medium">
-                ✦ Interactive State Playground
+                ✦ Playground State Interaktif
               </p>
             </Reveal>
           </div>
@@ -153,7 +153,7 @@ export function PassportSection() {
               <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50/80 p-5 shadow-sm">
                 <p className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <span className="size-2 rounded-full bg-emerald-500" />
-                  {activeState?.title ?? "Supported"}
+                  {activeState?.title ?? "Didukung"}
                 </p>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
                   {activeState?.description ??

@@ -5,12 +5,12 @@ import { Reveal } from "@/components/layout/Reveal";
 const PRINCIPLES = [
   {
     icon: CircleHelp,
-    title: "Missing evidence ≠ fraud",
+    title: "Evidence hilang ≠ fraud",
     desc: "Celah bukti adalah sinyal untuk diperiksa, bukan kesalahan.",
   },
   {
     icon: GitCompareArrows,
-    title: "Explain before escalate",
+    title: "Jelaskan sebelum eskalasi",
     desc: "Setiap penanda memiliki alasan yang bisa dibaca reviewer.",
   },
   {
@@ -68,17 +68,17 @@ export function AiSection() {
         <div className="lg:col-span-5">
           <Reveal amount={0.2}>
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">05 / AI Reasoning</span>
+              <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">05 / Penalaran AI</span>
               <div className="h-px w-12 bg-slate-200" />
             </div>
             <h2
               id="ai-title"
               className="text-[2.2rem] leading-[1.05] font-bold tracking-tight text-slate-950 sm:text-5xl lg:text-[3.2rem] lg:leading-[1.03]"
             >
-              AI that explains.
+              AI yang menjelaskan.
               <br />
               <span className="text-sky-600">
-                Not AI that accuses.
+                Bukan AI yang menuduh.
               </span>
             </h2>
             <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -112,7 +112,7 @@ export function AiSection() {
           <Reveal delay={0.06} y={22}>
             <ReasonerPanel />
             <p className="mt-4 font-mono text-[10.5px] tracking-wider text-slate-500 uppercase font-medium">
-              ✦ Synthetic Demonstration · Sesi 09
+              ✦ Demonstrasi Sintetis · Sesi 09
             </p>
           </Reveal>
         </div>

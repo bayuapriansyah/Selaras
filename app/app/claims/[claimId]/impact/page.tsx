@@ -13,6 +13,17 @@ import {
   view,
 } from "@/lib/app/services/claimService";
 
+const STATUS_TEXT: Record<string, string> = {
+  SUPPORTED: "DIDUKUNG",
+  "NEEDS REVIEW": "PERLU TINJAUAN",
+  INCOMPLETE: "BELUM LENGKAP",
+  CONTRADICTED: "BERTENTANGAN",
+  "NEEDS CLARIFICATION": "PERLU KLARIFIKASI",
+  DRAFT: "DRAF",
+  ACTIVE: "AKTIF",
+  COMPLETE: "LENGKAP",
+};
+
 function MoneyCard({
   label,
   value,
@@ -55,7 +66,7 @@ export default function ClaimImpactPage() {
             <Button asChild size="sm" variant="outline" className="rounded-full">
               <Link href="/app/claims">
                 <ArrowLeft aria-hidden="true" className="size-3.5" />
-                Review queue
+                Antrean tinjauan
               </Link>
             </Button>
           }
@@ -166,7 +177,10 @@ export default function ClaimImpactPage() {
             </span>
           </span>
           <span>
-            Status: <span className="font-medium text-slate-700">{status}</span>
+            Status:{" "}
+            <span className="font-medium text-slate-700">
+              {STATUS_TEXT[status] ?? status}
+            </span>
           </span>
           <span>{impact.label}</span>
         </div>

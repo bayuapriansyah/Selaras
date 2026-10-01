@@ -26,7 +26,7 @@ export const GOLDEN_PATIENT_ID = "P-1025";
 export const GOLDEN_SESSIONS = 10;
 
 export const DEFAULT_REVIEWER_NOTE =
-  "Mohon verifikasi evidence treatment dan completion untuk session 09.";
+  "Mohon verifikasi evidence treatment dan completion untuk sesi 09.";
 
 function shift(time: string, minutes: number): string {
   const [h, m] = time.split(":").map(Number);
@@ -320,7 +320,7 @@ export const templates: ServiceTemplate[] = [
   {
     id: "TPL-PHYSIO",
     name: "Fisioterapi",
-    nameEn: "Physiotherapy",
+    nameEn: "Fisioterapi",
     required: [...EVIDENCE_ORDER],
     rate: 350000,
     description:
@@ -329,7 +329,7 @@ export const templates: ServiceTemplate[] = [
   {
     id: "TPL-DENTAL",
     name: "Poli Gigi",
-    nameEn: "Dental",
+    nameEn: "Kedokteran Gigi",
     required: ["arrival", "provider", "treatment", "note", "completion", "billing", "claim"],
     rate: 450000,
     description:
@@ -338,7 +338,7 @@ export const templates: ServiceTemplate[] = [
   {
     id: "TPL-LAB",
     name: "Laboratorium",
-    nameEn: "Laboratory",
+    nameEn: "Laboratorium",
     required: ["arrival", "provider", "treatment", "note", "billing", "claim"],
     rate: 275000,
     description:
@@ -347,7 +347,7 @@ export const templates: ServiceTemplate[] = [
   {
     id: "TPL-RADIOLOGY",
     name: "Radiologi",
-    nameEn: "Radiology",
+    nameEn: "Radiologi",
     required: ["arrival", "provider", "treatment", "note", "completion", "billing", "claim"],
     rate: 625000,
     description:
@@ -356,7 +356,7 @@ export const templates: ServiceTemplate[] = [
   {
     id: "TPL-OUTPATIENT",
     name: "Rawat Jalan",
-    nameEn: "Outpatient",
+    nameEn: "Rawat Jalan",
     required: ["arrival", "provider", "note", "completion", "billing", "claim"],
     rate: 180000,
     description:
@@ -1108,7 +1108,7 @@ export const riskSignals: RiskSignal[] = [
     code: "EVIDENCE_GAP",
     severity: "warning",
     message:
-      "Session 09 tidak memiliki bukti tindakan dan penyelesaian.",
+      "Sesi 09 tidak memiliki bukti tindakan dan penyelesaian.",
     at: `${APP_TODAY} 07:12`,
   },
   {
@@ -1117,7 +1117,7 @@ export const riskSignals: RiskSignal[] = [
     sessionId: 10,
     code: "MISSING_COMPLETION",
     severity: "info",
-    message: "Session 10 belum memiliki bukti penyelesaian.",
+    message: "Sesi 10 belum memiliki bukti penyelesaian.",
     at: `${APP_TODAY} 07:12`,
   },
   {
@@ -1126,7 +1126,7 @@ export const riskSignals: RiskSignal[] = [
     sessionId: 2,
     code: "EVIDENCE_GAP",
     severity: "warning",
-    message: "Session 02 radiologi belum terhubung ke hasil akuisisi.",
+    message: "Sesi 02 radiologi belum terhubung ke hasil akuisisi.",
     at: `${APP_TODAY} 07:09`,
   },
   {
@@ -1136,7 +1136,7 @@ export const riskSignals: RiskSignal[] = [
     code: "TIMESTAMP_CONFLICT",
     severity: "critical",
     message:
-      "Billing tercatat 40 menit sebelum tindakan selesai pada session 02.",
+      "Billing tercatat 40 menit sebelum tindakan selesai pada sesi 02.",
     at: `${APP_TODAY} 07:15`,
   },
 ];
@@ -1146,7 +1146,7 @@ export const reviewHistory: ReviewAction[] = [
     id: "RA-0001",
     claimId: "CLM-08409",
     action: "MARK_SUPPORTED",
-    note: "Seluruh evidence session terverifikasi lengkap.",
+    note: "Seluruh evidence sesi terverifikasi lengkap.",
     by: "Dewi Ananda",
     at: "2026-09-28 16:40",
   },
@@ -1227,7 +1227,7 @@ export const auditLog: AuditEntry[] = [
     entity: "Signal",
     entityId: "SIG-0001",
     description:
-      "Evidence gap treatment & completion dihasilkan untuk session 09.",
+      "Evidence gap treatment & completion dihasilkan untuk sesi 09.",
   },
   {
     id: "AUD-0009",
@@ -1246,7 +1246,7 @@ export const auditLog: AuditEntry[] = [
     action: "BILLING_CREATED",
     entity: "Billing",
     entityId: "BLG-SVC-08430-05",
-    description: "Billing dibuat untuk episode Poli Gigi session 05.",
+    description: "Billing dibuat untuk episode Poli Gigi sesi 05.",
   },
   {
     id: "AUD-0007",
@@ -1265,7 +1265,7 @@ export const auditLog: AuditEntry[] = [
     action: "CLAIM_LINKED",
     entity: "Claim",
     entityId: GOLDEN_CLAIM_ID,
-    description: "Session 09 tertaut ke klaim CLM-08421.",
+    description: "Sesi 09 tertaut ke klaim CLM-08421.",
   },
   {
     id: "AUD-0005",
@@ -1274,7 +1274,7 @@ export const auditLog: AuditEntry[] = [
     action: "BILLING_CREATED",
     entity: "Billing",
     entityId: "BLG-SVC-08421-09",
-    description: "Billing dibuat untuk session 09.",
+    description: "Billing dibuat untuk sesi 09.",
   },
   {
     id: "AUD-0004",
@@ -1284,7 +1284,7 @@ export const auditLog: AuditEntry[] = [
     action: "EVIDENCE_ADDED",
     entity: "Evidence",
     entityId: "E-09-04",
-    description: "Catatan klinis session 09 ditambahkan.",
+    description: "Catatan klinis sesi 09 ditambahkan.",
   },
   {
     id: "AUD-0003",
@@ -1294,7 +1294,7 @@ export const auditLog: AuditEntry[] = [
     action: "EVIDENCE_ADDED",
     entity: "Evidence",
     entityId: "E-09-02",
-    description: "Verifikasi provider session 09 tercatat.",
+    description: "Verifikasi provider sesi 09 tercatat.",
   },
   {
     id: "AUD-0002",
@@ -1304,7 +1304,7 @@ export const auditLog: AuditEntry[] = [
     action: "SERVICE_STARTED",
     entity: "Service",
     entityId: "SVC-08421-09",
-    description: "Pelayanan fisioterapi session 09 dimulai.",
+    description: "Pelayanan fisioterapi sesi 09 dimulai.",
   },
   {
     id: "AUD-0001",
@@ -1336,7 +1336,7 @@ export const notifications: Notification[] = [
   {
     id: "NTF-0001",
     title: "CLM-08421 menunggu tinjauan",
-    body: "2 dari 10 session memiliki evidence gap.",
+    body: "2 dari 10 sesi memiliki evidence gap.",
     at: `${APP_TODAY} 07:12`,
     read: false,
   },

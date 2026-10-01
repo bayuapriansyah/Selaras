@@ -341,7 +341,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
               entityId: newSignatureId,
               description: `Proposal ${newSignatureId} — ${input.name} diajukan${
                 input.originClaimId ? ` dari ${input.originClaimId}` : ""
-              } (status DRAFT).`,
+              } (status DRAF).`,
             },
             name,
             prev.role,
@@ -435,7 +435,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
             action: "SIG_PUBLISHED",
             entity: "Network",
             entityId: sig.id,
-            description: `Risk Signature ${sig.id} — ${sig.name} dipublikasikan ke jaringan simulasi (status ACTIVE).`,
+            description: `Risk Signature ${sig.id} — ${sig.name} dipublikasikan ke jaringan simulasi (status AKTIF).`,
           },
           name,
           prev.role,
@@ -521,7 +521,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
               action: "NET_VERIFICATION_RESULT",
               entity: "Network",
               entityId: claimId,
-              description: `Hasil verifikasi ${claimId} (${signatureId}): ${result} — outcome ${feedback.outcome}.`,
+              description: `Hasil verifikasi ${claimId} (${signatureId}): ${result} — hasil ${feedback.outcome}.`,
             },
             name,
             prev.role,

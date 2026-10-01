@@ -58,13 +58,13 @@ export function ImmunityVisual({ view }: { view: ImmunityView }) {
 
   return (
     <section
-      aria-label="Network immunity"
+      aria-label="Kekebalan jaringan"
       className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-            Network Immunity
+            Kekebalan Jaringan
           </p>
           <p className="mt-0.5 text-sm font-semibold text-slate-900">
             {view.signature.id} — {view.signature.name}
@@ -78,7 +78,7 @@ export function ImmunityVisual({ view }: { view: ImmunityView }) {
               : "border-sky-200 bg-sky-50 text-sky-700",
           )}
         >
-          {live ? "SIGNATURE ACTIVE" : "MENUNGGU PUBLIKASI"}
+          {live ? "POLA AKTIF" : "MENUNGGU PUBLIKASI"}
         </span>
       </div>
 
@@ -126,7 +126,7 @@ export function ImmunityVisual({ view }: { view: ImmunityView }) {
       </div>
 
       <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold tracking-wide text-emerald-800">
-        ONE VALIDATED PATTERN → {inScopeCount} FACILITIES PROTECTED
+        SATU POLA Tervalidasi → {inScopeCount} FASKES Terlindungi
       </p>
       <p className="mt-2 text-center text-[11px] text-slate-400">
         Cakupan dihitung dari signature aktif di 4 faskes simulasi — tanpa data

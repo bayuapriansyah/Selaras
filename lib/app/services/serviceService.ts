@@ -140,7 +140,7 @@ export function captureEvidence(
       entityId: `${serviceId}#${kind}`,
       description:
         (kind === "note"
-          ? `Clinical note ditambahkan untuk ${serviceId}.`
+          ? `Catatan klinis ditambahkan untuk ${serviceId}.`
           : `${EVIDENCE_LABEL[kind]} tercatat untuk ${serviceId}.`) + via,
     },
     userName,
@@ -182,7 +182,7 @@ export function captureEvidence(
         action: "SERVICE_COMPLETED",
         entity: "Passport",
         entityId: serviceId,
-        description: `Seluruh evidence ${serviceId} lengkap — Service Passport COMPLETE.`,
+        description: `Seluruh evidence ${serviceId} lengkap — Service Passport LENGKAP.`,
       },
       userName,
       userRole,

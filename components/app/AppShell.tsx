@@ -47,7 +47,7 @@ const NAV: { group: string; items: { label: string; href: string; icon: typeof B
   {
     group: "Analisis",
     items: [
-      { label: "Analytics", href: "/app/analytics", icon: BarChart3 },
+      { label: "Analitik", href: "/app/analytics", icon: BarChart3 },
       { label: "Template Layanan", href: "/app/service-templates", icon: Layers3 },
       { label: "Log Audit", href: "/app/audit-log", icon: ScrollText },
     ],

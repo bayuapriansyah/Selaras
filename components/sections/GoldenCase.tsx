@@ -41,12 +41,12 @@ const CAPTIONS = [
 ];
 
 const SUPPORT_LABEL: Record<string, string> = {
-  Arrival: "Patient arrival",
-  Provider: "Provider assignment",
-  Treatment: "Treatment event",
-  "Clinical Note": "Clinical note",
-  Billing: "Billing record",
-  Claim: "Claim entry",
+  Arrival: "Kedatangan pasien",
+  Provider: "Penugasan provider",
+  Treatment: "Event treatment",
+  "Clinical Note": "Catatan klinis",
+  Billing: "Rekam billing",
+  Claim: "Entri klaim",
 };
 
 const EVENT_TIME: Record<string, string> = {
@@ -79,31 +79,31 @@ function buildReasoner(session: GoldenSession): ReasonerBlock[] | null {
     .map((item) => SUPPORT_LABEL[item.label] ?? item.label);
 
   const missing = gaps.map((item) => SUPPORT_LABEL[item.label] ?? item.label);
-  if (session.id === 9) missing.push("Completion event");
+  if (session.id === 9) missing.push("Event penyelesaian");
 
   return [
     {
-      label: "What changed?",
-      value: `${gaps.map((item) => item.label).join(" & ")} evidence missing`,
+      label: "Apa yang berubah?",
+      value: `${gaps.map((item) => item.label).join(" & ")} evidence hilang`,
       tone: "gap",
     },
     {
-      label: "When?",
+      label: "Kapan?",
       value: EVENT_TIME[gaps[0].label] ?? "09:07",
     },
     {
-      label: "What supports it?",
+      label: "Apa yang menopangnya?",
       items: supported,
     },
     {
-      label: "What is missing?",
+      label: "Apa yang hilang?",
       items: missing,
       tone: "gap",
     },
     {
-      label: "Why review?",
+      label: "Mengapa perlu ditinjau?",
       value:
-        "Claim contains the service, but the evidence chain is incomplete.",
+        "Klaim memuat layanan tersebut, tetapi rantai evidence belum lengkap.",
     },
   ];
 }
@@ -166,9 +166,9 @@ export function GoldenCase() {
           id="golden-title"
           title={
             <>
-              See what happens when a claim{" "}
+              Lihat yang terjadi saat sebuah klaim{" "}
               <span className="text-sky-600">
-                meets its deterministic evidence.
+                bertemu evidence deterministiknya.
               </span>
             </>
           }
@@ -181,10 +181,10 @@ export function GoldenCase() {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/90 px-5 py-3.5 sm:px-7">
               <span className="font-mono text-xs font-bold tracking-[0.18em] text-sky-700 uppercase flex items-center gap-2">
                 <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                Golden Case · Physiotherapy Episode
+                Golden Case · Episode Fisioterapi
               </span>
               <span className="inline-flex h-6 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[10.5px] tracking-wider text-slate-600 uppercase font-medium">
-                ✦ Synthetic Demonstration
+                ✦ Demonstrasi Sintetis
               </span>
             </div>
 
@@ -225,13 +225,13 @@ export function GoldenCase() {
                     <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
                       <div>
                         <p className="font-mono text-[11px] tracking-[0.2em] text-slate-500 uppercase font-semibold">
-                          Claim
+                          Klaim
                         </p>
                         <p className="mt-4 text-6xl leading-none font-bold tracking-[-0.04em] text-slate-950 sm:text-7xl">
                           10
                         </p>
                         <p className="mt-3 text-base text-slate-600">
-                          Physiotherapy Sessions
+                          Sesi Fisioterapi
                         </p>
                         <div
                           className="mt-6 flex gap-1.5"
@@ -263,7 +263,7 @@ export function GoldenCase() {
                   {step === 1 ? (
                     <div className="py-6">
                       <p className="font-mono text-xs font-bold tracking-[0.18em] text-sky-600 uppercase">
-                        Service-to-claim reconciliation in progress
+                        Rekonsiliasi pelayanan ke klaim sedang berlangsung
                       </p>
                       <div className="mt-5 h-2 w-full overflow-hidden rounded-full bg-slate-100">
                         <motion.div
@@ -275,12 +275,12 @@ export function GoldenCase() {
                       </div>
                       <ul className="mt-6 grid gap-3 sm:grid-cols-2">
                         {[
-                          "Quantity check",
-                          "Temporal check",
-                          "Identity check",
-                          "Evidence completeness",
-                          "Duplicate check",
-                          "Conflict check",
+                          "Cek kuantitas",
+                          "Cek temporal",
+                          "Cek identitas",
+                          "Kelengkapan evidence",
+                          "Cek duplikasi",
+                          "Cek konflik",
                         ].map((check, index) => (
                           <motion.li
                             key={check}
@@ -317,7 +317,7 @@ export function GoldenCase() {
                                 aria-hidden="true"
                                 className="size-2 rounded-full bg-emerald-500"
                               />
-                              Supported
+                              Didukung
                             </p>
                           </div>
                           <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
@@ -329,7 +329,7 @@ export function GoldenCase() {
                                 aria-hidden="true"
                                 className="size-2 rounded-full bg-amber-500"
                               />
-                              Review Needed
+                              Perlu ditinjau
                             </p>
                           </div>
                         </div>
@@ -371,8 +371,8 @@ export function GoldenCase() {
                             )}
                           >
                             {session.status === "review"
-                              ? "Need review"
-                              : "Supported"}
+                              ? "Perlu ditinjau"
+                              : "Didukung"}
                           </span>
                         </div>
 
@@ -390,7 +390,7 @@ export function GoldenCase() {
                         <div className="mt-5">
                           <div className="flex items-center justify-between">
                             <span className="font-mono text-[10.5px] tracking-[0.14em] text-slate-500 uppercase">
-                              Coverage Rate
+                              Tingkat Cakupan
                             </span>
                             <span className="font-mono text-sm font-bold text-emerald-600">
                               {session.coverage}%
@@ -459,7 +459,7 @@ export function GoldenCase() {
                         <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-6 text-slate-900 shadow-sm">
                           <span className="inline-flex h-6 items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-100 px-3 font-mono text-[10px] tracking-wider text-emerald-800 uppercase font-semibold">
                             <span className="size-1.5 rounded-full bg-emerald-600" />
-                            No evidence gap detected
+                            Tidak ada celah evidence
                           </span>
                           <p className="mt-4 text-base font-bold text-slate-900">
                             Seluruh bukti pada sesi ini menopang klaim secara lengkap.
@@ -515,7 +515,7 @@ export function GoldenCase() {
               ) : null}
               {step === 4 ? (
                 <StepAction icon={CircleHelp} onClick={handleAction}>
-                  Why? Reasoner
+                  Mengapa? Reasoner
                 </StepAction>
               ) : null}
               {step === 5 ? (

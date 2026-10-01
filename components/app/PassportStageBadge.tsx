@@ -7,6 +7,18 @@ const STAGE_TONE: Record<PassportStage, string> = {
   SUPPORTED: "border-emerald-200 bg-emerald-50 text-emerald-700",
 };
 
+const STAGE_LABEL: Record<PassportStage, string> = {
+  INCOMPLETE: "BELUM LENGKAP",
+  "PARTIALLY SUPPORTED": "SEBAGIAN DIDUKUNG",
+  SUPPORTED: "DIDUKUNG",
+};
+
+const ACTION_LABEL: Record<PassportNextAction, string> = {
+  "CAPTURE TREATMENT": "CATAT TREATMENT",
+  "CAPTURE COMPLETION": "CATAT COMPLETION",
+  "LENGKAPI EVIDENCE": "LENGKAPI EVIDENCE",
+};
+
 export function PassportStageBadge({ stage }: { stage: PassportStage }) {
   return (
     <span
@@ -19,7 +31,7 @@ export function PassportStageBadge({ stage }: { stage: PassportStage }) {
         aria-hidden="true"
         className="size-1.5 rounded-full bg-current opacity-70"
       />
-      {stage}
+      {STAGE_LABEL[stage]}
     </span>
   );
 }
@@ -32,7 +44,7 @@ export function PassportNextActionChip({
   return (
     <span className="inline-flex h-7 items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 font-mono text-[11px] font-medium tracking-wider text-sky-700">
       <span aria-hidden="true" className="size-1.5 rounded-full bg-sky-500" />
-      {action}
+      {ACTION_LABEL[action]}
     </span>
   );
 }

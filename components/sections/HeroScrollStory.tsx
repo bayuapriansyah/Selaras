@@ -16,14 +16,14 @@ import { cn } from "@/lib/utils";
 
 const STEPS = [
   {
-    stage: "Service",
+    stage: "Layanan",
     sentence: "Pelayanan terjadi di faskes.",
     desc: "Setiap tindakan medis dan kehadiran pasien dicatat langsung di titik pelayanan.",
     status: "DRAFT" as PassportStatus,
     nodes: 1,
   },
   {
-    stage: "Evidence",
+    stage: "Bukti",
     sentence: "Bukti klinis terbentuk.",
     desc: "SOAP klinis, foto terapi, dan biometric check-in diverifikasi ke rantai bukti graf.",
     status: "ACTIVE" as PassportStatus,
@@ -37,16 +37,16 @@ const STEPS = [
     nodes: 5,
   },
   {
-    stage: "Claim",
-    sentence: "Claim diverifikasi anti-fraud.",
+    stage: "Klaim",
+    sentence: "Klaim diverifikasi anti-fraud.",
     desc: "BPJS menerima klaim yang telah tervalidasi selaras 100% tanpa risiko audit dispute.",
     status: "SUPPORTED" as PassportStatus,
     nodes: 6,
   },
 ];
 
-const LEFT_NODES = ["Patient", "Provider", "Treatment"];
-const RIGHT_NODES = ["Note", "Billing", "Claim"];
+const LEFT_NODES = ["Pasien", "Provider", "Treatment"];
+const RIGHT_NODES = ["Catatan", "Billing", "Claim"];
 
 function NodeChip({
   label,

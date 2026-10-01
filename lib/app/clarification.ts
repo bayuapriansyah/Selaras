@@ -6,6 +6,14 @@ import { getFacility, getProvider } from "@/lib/app/selectors";
 
 export const CLARIFICATION_DEADLINE = "2026-10-01";
 
+const STATUS_TEXT: Record<string, string> = {
+  SUPPORTED: "Didukung",
+  "NEEDS REVIEW": "Perlu tinjauan",
+  INCOMPLETE: "Belum lengkap",
+  CONTRADICTED: "Bertentangan",
+  "NEEDS CLARIFICATION": "Perlu klarifikasi",
+};
+
 export function problemSessions(view: ClaimView): SessionView[] {
   return view.sessions.filter((s) => s.evaluation.status !== "SUPPORTED");
 }
@@ -79,13 +87,13 @@ export function buildClarificationLetter(
     `Dengan ini kami meminta klarifikasi atas sesi ${nn} pada klaim ${view.claim.id} (${view.template.name}) untuk ${patient}, periode ${formatDate(view.claim.periodFrom)}–${formatDate(view.claim.periodTo)}, dengan rincian sebagai berikut:`,
     "",
     `   Tanggal pelayanan : ${session.service.date}, pukul ${session.service.startTime}${session.service.endTime ? `–${session.service.endTime}` : ""}`,
-    `   Status evaluasi   : ${session.evaluation.status}`,
+    `   Status evaluasi   : ${STATUS_TEXT[session.evaluation.status] ?? session.evaluation.status}`,
     `   Bukti terkait     :`,
     missingLines,
     ...(conflict
       ? [
           "",
-          "   Kronologi terindikasi konflik timestamp: billing tercatat sebelum tindakan selesai, sehingga sesi ini berstatus CONTRADICTED.",
+          "   Kronologi terindikasi konflik timestamp: billing tercatat sebelum tindakan selesai, sehingga sesi ini berstatus BERTENTANGAN.",
         ]
       : []),
     "",

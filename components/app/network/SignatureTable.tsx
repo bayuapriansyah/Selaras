@@ -33,7 +33,7 @@ export function SignatureTable({
               <th className="hidden px-4 py-3 font-medium md:table-cell">
                 Kondisi
               </th>
-              <th className="px-4 py-3 font-medium">Severity</th>
+              <th className="px-4 py-3 font-medium">Tingkat risiko</th>
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="hidden px-4 py-3 text-right font-medium sm:table-cell">
                 Match
@@ -74,7 +74,7 @@ export function SignatureTable({
                 <td className="hidden max-w-[14rem] px-4 py-3 text-[11px] text-slate-500 md:table-cell">
                   <span className="line-clamp-2">
                     {r.signature.originFacilityId
-                      ? `Origin ${r.signature.originFacilityId}`
+                      ? `Asal ${r.signature.originFacilityId}`
                       : "Semua faskes cakupan"}
                   </span>
                 </td>
@@ -106,7 +106,7 @@ export function SignatureTable({
       </div>
       {visible.length === 0 ? (
         <p className="p-5 text-center text-sm text-slate-500">
-          Belum ada Risk Signature di registry.
+          Belum ada Risk Signature di registri.
         </p>
       ) : null}
       {compact && rows.length > 4 ? (

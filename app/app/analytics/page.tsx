@@ -53,6 +53,20 @@ const STATUS_COLOR: Record<string, string> = {
   "NEEDS CLARIFICATION": C.sky,
 };
 
+const STATUS_TEXT: Record<string, string> = {
+  SUPPORTED: "Didukung",
+  "NEEDS REVIEW": "Perlu\ntinjauan",
+  INCOMPLETE: "Belum\nlengkap",
+  CONTRADICTED: "Bertentangan",
+  "NEEDS CLARIFICATION": "Perlu\nklarifikasi",
+};
+
+const PASSPORT_TEXT: Record<string, string> = {
+  DRAFT: "Draf",
+  ACTIVE: "Aktif",
+  COMPLETE: "Lengkap",
+};
+
 const axisStyle = { fontSize: 11, fill: "#64748b" };
 
 function ChartCard({
@@ -88,7 +102,7 @@ export default function AnalyticsPage() {
       "NEEDS CLARIFICATION",
     ];
     const statusData = statuses.map((s) => ({
-      name: s.replace("NEEDS ", "NEEDS\n"),
+      name: STATUS_TEXT[s] ?? s,
       full: s,
       count: rows.filter((r) => r.status === s).length,
       fill: STATUS_COLOR[s],
@@ -118,7 +132,7 @@ export default function AnalyticsPage() {
       }));
 
     const passportData = ["DRAFT", "ACTIVE", "COMPLETE"].map((p) => ({
-      name: p,
+      name: PASSPORT_TEXT[p],
       value: passports.filter((r) => r.passport.status === p).length,
       fill: p === "COMPLETE" ? C.emerald : p === "ACTIVE" ? C.sky : C.slate,
     }));
@@ -249,7 +263,7 @@ export default function AnalyticsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Analytics"
+        title="Analitik"
         description="Metrik operasional evidence: status klaim, cakupan passport, dan distribusi pelayanan."
         actions={
           <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
@@ -477,7 +491,7 @@ export default function AnalyticsPage() {
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartCard
           title="Status klaim"
-          subtitle="Distribusi status review queue saat ini."
+          subtitle="Distribusi status antrean tinjauan saat ini."
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.statusData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
@@ -493,7 +507,7 @@ export default function AnalyticsPage() {
                 }}
                 formatter={(v, _n, item) => [
                   `${Number(v)} klaim`,
-                  (item?.payload as { full?: string })?.full ?? "",
+                  String((item?.payload as { name?: string })?.name ?? ""),
                 ]}
               />
               <Bar dataKey="count" radius={[8, 8, 0, 0]}>

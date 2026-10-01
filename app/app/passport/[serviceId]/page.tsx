@@ -22,6 +22,17 @@ import {
 import { passportRow } from "@/lib/app/services/passportService";
 import { formatDate, formatDateTime } from "@/lib/app/format";
 
+const STATUS_TEXT: Record<string, string> = {
+  SUPPORTED: "Didukung",
+  "NEEDS REVIEW": "Perlu tinjauan",
+  INCOMPLETE: "Belum lengkap",
+  CONTRADICTED: "Bertentangan",
+  "NEEDS CLARIFICATION": "Perlu klarifikasi",
+  DRAFT: "Draf",
+  ACTIVE: "Aktif",
+  COMPLETE: "Lengkap",
+};
+
 export default function PassportDetailPage() {
   const params = useParams<{ serviceId: string }>();
   const serviceId = params.serviceId;
@@ -144,7 +155,7 @@ export default function PassportDetailPage() {
                   </div>
                   {ok ? (
                     <span className="shrink-0 self-start rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-[10px] tracking-wider text-emerald-700 sm:self-auto">
-                      PRESENT
+                      TERCATAT
                     </span>
                   ) : (
                     <button
@@ -170,9 +181,9 @@ export default function PassportDetailPage() {
             <h2 className="text-sm font-semibold text-slate-900">Identitas</h2>
             <dl className="mt-3 flex flex-col gap-2.5 text-sm">
               {[
-                ["Status passport", passport.status],
-                ["Status sesi", sessionStatus],
-                ["Coverage", `${passport.coverage}%`],
+                ["Status passport", STATUS_TEXT[passport.status] ?? passport.status],
+                ["Status sesi", STATUS_TEXT[sessionStatus] ?? sessionStatus],
+                ["Cakupan", `${passport.coverage}%`],
                 ["Tarif", `Rp ${template.rate.toLocaleString("id-ID")}`],
                 ["Provider", provider?.name ?? service.providerId],
                 ["Titik layanan", service.servicePoint],

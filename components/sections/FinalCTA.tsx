@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/layout/Reveal";
 
-const CHAIN = ["Capture", "Passport", "Reconstruct", "Reconcile"];
+const CHAIN = ["Catat", "Passport", "Rekonstruksi", "Rekonsiliasi"];
 
 export function FinalCTA() {
   return (
@@ -65,9 +65,9 @@ export function FinalCTA() {
                 id="cta-title"
                 className="mt-7 max-w-[15ch] text-[2.5rem] leading-[1.02] font-bold tracking-tight text-slate-950 sm:text-6xl lg:text-[4.8rem] lg:leading-[0.98]"
               >
-                Make every healthcare service{" "}
+                Buat setiap layanan kesehatan{" "}
                 <span className="text-sky-600">
-                  traceable.
+                  dapat dilacak.
                 </span>
               </h2>
 
@@ -112,7 +112,7 @@ export function FinalCTA() {
                   aria-hidden="true"
                   className="size-2 animate-pulse rounded-full bg-emerald-600"
                 />
-                Healthkathon BPJS Kesehatan 2026 · Service Integrity Layer Prototype
+                Healthkathon BPJS Kesehatan 2026 · Prototipe Lapisan Integritas Pelayanan
               </p>
             </div>
 
@@ -136,7 +136,7 @@ export function FinalCTA() {
                     PASSPORT DIGITAL RESMI
                   </div>
                   <span className="font-mono text-[11px] text-slate-400">
-                    BPJS Ready
+                    Siap BPJS
                   </span>
                 </div>
 
@@ -156,7 +156,7 @@ export function FinalCTA() {
                 <div className="relative z-10 rounded-2xl border border-slate-200/90 bg-white/95 p-4 shadow-xs space-y-2">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-900">
                     <span>Episode #EP-2026-0881</span>
-                    <span className="font-mono text-emerald-600">✓ Validated</span>
+                    <span className="font-mono text-emerald-600">✓ Tervalidasi</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
                     <span>SHA-256 Merkle Root:</span>

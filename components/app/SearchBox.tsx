@@ -14,17 +14,17 @@ type Result =
 
 const PAGES: { label: string; sub: string; href: string }[] = [
   { label: "Ringkasan", sub: "Dashboard", href: "/app" },
-  { label: "Pelayanan", sub: "Point of care", href: "/app/pelayanan" },
+  { label: "Pelayanan", sub: "Titik layanan", href: "/app/pelayanan" },
   { label: "Service Passport", sub: "Daftar passport", href: "/app/passport" },
-  { label: "Klaim", sub: "Review queue", href: "/app/claims" },
-  { label: "Pengingat", sub: "SLA & reminder", href: "/app/reminders" },
-  { label: "Analytics", sub: "Metrik", href: "/app/analytics" },
+  { label: "Klaim", sub: "Antrean tinjauan", href: "/app/claims" },
+  { label: "Pengingat", sub: "SLA & pengingat", href: "/app/reminders" },
+  { label: "Analitik", sub: "Metrik", href: "/app/analytics" },
   { label: "Template Layanan", sub: "Evidence wajib", href: "/app/service-templates" },
   { label: "Log Audit", sub: "Riwayat aktivitas", href: "/app/audit-log" },
-  { label: "Integrity Mesh", sub: "Network risk intelligence", href: "/app/network" },
-  { label: "Risk Signatures", sub: "Registry jaringan", href: "/app/network/signatures" },
-  { label: "Network Matches", sub: "Match adaptive verification", href: "/app/network/matches" },
-  { label: "Publish Queue", sub: "Governance proposal", href: "/app/network/publish" },
+  { label: "Integrity Mesh", sub: "Risiko jaringan", href: "/app/network" },
+  { label: "Risk Signatures", sub: "Registrasi jaringan", href: "/app/network/signatures" },
+  { label: "Match Jaringan", sub: "Verifikasi adaptif", href: "/app/network/matches" },
+  { label: "Antrean Publikasi", sub: "Proposal tata kelola", href: "/app/network/publish" },
   { label: "Pengaturan", sub: "Role & demo", href: "/app/settings" },
 ];
 

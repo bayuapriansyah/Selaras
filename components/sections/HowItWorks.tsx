@@ -4,7 +4,7 @@ import { Reveal } from "@/components/layout/Reveal";
 const STEPS = [
   {
     number: "01",
-    title: "Capture",
+    title: "Catat",
     desc: "Bentuk bukti saat pelayanan terjadi.",
   },
   {
@@ -14,12 +14,12 @@ const STEPS = [
   },
   {
     number: "03",
-    title: "Reconstruct",
+    title: "Rekonstruksi",
     desc: "Bangun kembali cerita pelayanan.",
   },
   {
     number: "04",
-    title: "Reconcile",
+    title: "Rekonsiliasi",
     desc: "Bandingkan pelayanan dengan billing dan claim.",
   },
 ] as const;
@@ -54,7 +54,7 @@ export function HowItWorks() {
       <div className="relative z-10 mx-auto max-w-[88rem] px-5 lg:px-8">
         <div className="max-w-3xl">
           <div className="flex items-center gap-3 mb-5">
-            <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">02 / How it works</span>
+            <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">02 / Cara Kerja</span>
             <div className="h-px w-12 bg-slate-200" />
           </div>
           <SectionHeading
@@ -125,10 +125,10 @@ export function HowItWorks() {
                 <div className="flex items-center justify-between gap-2">
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50/80 px-2.5 py-1 font-mono text-[10px] font-semibold text-sky-700">
                     <span className="size-1.5 rounded-full bg-sky-500 animate-pulse" />
-                    POINT-OF-CARE CAPTURE
+                    REKAM DI TITIK ASUHAN
                   </div>
                   <span className="font-mono text-[11px] text-slate-500">
-                    Latency &lt; 120ms
+                    Latensi &lt; 120ms
                   </span>
                 </div>
 
@@ -152,7 +152,7 @@ export function HowItWorks() {
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-slate-600">Verifikasi Integritas</span>
-                    <span className="font-mono text-sky-600 font-semibold">100% Deterministic</span>
+                    <span className="font-mono text-sky-600 font-semibold">100% Deterministik</span>
                   </div>
                   <div className="pt-1 border-t border-slate-100 flex items-center gap-1.5 text-[11px] text-slate-500">
                     <span className="text-emerald-500">●</span>

@@ -28,17 +28,17 @@ export type PassportData = {
 
 export const heroPassport: PassportData = {
   id: "SRV-1025-08",
-  service: "Physiotherapy",
+  service: "Fisioterapi",
   patient: "P-1025",
   provider: "T-031",
   window: "14:03 · 14:41",
   evidence: [
-    { id: "identity", label: "Identity", state: "supported" },
+    { id: "identity", label: "Identitas", state: "supported" },
     { id: "provider", label: "Provider", state: "supported" },
-    { id: "point", label: "Service Point", state: "supported" },
+    { id: "point", label: "Titik Layanan", state: "supported" },
     { id: "treatment", label: "Treatment", state: "supported" },
-    { id: "note", label: "Clinical Note", state: "supported" },
-    { id: "completion", label: "Completion", state: "supported" },
+    { id: "note", label: "Catatan Klinis", state: "supported" },
+    { id: "completion", label: "Penyelesaian", state: "supported" },
   ],
   coverage: 100,
   status: "SUPPORTED",
@@ -51,37 +51,37 @@ export const passportStates: {
 }[] = [
   {
     status: "DRAFT",
-    title: "Draft",
+    title: "Draf",
     description:
       "Passport dibuat saat pelayanan dijadwalkan. Belum ada evidence yang tercatat.",
   },
   {
     status: "ACTIVE",
-    title: "Active",
+    title: "Aktif",
     description:
       "Pelayanan sedang berlangsung. Evidence mengalir masuk dari titik layanan.",
   },
   {
     status: "COMPLETE",
-    title: "Complete",
+    title: "Lengkap",
     description:
       "Seluruh evidence wajib sudah terkumpul dan tercatat pada episode ini.",
   },
   {
     status: "INCOMPLETE",
-    title: "Incomplete",
+    title: "Belum Lengkap",
     description:
       "Sebagian evidence belum terbentuk. Episode ditandai untuk diperiksa.",
   },
   {
     status: "REVIEW",
-    title: "Review",
+    title: "Tinjauan",
     description:
       "Ada inkonsistensi atau proof gap. Episode masuk antrean pemeriksaan reviewer.",
   },
   {
     status: "VERIFIED",
-    title: "Verified",
+    title: "Terverifikasi",
     description:
       "Reviewer telah memastikan jejak pelayanan selaras dengan billing dan klaim.",
   },
@@ -93,7 +93,7 @@ export const passportFacets: {
   note: string;
 }[] = [
   {
-    label: "Service Identity",
+    label: "Identitas Layanan",
     value: "SRV-1025-08",
     note: "Episode, layanan, pasien, dan penyedia dalam satu identitas.",
   },
@@ -119,7 +119,7 @@ export const passportFacets: {
   },
   {
     label: "Status",
-    value: "Supported",
+    value: "Didukung",
     note: "Keadaan passport saat ini, selalu bisa ditelusuri.",
   },
 ];

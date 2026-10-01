@@ -173,7 +173,7 @@ export function ServicePassportCard({
                 isDark ? "text-white/50" : "text-slate-500",
               )}
             >
-              Patient
+              Pasien
             </dt>
             <dd
               className={cn(
@@ -221,7 +221,7 @@ export function ServicePassportCard({
                 : "bg-slate-200/70 text-slate-700",
             )}
           >
-            {data.evidence.length} checks
+            {data.evidence.length} cek
           </span>
         </div>
 

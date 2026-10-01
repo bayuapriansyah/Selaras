@@ -47,17 +47,17 @@ export function Problem() {
       <div className="relative z-10 mx-auto max-w-[88rem] px-5 lg:px-8">
         <div className="max-w-3xl">
           <div className="flex items-center gap-3 mb-5">
-            <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">01 / Problem</span>
+            <span className="text-[11px] font-mono font-medium tracking-[0.18em] text-slate-400 uppercase">01 / Masalah</span>
             <div className="h-px w-12 bg-slate-200" />
           </div>
           <SectionHeading
             id="problem-title"
             title={
               <>
-                A claim tells what was billed.
+                Klaim menceritakan apa yang ditagihkan.
                 <br />
                 <span className="text-sky-600">
-                  SELARAS reconstructs what happened.
+                  SELARAS merekonstruksi apa yang sebenarnya terjadi.
                 </span>
               </>
             }
@@ -73,7 +73,7 @@ export function Problem() {
             <div className="border-b border-slate-100 p-6 sm:p-8 lg:border-r lg:border-b-0 bg-slate-50/60">
               <div className="flex items-center justify-between">
                 <p className="font-mono text-xs tracking-[0.2em] text-slate-500 uppercase font-medium">
-                  Billed Claim
+                  Klaim yang Ditagihkan
                 </p>
                 <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 font-mono text-[10px] text-slate-600 shadow-2xs">
                   Klaim Konvensional
@@ -83,7 +83,7 @@ export function Problem() {
                 10
               </p>
               <p className="mt-3 text-base text-slate-600">
-                Physiotherapy Sessions diajukan ke BPJS
+                Sesi Fisioterapi diajukan ke BPJS
               </p>
 
               <div
@@ -108,7 +108,7 @@ export function Problem() {
             <div className="p-6 sm:p-8 bg-white">
               <div className="flex items-center justify-between">
                 <p className="font-mono text-xs tracking-[0.2em] text-sky-700 uppercase font-semibold">
-                  Service Evidence Verified
+                  Evidence Pelayanan Terverifikasi
                 </p>
                 <span className="rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 font-mono text-[10px] text-sky-800 font-medium">
                   SELARAS Engine
@@ -125,7 +125,7 @@ export function Problem() {
                       aria-hidden="true"
                       className="size-2 rounded-full bg-emerald-500"
                     />
-                    Fully Supported
+                    Didukung Penuh
                   </p>
                 </div>
                 <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4">
@@ -137,7 +137,7 @@ export function Problem() {
                       aria-hidden="true"
                       className="size-2 rounded-full bg-amber-500"
                     />
-                    Need Review
+                    Perlu Ditinjau
                   </p>
                 </div>
               </div>
@@ -217,7 +217,7 @@ export function Problem() {
                   <span className="font-mono text-emerald-600 font-semibold">✓ Cocok</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-700">
-                  <span>Audit Trail Timestamp</span>
+                  <span>Jejak Audit &amp; Cap Waktu</span>
                   <span className="font-mono text-emerald-600 font-semibold">✓ Sinkron</span>
                 </div>
               </div>
@@ -246,7 +246,7 @@ export function Problem() {
 
         <Reveal className="mt-8 flex flex-wrap items-center gap-3" y={14}>
           <span className="inline-flex h-6 items-center rounded-full border border-slate-200 bg-slate-100 px-3 font-mono text-[10px] tracking-wider text-slate-600 uppercase">
-            ✦ Synthetic Demonstration
+            ✦ Demonstrasi Sintetis
           </span>
           <p className="text-xs sm:text-sm text-slate-500">
             Angka pada visualisasi ini adalah ilustrasi Golden Case untuk evaluasi integritas pelayanan fisioterapi.
