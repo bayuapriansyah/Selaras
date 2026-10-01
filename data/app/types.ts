@@ -204,7 +204,8 @@ export type AuditEntity =
   | "Claim"
   | "Review"
   | "Signal"
-  | "User";
+  | "User"
+  | "Network";
 
 export type AuditEntry = {
   id: string;

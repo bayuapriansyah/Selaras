@@ -1,11 +1,19 @@
 import type { AuditEntry, ClaimStatus, ReviewAction, Service } from "@/data/app/types";
 import type {
+  NetworkProposal,
+  RiskSignature,
+  SignatureFeedback,
+  SignatureMatch,
+  SignatureStatus,
+} from "@/data/app/network";
+import type {
   ClaimView,
   DataSource,
   PassportRow,
   QueueRow,
 } from "@/lib/app/selectors";
 import type { GraphPayload } from "@/lib/app/graph";
+import type { ImmunityView, NetworkStats } from "@/lib/app/network";
 
 export interface ClaimRepository {
   queue(
@@ -40,6 +48,47 @@ export interface GraphRepository {
   graph(claimId: string, src: DataSource): GraphPayload | null;
 }
 
+export interface RiskSignatureRepository {
+  list(
+    statusOverrides: Record<string, SignatureStatus> | undefined,
+    proposals: NetworkProposal[],
+    src: DataSource,
+  ): RiskSignature[];
+  byId(
+    signatureId: string,
+    statusOverrides: Record<string, SignatureStatus> | undefined,
+    proposals: NetworkProposal[],
+    src: DataSource,
+  ): RiskSignature | undefined;
+}
+
+export interface SignatureMatchRepository {
+  active(
+    signatures: RiskSignature[],
+    src: DataSource,
+  ): SignatureMatch[];
+  byClaim(claimId: string, signatures: RiskSignature[], src: DataSource): SignatureMatch[];
+}
+
+export interface NetworkFeedbackRepository {
+  list(feedbacks: SignatureFeedback[]): SignatureFeedback[];
+}
+
+export interface NetworkRiskRepository {
+  stats(input: {
+    statusOverrides: Record<string, SignatureStatus> | undefined;
+    proposals: NetworkProposal[];
+    feedbacks: SignatureFeedback[];
+    src: DataSource;
+  }): NetworkStats;
+  immunity(
+    signatureId: string,
+    statusOverrides: Record<string, SignatureStatus> | undefined,
+    proposals: NetworkProposal[],
+    src: DataSource,
+  ): ImmunityView;
+}
+
 export type Repositories = {
   claims: ClaimRepository;
   services: ServiceRepository;
@@ -47,4 +96,8 @@ export type Repositories = {
   reviews: ReviewRepository;
   audit: AuditRepository;
   graphs: GraphRepository;
+  signatures: RiskSignatureRepository;
+  matches: SignatureMatchRepository;
+  feedback: NetworkFeedbackRepository;
+  network: NetworkRiskRepository;
 };

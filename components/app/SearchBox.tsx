@@ -21,6 +21,10 @@ const PAGES: { label: string; sub: string; href: string }[] = [
   { label: "Analytics", sub: "Metrik", href: "/app/analytics" },
   { label: "Template Layanan", sub: "Evidence wajib", href: "/app/service-templates" },
   { label: "Log Audit", sub: "Riwayat aktivitas", href: "/app/audit-log" },
+  { label: "Integrity Mesh", sub: "Network risk intelligence", href: "/app/network" },
+  { label: "Risk Signatures", sub: "Registry jaringan", href: "/app/network/signatures" },
+  { label: "Network Matches", sub: "Match adaptive verification", href: "/app/network/matches" },
+  { label: "Publish Queue", sub: "Governance proposal", href: "/app/network/publish" },
   { label: "Pengaturan", sub: "Role & demo", href: "/app/settings" },
 ];
 

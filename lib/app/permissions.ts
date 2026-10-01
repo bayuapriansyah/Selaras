@@ -11,6 +11,8 @@ export type Permission =
   | "captureClinical"
   | "captureSystem"
   | "reviewClaim"
+  | "proposeSignature"
+  | "publishSignature"
   | "resetDemo"
   | "manageRoles";
 
@@ -20,6 +22,8 @@ export const PERMISSIONS: Permission[] = [
   "captureClinical",
   "captureSystem",
   "reviewClaim",
+  "proposeSignature",
+  "publishSignature",
   "resetDemo",
   "manageRoles",
 ];
@@ -30,6 +34,8 @@ export const PERMISSION_LABEL: Record<Permission, string> = {
   captureClinical: "Catat evidence klinis",
   captureSystem: "Catat billing / klaim",
   reviewClaim: "Review & aksi klaim",
+  proposeSignature: "Usulkan Risk Signature",
+  publishSignature: "Publikasikan Risk Signature",
   resetDemo: "Reset demo",
   manageRoles: "Kelola role user lain",
 };
@@ -41,13 +47,15 @@ const MATRIX: Record<Role, ReadonlySet<Permission>> = {
     "captureSystem",
   ]),
   provider: new Set<Permission>(["captureClinical", "captureSystem"]),
-  reviewer: new Set<Permission>(["reviewClaim"]),
+  reviewer: new Set<Permission>(["reviewClaim", "proposeSignature"]),
   admin: new Set<Permission>([
     "startService",
     "captureOperational",
     "captureClinical",
     "captureSystem",
     "reviewClaim",
+    "proposeSignature",
+    "publishSignature",
     "resetDemo",
     "manageRoles",
   ]),
@@ -97,6 +105,8 @@ export const PERMISSION_ROLES: Record<Permission, Role[]> = {
   captureClinical: ["provider", "admin"],
   captureSystem: ["operator", "provider", "admin"],
   reviewClaim: ["reviewer", "admin"],
+  proposeSignature: ["reviewer", "admin"],
+  publishSignature: ["admin"],
   resetDemo: ["admin"],
   manageRoles: ["admin"],
 };

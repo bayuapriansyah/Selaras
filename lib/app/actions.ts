@@ -16,6 +16,14 @@ export const AUDIT_LABEL: Record<string, string> = {
   SLA_REMINDER: "Pengingat SLA dikirim",
   SLA_ESCALATED: "Eskalasi SLA ke Admin",
   ROLE_CHANGED: "Role diubah",
+  SIG_PROPOSED: "Risk Signature diusulkan",
+  SIG_APPROVED: "Proposal disetujui",
+  SIG_REJECTED: "Proposal ditolak",
+  SIG_REVISION: "Revisi proposal diminta",
+  SIG_PUBLISHED: "Risk Signature dipublikasikan",
+  NET_MATCH: "Match jaringan aktif",
+  NET_VERIFICATION_STARTED: "Verifikasi step-up dimulai",
+  NET_VERIFICATION_RESULT: "Hasil verifikasi step-up",
 };
 
 export const REVIEW_LABEL: Record<ReviewActionKind, string> = {

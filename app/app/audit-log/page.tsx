@@ -25,6 +25,14 @@ const ACTION_TONE: Record<string, string> = {
   SLA_REMINDER: "border-sky-200 bg-sky-50 text-sky-700",
   SLA_ESCALATED: "border-red-200 bg-red-50 text-red-700",
   ROLE_CHANGED: "border-sky-200 bg-sky-50 text-sky-700",
+  SIG_PROPOSED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  SIG_APPROVED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  SIG_REJECTED: "border-red-200 bg-red-50 text-red-700",
+  SIG_REVISION: "border-amber-200 bg-amber-50 text-amber-700",
+  SIG_PUBLISHED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  NET_MATCH: "border-amber-200 bg-amber-50 text-amber-700",
+  NET_VERIFICATION_STARTED: "border-sky-200 bg-sky-50 text-sky-700",
+  NET_VERIFICATION_RESULT: "border-slate-200 bg-slate-50 text-slate-600",
 };
 
 export default function AuditLogPage() {

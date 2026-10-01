@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Layers3,
   Menu,
+  Network,
   ScrollText,
   Settings,
   Stethoscope,
@@ -49,6 +50,12 @@ const NAV: { group: string; items: { label: string; href: string; icon: typeof B
       { label: "Analytics", href: "/app/analytics", icon: BarChart3 },
       { label: "Template Layanan", href: "/app/service-templates", icon: Layers3 },
       { label: "Log Audit", href: "/app/audit-log", icon: ScrollText },
+    ],
+  },
+  {
+    group: "Jaringan",
+    items: [
+      { label: "Integrity Mesh", href: "/app/network", icon: Network },
     ],
   },
   {

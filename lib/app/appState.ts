@@ -1,6 +1,11 @@
 import { APP_TODAY } from "@/data/app/seed";
 import { EVIDENCE_LABEL } from "@/data/app/types";
 import type {
+  NetworkProposal,
+  SignatureFeedback,
+  SignatureStatus,
+} from "@/data/app/network";
+import type {
   AuditEntry,
   CaptureChannel,
   ClaimStatus,
@@ -31,6 +36,9 @@ export type PersistedState = {
   notifications: Notification[];
   readIds: string[];
   nextSeq: number;
+  proposals: NetworkProposal[];
+  signatureStatus: Record<string, SignatureStatus>;
+  feedbacks: SignatureFeedback[];
 };
 
 export type StartServiceInput = {
@@ -50,6 +58,9 @@ export const initialPersistedState: PersistedState = {
   notifications: [],
   readIds: [],
   nextSeq: 1,
+  proposals: [],
+  signatureStatus: {},
+  feedbacks: [],
 };
 
 export function clockHM(): string {

@@ -22,6 +22,7 @@ import {
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatusBadge } from "@/components/app/StatusBadge";
+import { ClaimNetworkPanel } from "@/components/app/network/ClaimNetworkPanel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -310,6 +311,8 @@ export default function ClaimDetailPage() {
           ))}
         </div>
       </section>
+
+      <ClaimNetworkPanel claimId={claimId} />
 
       <section
         aria-label="Skor risiko"

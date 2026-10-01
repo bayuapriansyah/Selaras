@@ -9,6 +9,7 @@ import {
   getService,
 } from "@/lib/app/selectors";
 import { buildSeedGraph } from "@/lib/app/graph";
+import { networkRiskRepositories } from "@/lib/app/repositories/network";
 import type { Repositories } from "@/lib/app/repositories/types";
 
 export const syntheticRepositories: Repositories = {
@@ -33,4 +34,5 @@ export const syntheticRepositories: Repositories = {
   graphs: {
     graph: (claimId, src) => buildSeedGraph(claimId, src ?? seedSource),
   },
+  ...networkRiskRepositories,
 };
