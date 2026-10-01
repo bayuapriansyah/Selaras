@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<title>SELARAS — Proposal Healthkathon 2026</title>
+<style>
+  @page { size: 13.333in 7.5in; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --ink: #0A1424; --paper: #FBFCFE; --blue: #2F6BFF; --blue-soft: #EAF1FF;
+    --green: #0E9F6E; --green-soft: #E6F7F0; --amber: #C2740A; --amber-soft: #FDF3E2;
+    --red: #C73737; --muted: #566480; --line: #E3E9F2; --dark2: #12213A;
+  }
+  html, body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: #fff; }
+  .slide { width: 13.333in; height: 7.5in; position: relative; overflow: hidden; background: var(--paper);
+           page-break-after: always; break-after: page; display: flex; flex-direction: column; }
+  .slide:last-child { page-break-after: auto; }
+
+  /* ---------- header / footer ---------- */
+  .s-head { display: flex; justify-content: space-between; align-items: flex-end;
+            padding: 34px 56px 0 56px; }
+  .kicker { font-size: 11.5px; font-weight: 700; letter-spacing: 2.2px; color: var(--blue);
+            text-transform: uppercase; display: block; margin-bottom: 7px; }
+  .s-head h2 { font-size: 31px; line-height: 1.12; font-weight: 800; letter-spacing: -0.4px; }
+  .s-num { font-size: 13px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .s-num b { font-size: 21px; color: var(--ink); }
+  .s-body { flex: 1; display: grid; gap: 30px; padding: 20px 56px 6px; min-height: 0; align-items: center; }
+  .s-foot { padding: 6px 56px 16px; font-size: 9.5px; color: #8A96AC; line-height: 1.45; border-top: 1px solid var(--line); margin: 0 56px 0; }
+  .s-foot.unbordered { border-top: none; }
+
+  /* ---------- typography ---------- */
+  p { font-size: 15px; line-height: 1.58; color: #243046; }
+  p + p { margin-top: 10px; }
+  .lead { font-size: 16.5px; font-weight: 600; color: var(--ink); line-height: 1.5; }
+  .hl { background: linear-gradient(transparent 62%, #CFE0FF 62%); font-weight: 700; }
+  ul.pts { list-style: none; margin-top: 12px; }
+  ul.pts li { position: relative; padding-left: 22px; font-size: 14.5px; line-height: 1.5; color: #243046; margin-bottom: 9px; }
+  ul.pts li::before { content: ""; position: absolute; left: 0; top: 7px; width: 9px; height: 9px;
+                      border-radius: 3px; background: var(--blue); }
+  ul.pts li b { color: var(--ink); }
+  .mini { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  /* ---------- blocks ---------- */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .card h4 { font-size: 13.5px; font-weight: 800; margin-bottom: 5px; }
+  .card p { font-size: 12.8px; line-height: 1.5; color: #3A465E; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .stat .v { font-size: 30px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 11px; color: var(--muted); line-height: 1.4; margin-top: 3px; }
+  .stat.green .v { color: var(--green); } .stat.blue .v { color: var(--blue); } .stat.amber .v { color: var(--amber); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
+          padding: 4px 11px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); }
+  .chip.g { background: var(--green-soft); color: var(--green); }
+  .chip.a { background: var(--amber-soft); color: var(--amber); }
+  .chip.n { background: #EEF1F6; color: var(--muted); }
+  .tag-sim { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .6px;
+             color: var(--amber); background: var(--amber-soft); border: 1px dashed #E7C489;
+             padding: 3px 9px; border-radius: 6px; }
+
+  .shot { border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 26px rgba(10,20,36,.10);
+          display: block; width: 100%; background: #fff; }
+  .shot-cap { font-size: 10.5px; color: var(--muted); margin-top: 6px; text-align: center; }
+  .visual { display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+
+  /* ---------- cover ---------- */
+  .cover { background: radial-gradient(1200px 700px at 78% -10%, #1C3B6E 0%, var(--dark2) 42%, var(--ink) 100%); color: #fff; }
+  .cover .grid-bg { position: absolute; inset: 0; opacity: .5;
+    background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 44px 44px; }
+  .cover-body { position: relative; display: grid; grid-template-columns: 57fr 43fr; gap: 34px; padding: 54px 56px; flex: 1; align-items: center; }
+  .theme-pill { display: inline-block; font-size: 12.5px; font-weight: 800; letter-spacing: 2.6px; text-transform: uppercase;
+                color: #9EC1FF; border: 1px solid #33507F; background: rgba(47,107,255,.14); padding: 7px 16px; border-radius: 999px; }
+  .cover h1 { font-size: 76px; font-weight: 800; letter-spacing: -2.5px; margin-top: 22px; line-height: 1; }
+  .cover h1 span { color: #6FE3B8; }
+  .cover .tag { font-size: 20.5px; line-height: 1.45; color: #D7E2F5; margin-top: 16px; font-weight: 500; max-width: 560px; }
+  .cover .cat { margin-top: 22px; font-size: 13px; color: #AFC3E4; line-height: 1.6; }
+  .cover .cat b { color: #fff; }
+  .cover-foot { position: relative; display: flex; justify-content: space-between; padding: 0 56px 34px; font-size: 12.5px; color: #8FA5CC; }
+  .cover-foot b { color: #D7E2F5; }
+  .cover-shot { border-radius: 14px; border: 1px solid #33507F; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+
+  /* ---------- comparison lanes (slide 5) ---------- */
+  .lane { border-radius: 14px; padding: 15px 17px; }
+  .lane .lane-k { font-size: 10.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 10px; }
+  .lane-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .lane-step { font-size: 11.5px; font-weight: 700; padding: 7px 11px; border-radius: 8px; background: #fff; border: 1px solid var(--line); color: #34405A; }
+  .lane-arrow { color: #9AA7BE; font-size: 13px; font-weight: 800; }
+  .lane-a { background: #F1F3F7; border: 1px solid #DFE4EC; } .lane-a .lane-k { color: var(--muted); }
+  .lane-b { background: linear-gradient(135deg, #0A1424, #16305A); border: 1px solid #29456F; }
+  .lane-b .lane-k { color: #6FE3B8; } .lane-b .lane-step { background: rgba(255,255,255,.08); border-color: #3B5A8A; color: #E4EDFC; }
+  .lane-b .lane-step.acc { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .lane-b .lane-arrow { color: #7E97C4; }
+  .lane-note { font-size: 11px; margin-top: 8px; color: var(--muted); }
+  .lane-b .lane-note { color: #9DB4DA; }
+
+  /* ---------- flow list (slide 6) ---------- */
+  .flow { list-style: none; counter-reset: fl; }
+  .flow li { counter-increment: fl; position: relative; padding: 0 0 10px 34px; font-size: 12.6px; color: #243046; line-height: 1.4; }
+  .flow li::before { content: counter(fl); position: absolute; left: 0; top: -1px; width: 21px; height: 21px; border-radius: 50%;
+                     background: var(--ink); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .flow li::after { content: ""; position: absolute; left: 10px; top: 21px; bottom: -1px; width: 1.5px; background: var(--line); }
+  .flow li:last-child::after { display: none; }
+  .flow li b { display: block; font-size: 13px; color: var(--ink); }
+  .flow li.hlstep::before { background: var(--blue); }
+
+  /* ---------- architecture 3-panel (slide 9) ---------- */
+  .arch { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 8px; grid-template-rows: auto auto; align-content: center; }
+  .arch-col { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; }
+  .arch-col .ah { font-size: 10.5px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: var(--blue); margin-bottom: 9px; }
+  .arch-col ul { list-style: none; }
+  .arch-col li { font-size: 11.6px; color: #34405A; line-height: 1.4; padding: 5.5px 0; border-bottom: 1px dashed #EDF1F7; }
+  .arch-col li:last-child { border-bottom: none; }
+  .arch-col li b { color: var(--ink); }
+  .arch-arrow { align-self: center; color: var(--blue); font-size: 20px; font-weight: 800; }
+  .arch-foot { grid-column: 1 / -1; font-size: 11px; color: var(--muted); background: var(--amber-soft); border: 1px dashed #E7C489;
+               border-radius: 10px; padding: 8px 12px; line-height: 1.45; }
+
+  /* ---------- maturity ladder (slide 13) ---------- */
+  .ladder { display: flex; gap: 7px; align-items: flex-end; }
+  .ladder .rung { flex: 1; text-align: center; border-radius: 10px 10px 0 0; padding: 10px 4px 9px; font-size: 11.5px; font-weight: 800;
+                  background: #EEF1F6; color: var(--muted); border: 1px solid var(--line); border-bottom: none; }
+  .ladder .rung.on { background: linear-gradient(180deg, var(--blue), #1E51CC); color: #fff; border-color: var(--blue);
+                     box-shadow: 0 8px 20px rgba(47,107,255,.35); transform: translateY(-8px); }
+  .ladder .rung small { display: block; font-size: 9px; font-weight: 600; margin-top: 2px; opacity: .8; }
+  .checkgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+  .checkgrid div { font-size: 12px; color: #243046; display: flex; gap: 7px; align-items: flex-start; line-height: 1.35; }
+  .checkgrid div::before { content: "✓"; color: var(--green); font-weight: 900; }
+
+  /* ---------- timeline (slide 14) ---------- */
+  .tl { position: relative; padding-left: 4px; }
+  .tl::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; width: 3px; background: linear-gradient(var(--blue), var(--green)); border-radius: 3px; }
+  .tl-item { position: relative; padding: 0 0 13px 34px; }
+  .tl-item::before { content: ""; position: absolute; left: 3px; top: 5px; width: 17px; height: 17px; border-radius: 50%;
+                     background: #fff; border: 4px solid var(--blue); }
+  .tl-item.g::before { border-color: var(--green); }
+  .tl-item .ph { font-size: 10.5px; font-weight: 800; letter-spacing: 1.2px; color: var(--blue); text-transform: uppercase; }
+  .tl-item .tt { font-size: 14.5px; font-weight: 800; margin: 2px 0 3px; }
+  .tl-item .dd { font-size: 12px; color: #3A465E; line-height: 1.45; }
+
+  /* ---------- before/after (slide 15) ---------- */
+  .ba { display: flex; flex-direction: column; gap: 13px; }
+  .ba-row .bl { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; color: #34405A; }
+  .ba-row .bl b { font-size: 13px; color: var(--ink); }
+  .bar { height: 24px; border-radius: 7px; position: relative; overflow: hidden; background: #EDF1F7; }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 7px; font-style: normal; display: flex; align-items: center;
+           padding-left: 10px; font-size: 11.5px; font-weight: 800; color: #fff; white-space: nowrap; }
+  .bar.f { display: flex; overflow: visible; }
+  .bar.f i { position: relative; flex: none; }
+  .bar.f .lab { align-self: center; padding-left: 10px; font-size: 11.5px; font-weight: 700; color: #34405A; white-space: nowrap; }
+  .bar .before { background: #9AA7BE; } .bar .after { background: var(--green); } .bar .hold { background: var(--amber); }
+
+  /* ---------- table (slide 16) ---------- */
+  table.kpi { width: 100%; border-collapse: collapse; }
+  table.kpi th { font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); text-align: left;
+                 padding: 7px 10px; border-bottom: 2px solid var(--line); }
+  table.kpi td { font-size: 12.2px; padding: 8.5px 10px; border-bottom: 1px solid var(--line); color: #2B3752; line-height: 1.4; vertical-align: top; }
+  table.kpi td b { color: var(--ink); }
+  table.kpi tr:last-child td { border-bottom: none; }
+
+  /* ---------- risk cards (slide 17) ---------- */
+  .rcards { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  .rcard { background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 10px; padding: 12px 14px; }
+  .rcard.g { border-left-color: var(--green); } .rcard.a { border-left-color: var(--amber); } .rcard.r { border-left-color: var(--red); }
+  .rcard h5 { font-size: 12.5px; font-weight: 800; margin-bottom: 4px; }
+  .rcard p { font-size: 11.6px; line-height: 1.45; color: #3A465E; }
+
+  /* ---------- team (slide 19) ---------- */
+  .team { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .tcard { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; text-align: center; }
+  .tavatar { width: 62px; height: 62px; border-radius: 50%; margin: 0 auto 10px; background: var(--blue-soft); color: var(--blue);
+             display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; border: 2px dashed #A9C3FF; }
+  .tcard .tn { font-size: 15px; font-weight: 800; }
+  .tcard .tr { font-size: 11.5px; color: var(--blue); font-weight: 700; margin-top: 2px; }
+  .tcard .td { font-size: 11.5px; color: var(--muted); margin-top: 7px; line-height: 1.45; }
+
+  /* ---------- closing ---------- */
+  .closing { background: radial-gradient(1100px 650px at 25% 110%, #1C3B6E 0%, var(--dark2) 45%, var(--ink) 100%); color: #fff; }
+  .closing .grid-bg { position: absolute; inset: 0; opacity: .5;
+    background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 44px 44px; }
+  .closing-body { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 90px; text-align: center; }
+  .closing-body .q { font-size: 34px; font-weight: 800; line-height: 1.35; letter-spacing: -0.5px; }
+  .closing-body .q span { color: #6FE3B8; }
+  .closing-body .sub { font-size: 15.5px; color: #B9C9E6; margin-top: 18px; line-height: 1.6; }
+  .closing-badges { display: flex; gap: 10px; justify-content: center; margin-top: 26px; }
+  .closing-badges span { font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px;
+                         border: 1px solid #33507F; background: rgba(255,255,255,.06); color: #D7E2F5; }
+
+  .g2 { grid-template-columns: 58fr 42fr; }
+  .g2v { grid-template-columns: 42fr 58fr; }
+  .g3 { grid-template-columns: 1fr 1fr 1fr; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SLIDE 1 · COVER ═══════════════ -->
+<section class="slide cover">
+  <div class="grid-bg"></div>
+  <div class="cover-body">
+    <div>
+      <span class="theme-pill">Detect Smarter, Protect JKN</span>
+      <h1>SEL<span>ARAS</span></h1>
+      <div class="tag">Setiap pelayanan meninggalkan <b>bukti</b> sebelum menjadi klaim.</div>
+      <div class="cat">
+        <b>Proposal Healthkathon 2026</b> · Efisiensi Risiko Program JKN<br>
+        Kategori: <b>Fasilitas Kesehatan</b> · Sub-kategori fokus: <b>Phantom &amp; Repeat Billing</b><br>
+        Prototipe berjalan — bukti dibentuk di titik pelayanan, bukan rebutan setelah klaim.
+      </div>
+    </div>
+    <div class="visual">
+      <img class="shot cover-shot" data-shot="01-hero" alt="Tampilan aplikasi SELARAS">
+    </div>
+  </div>
+  <div class="cover-foot">
+    <span>Tim: <b>[NAMA TIM]</b> — [NAMA 1] · [NAMA 2] · [NAMA 3]</span>
+    <span>Prototipe · Data sintetis · Jakarta, Oktober 2026</span>
+  </div>
+</section>
+
+<!-- ═══════════════ SLIDE 2 · POSITIONING ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 1 · Identitas &amp; Positioning</span><h2>SELARAS — lapisan integritas pelayanan JKN</h2></div>
+    <div class="s-num"><b>02</b>/20</div>
+  </div>
+  <div class="s-body g2">
+    <div>
+      <p class="lead">SELARAS <span class="hl">membentuk bukti sejak titik pelayanan</span> — lalu memastikan cerita pelayanan tetap selaras hingga menjadi klaim.</p>
+      <ul class="pts">
+        <li><b>Posisi:</b> sistem pendukung keputusan pra-pembayaran bagi reviewer &amp; faskes — bukan pengganti, bukan penuduh.</li>
+        <li><b>Satu kategori, satu solusi:</b> Efisiensi Risiko Fasilitas Kesehatan → <b>Phantom &amp; Repeat Billing</b> (terkait: Inflated Bills &amp; Cloning — sinyal penjiplakan).</li>
+        <li><b>Keunikan:</b> pendekatan <b>evidence-first</b> — klaim tidak dinilai dari skor anomali, tapi dicocokkan dengan bukti pelayanan yang memang seharusnya ada.</li>
+      </ul>
+      <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+        <span class="chip">Point-of-care evidence</span><span class="chip g">Service Passport</span>
+        <span class="chip">Explainable reconciliation</span><span class="chip a">Human-in-the-loop</span>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="lane lane-a" style="margin-bottom:12px;">
+        <div class="lane-k">Pendekatan umum</div>
+        <div class="lane-row"><span class="lane-step">Klaim masuk</span><span class="lane-arrow">→</span><span class="lane-step">Skor anomali</span><span class="lane-arrow">→</span><span class="lane-step">Reviewer bingung</span></div>
+        <div class="lane-note">Skor tanpa konteks bukti → sulit dijelaskan, rawan salah tuduh.</div>
+      </div>
+      <div class="lane lane-b">
+        <div class="lane-k">SELARAS</div>
+        <div class="lane-row"><span class="lane-step acc">Pelayanan</span><span class="lane-arrow">→</span><span class="lane-step">Bukti + Passport</span><span class="lane-arrow">→</span><span class="lane-step">Rekonsiliasi</span><span class="lane-arrow">→</span><span class="lane-step">Reviewer siap putuskan</span></div>
+        <div class="lane-note">Bukti lengkap sebelum klaim — konteks utuh dalam satu layar.</div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Struktur &amp; komponen mengikuti Template Proposal Peserta resmi Healthkathon 2026 (healthkathon.bpjs-kesehatan.go.id). Prototipe menggunakan data sintetis — bukan data peserta JKN riil.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 3 · MASALAH & URGENSI ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 2 · Masalah &amp; Urgensi</span><h2>Klaim menumpuk di skala ratusan juta — buktinya tercecer</h2></div>
+    <div class="s-num"><b>03</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div class="visual">
+      <div class="stat" style="margin-bottom:10px;"><div class="v" style="color:var(--ink);">284.514.113</div><div class="l">Peserta JKN — satu klaim keliru kecil pun terakumulasi di skala ini</div></div>
+      <div class="g2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="stat blue"><div class="v">23.812</div><div class="l">FKTP mitra — titik pelayanan tempat bukti seharusnya terbentuk</div></div>
+        <div class="stat amber"><div class="v">3.222</div><div class="l">RS/Klinik Utama mitra (+6.631 apotek &amp; optik)</div></div>
+      </div>
+      <div class="card" style="margin-top:11px; background:var(--blue-soft); border-color:#C9DBFF;">
+        <p style="font-size:13px; font-style:italic;">“Pemanfaatan AI perlu dimulai dari identifikasi masalah, bukan dari teknologi yang tersedia.”</p>
+        <p style="font-size:11px; color:var(--muted); margin-top:6px;">— Setiaji, Direktur Teknologi Informasi BPJS Kesehatan, Seminar Series Healthkathon 2026 (BINUS, 25 Sep 2026)</p>
+      </div>
+    </div>
+    <div>
+      <p><b>Phantom &amp; Repeat Billing</b> — klaim atas layanan yang tidak pernah diberikan atau diulang — menyusup tepat di celah <span class="hl">antara pelayanan yang terjadi dan bukti yang terekam</span>.</p>
+      <ul class="pts">
+        <li><b>Urgensi:</b> reviewer baru menerima bukti setelah klaim masuk; saat itu pelayanan sudah lewat — buktinya hilang tak berjejak.</li>
+        <li><b>Siapa terdampak:</b> peserta (jaminan jadi mahal &amp; lambat), faskes jujur (antrean lebih panjang), BPJS (arus kas &amp; kepercayaan).</li>
+        <li><b>Bingkai:</b> ini soal <b>efisiensi &amp; integritas</b>, bukan tuduhan — data menunjukkan celah sistemik, bukan kesalahan pihak tertentu.</li>
+      </ul>
+      <p class="mini" style="margin-top:10px;">Deteksi dini gagal selama bukti pelayanan tidak tersusun menjadi cerita yang bisa dicocokkan dengan klaim.</p>
+    </div>
+  </div>
+  <div class="s-foot">Sumber: BPJS Kesehatan, “Data JKN” laman resmi bpjs-kesehatan.go.id (s.d. 31 Agustus 2026 — Laporan Pengelolaan Program JKN). Kutipan: MediaIndonesia, 26 September 2026. Definisi sub-kategori: Panduan resmi Healthkathon 2026.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 4 · AKAR MASALAH ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 2 · Akar Masalah</span><h2>Di mana ceritanya patah</h2></div>
+    <div class="s-num"><b>04</b>/20</div>
+  </div>
+  <div class="s-body g2">
+    <div>
+      <p class="lead">Pelayanan menghasilkan bukti — tetapi bukti itu <span class="hl">tidak pernah disusun</span> menjadi sesuatu yang bisa dicek ulang.</p>
+      <ul class="pts">
+        <li><b>6 titik bukti per sesi:</b> kedatangan → provider → tindakan → catatan → billing → klaim. Tanpa rekaman terstruktur, celah di tengah rantai tak terlihat.</li>
+        <li><b>Missing ≠ fraud.</b> Bukti yang hilang bisa karena data sinkron lambat atau dokumentasi terlambat — karena itu SELARAS menandai <b>“perlu ditinjau”</b>, bukan menuduh.</li>
+        <li><b>Masalah bukan niat, tapi arsitektur:</b> selama bukti baru dirakit setelah klaim, selama itu pula phantom/repeat billing punya celah bersembunyi.</li>
+      </ul>
+      <div class="card" style="margin-top:12px;">
+        <h4>Contoh nyata — kasus emas CLM-08421</h4>
+        <p>10 sesi fisioterapi diklaim; <b>hanya 8 yang meninggalkan bukti lengkap</b>. Sesi 09 &amp; 10 tak punya bukti tindakan/penyelesaian → sistem menahan Rp 700.000 untuk ditinjau manusia.</p>
+      </div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 460 330" style="width:100%;">
+        <text x="8" y="18" font-size="11" font-weight="800" fill="#566480" letter-spacing="1.5">RANTAI PELAYANAN → KLAIM</text>
+        <g font-size="11.5" font-weight="700">
+          <rect x="8"  y="36" width="128" height="46" rx="9" fill="#EAF1FF" stroke="#BBD1FF"/><text x="72" y="56" text-anchor="middle" fill="#2F6BFF">1 · Kedatangan</text><text x="72" y="72" text-anchor="middle" font-size="9.5" font-weight="600" fill="#566480">QR check-in</text>
+          <rect x="166" y="36" width="128" height="46" rx="9" fill="#EAF1FF" stroke="#BBD1FF"/><text x="230" y="56" text-anchor="middle" fill="#2F6BFF">2 · Tindakan</text><text x="230" y="72" text-anchor="middle" font-size="9.5" font-weight="600" fill="#566480">sesi &amp; SOAP</text>
+          <rect x="324" y="36" width="128" height="46" rx="9" fill="#EAF1FF" stroke="#BBD1FF"/><text x="388" y="56" text-anchor="middle" fill="#2F6BFF">3 · Billing</text><text x="388" y="72" text-anchor="middle" font-size="9.5" font-weight="600" fill="#566480">tarif per sesi</text>
+          <line x1="136" y1="59" x2="166" y2="59" stroke="#2F6BFF" stroke-width="2.5"/>
+          <line x1="294" y1="59" x2="324" y2="59" stroke="#2F6BFF" stroke-width="2.5"/>
+        </g>
+        <!-- gap -->
+        <rect x="8" y="112" width="444" height="74" rx="11" fill="#FDF3E2" stroke="#E7C489" stroke-dasharray="6 5"/>
+        <text x="230" y="137" text-anchor="middle" font-size="12.5" font-weight="800" fill="#C2740A">CERAH DI SINI — lalu putus</text>
+        <text x="230" y="157" text-anchor="middle" font-size="11" fill="#7A6134">Bukti tidak tersusun · catatan terpisah di banyak sistem</text>
+        <text x="230" y="174" text-anchor="middle" font-size="11" fill="#7A6134">Celah inilah tempat phantom &amp; repeat billing bersembunyi</text>
+        <!-- klaim -->
+        <rect x="8" y="212" width="444" height="50" rx="11" fill="#0A1424"/>
+        <text x="230" y="235" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">KLAIM diajukan — cerita harus dirakit ulang</text>
+        <text x="230" y="252" text-anchor="middle" font-size="10.5" fill="#9DB4DA">Reviewer: “10 sesi — buktinya di mana?”</text>
+        <path d="M230 186 L230 208" stroke="#C2740A" stroke-width="2.5" stroke-dasharray="5 4"/>
+        <text x="242" y="203" font-size="10" font-weight="700" fill="#C2740A">terlambat</text>
+        <rect x="8" y="282" width="444" height="40" rx="11" fill="#E6F7F0" stroke="#9FDEC6"/>
+        <text x="230" y="307" text-anchor="middle" font-size="12" font-weight="800" fill="#0E9F6E">SELARAS: bukti disusun di titik pelayanan → siap dicek, bukan dirakit</text>
+      </svg>
+      <div class="shot-cap">Alur bukti — enam titik cek per sesi fisioterapi</div>
+    </div>
+  </div>
+  <div class="s-foot">Kasus CLM-08421 adalah data sintetis prototipe untuk mendemonstrasikan alur; bukan data peserta JKN riil. Prinsip “missing ≠ fraud” mengikuti panduan resmi Healthkathon 2026 (human-in-the-loop, tanpa vonis otomatis).</div>
+</section>
+
+<!-- ═══════════════ SLIDE 5 · SOLUSI ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 3 · Solusi &amp; Keunggulan</span><h2>Satu pergeseran inti: dari menilai klaim → menyiapkan bukti</h2></div>
+    <div class="s-num"><b>05</b>/20</div>
+  </div>
+  <div class="s-body" style="grid-template-columns:1fr; gap:16px;">
+    <div style="display:grid; grid-template-columns:34fr 66fr; gap:26px; align-items:center;">
+      <div>
+        <p><b>Yang dibangun:</b> alur bukti <span class="hl">Point of Care → Service Passport → Rekonsiliasi → Penjelasan → Reviewer</span>.</p>
+        <ul class="pts" style="margin-top:8px;">
+          <li><b>Jawab masalah:</b> celah bukti ditutup <i>sebelum</i> klaim terbentuk.</li>
+          <li><b>Pembeda:</b> bukti, bukan skor, yang menjadi dasar penilaian.</li>
+          <li><b>Cocok konteks JKN:</b> pra-pembayaran, lintas faskes, tanpa vonis otomatis.</li>
+        </ul>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:11px;">
+        <div class="lane lane-a">
+          <div class="lane-k">Cara lama — reaktif</div>
+          <div class="lane-row">
+            <span class="lane-step">Klaim</span><span class="lane-arrow">→</span>
+            <span class="lane-step">Skor anomali AI</span><span class="lane-arrow">→</span>
+            <span class="lane-step">Reviewer cari bukti sendiri</span><span class="lane-arrow">→</span>
+            <span class="lane-step">Keputusan lambat / diragukan</span>
+          </div>
+          <div class="lane-note">Skor hitam-putih · bukti tercecer · sulit dijelaskan ke faskes</div>
+        </div>
+        <div class="lane lane-b">
+          <div class="lane-k">SELARAS — proaktif</div>
+          <div class="lane-row">
+            <span class="lane-step acc">Pelayanan dicatat</span><span class="lane-arrow">→</span>
+            <span class="lane-step">Service Passport</span><span class="lane-arrow">→</span>
+            <span class="lane-step">Rekonsiliasi klaim↔bukti</span><span class="lane-arrow">→</span>
+            <span class="lane-step">AI menjelaskan</span><span class="lane-arrow">→</span>
+            <span class="lane-step acc">Reviewer memutuskan</span>
+          </div>
+          <div class="lane-note">Bukti lengkap · jejak audit utuh · keputusan tetap di tangan manusia</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+      <div class="card"><h4>1 · Bukti lebih dulu</h4><p>Setiap sesi wajib meninggalkan jejak (kedatangan, tindakan, catatan, billing) sebelum klaim bisa disusun.</p></div>
+      <div class="card"><h4>2 · Dijelaskan, bukan ditebak</h4><p>Gap, konflik, dan dampak rupiah ditampilkan alasan-nya — bukan sekadar angka skor.</p></div>
+      <div class="card"><h4>3 · Manusia yang memutuskan</h4><p>AI hanya menyusun bukti yang tersedia; keputusan akhir selalu reviewer ber-otorisasi RBAC.</p></div>
+    </div>
+  </div>
+  <div class="s-foot">Seluruh alur dapat didemokan end-to-end pada prototipe ini (lihat Bagian 5). Data ditampilkan bersifat sintetis.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 6 · CARA KERJA ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 3 · Cara Kerja</span><h2>Sembilan langkah dari pelayanan sampai keputusan</h2></div>
+    <div class="s-num"><b>06</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div>
+      <p>Petugas <b>memulai pelayanan</b> lalu memindai QR pasien; setiap bukti <b>dicatat di titik pelayanan</b> dan langsung mengisi Service Passport episode tersebut.</p>
+      <p>Saat klaim masuk, mesin <b> merekonstruksi episode</b> dan mencocokkan jejak pelayanan dengan billing. Perbedaan (gap / konflik) beserta <b>dampak finansialnya</b> diserahkan ke AI Evidence Reasoner — yang hanya boleh memakai bukti yang ada.</p>
+      <p>Reviewer melihat ringkasan, membuka <b>replay</b> kronologis, lalu memilih keputusan. Setiap keputusan <b>tercatat permanen</b> di log audit.</p>
+      <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+        <span class="chip g">Golden case &lt; 5 menit</span><span class="chip">Tanpa data manual tambahan</span><span class="chip">4 peran RBAC</span>
+      </div>
+    </div>
+    <div class="visual">
+      <ol class="flow">
+        <li><b>Service</b>Pelayanan fisioterapi dimulai di faskes</li>
+        <li><b>Capture</b>QR check-in + bukti dicatat (6 jenis per sesi)</li>
+        <li><b>Service Passport</b>Identitas bukti episode terbentuk otomatis</li>
+        <li class="hlstep"><b>Evidence Graph</b>86 node · 113 rel siap ditelusuri</li>
+        <li class="hlstep"><b>Episode Reconstruction</b>Kronologi 10 sesi tersusun</li>
+        <li class="hlstep"><b>Reconciliation</b>Klaim ↔ jejak pelayanan dipadankan</li>
+        <li><b>Gap / Conflict / Impact</b>Sesi 09–10 ditandai · Rp 700.000 antre</li>
+        <li class="hlstep"><b>AI Evidence Reasoner</b>5 blok penjelasan berbasis bukti</li>
+        <li><b>Human Review</b>Keputusan reviewer → audit log</li>
+      </ol>
+    </div>
+  </div>
+  <div class="s-foot">Jumlah node/rel graf diambil langsung dari API graf prototipe (kasus CLM-08421). Langkah 1–7 berjalan otomatis; langkah 8–9 menuntut intervensi manusia sesuai prinsip human-in-the-loop.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 7 · PASSPORT + GOLDEN CASE ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 3 · Bukti Kerja · Golden Case</span><h2>Service Passport &amp; kasus emas CLM-08421</h2></div>
+    <div class="s-num"><b>07</b>/20</div>
+  </div>
+  <div class="s-body g2">
+    <div>
+      <div style="display:flex; gap:16px; align-items:center;">
+        <svg viewBox="0 0 132 132" style="width:132px; flex:none;">
+          <circle cx="66" cy="66" r="52" fill="none" stroke="#EDF1F7" stroke-width="17"/>
+          <circle cx="66" cy="66" r="52" fill="none" stroke="#0E9F6E" stroke-width="17" stroke-dasharray="261.4 326.7" stroke-dashoffset="0" transform="rotate(-90 66 66)"/>
+          <circle cx="66" cy="66" r="52" fill="none" stroke="#C2740A" stroke-width="17" stroke-dasharray="65.3 326.7" stroke-dashoffset="-261.4" transform="rotate(-90 66 66)"/>
+          <text x="66" y="62" text-anchor="middle" font-size="30" font-weight="800" fill="#0A1424">10</text>
+          <text x="66" y="82" text-anchor="middle" font-size="10.5" fill="#566480">sesi diklaim</text>
+        </svg>
+        <div>
+          <div style="display:flex; gap:8px; margin-bottom:7px;"><span class="chip g">8 didukung bukti lengkap</span></div>
+          <div style="display:flex; gap:8px; margin-bottom:7px;"><span class="chip a">2 perlu tinjauan</span></div>
+          <div class="mini">Fisioterapi · tarif Rp 350.000/sesi ·<br>total diajukan <b style="color:var(--ink);">Rp 3.500.000</b></div>
+        </div>
+      </div>
+      <ul class="pts" style="margin-top:13px;">
+        <li><b>Sesi 09:</b> EVIDENCE_GAP — tidak ada bukti tindakan &amp; penyelesaian <span class="chip a" style="margin-left:4px;">+14</span></li>
+        <li><b>Sesi 10:</b> MISSING_COMPLETION — bukti penyelesaian belum ada <span class="chip a" style="margin-left:4px;">+7</span></li>
+        <li><b>Skor 27 (RENDAH)</b> vs ambang gerbang 65 → <b>gerbang pra-bayar tetap membuka yang berbukti</b>, menahan yang belum (Rp 700.000) — transparan, bukan disembunyikan.</li>
+      </ul>
+      <p class="mini" style="margin-top:8px;">Keputusan tetap di reviewer: Didukung · Perlu Klarifikasi · Ditolak — semuanya tercatat di audit log.</p>
+    </div>
+    <div class="visual">
+      <img class="shot" data-shot="12-claim-top" alt="Detail klaim CLM-08421">
+      <div class="shot-cap">Halaman klaim — matriks 10 sesi × 6 jenis bukti, sinyal risiko, dan rekomendasi aksi</div>
+    </div>
+  </div>
+  <div class="s-foot">Angka klaim, skor, dan dampak finansial berasal dari prototipe dengan data sintetis (bukan transaksi JKN riil). Sinyal #14 “Menagihkan tindakan yang tidak dilakukan” termasuk kelas Phantom &amp; Repeat Billing.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 8 · FITUR INTI ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 3 · Demo Produk</span><h2>Yang bisa dilihat langsung hari ini</h2></div>
+    <div class="s-num"><b>08</b>/20</div>
+  </div>
+  <div class="s-body g2v" style="--tight:1;">
+    <div>
+      <p class="lead" style="font-size:15.5px;">Prototipe <span class="hl">berjalan penuh di browser</span> — tanpa data manual tambahan.</p>
+      <ul class="pts" style="margin-top:9px; --li:1;">
+        <li style="margin-bottom:7px;"><b>Point of care:</b> mulai pelayanan → scan QR → catat bukti → passport terisi otomatis.</li>
+        <li style="margin-bottom:7px;"><b>Antrean tinjauan &amp; Matriks Bukti:</b> filter klaim, 10 sesi × 6 bukti satu pandangan.</li>
+        <li style="margin-bottom:7px;"><b>Replay &amp; Graf:</b> kronologi + 86 node bukti yang bisa diklik.</li>
+        <li style="margin-bottom:7px;"><b>AI &amp; Kopilot Klarifikasi:</b> penjelasan 5 blok + draf surat siap kirim.</li>
+        <li style="margin-bottom:7px;"><b>Integrity Mesh:</b> pola risiko menyebar antar 4 faskes simulasi.</li>
+        <li style="margin-bottom:7px;"><b>Analitik &amp; Log Audit:</b> metrik operasi + jejak permanen.</li>
+      </ul>
+      <div style="display:flex; gap:8px; margin-top:9px; flex-wrap:wrap;">
+        <span class="chip g">Desktop &amp; mobile</span><span class="chip">Responsif 390–1440px</span><span class="chip">0 error runtime</span>
+      </div>
+    </div>
+    <div class="visual" style="gap:8px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div><img class="shot" style="height:146px; object-fit:cover; object-position:top;" data-shot="10-dashboard" alt="Ringkasan dasbor"><div class="shot-cap">Dasbor ringkasan</div></div>
+        <div><img class="shot" style="height:146px; object-fit:cover; object-position:top;" data-shot="13-claim-matriks" alt="Matriks Bukti"><div class="shot-cap">Matriks Bukti</div></div>
+      </div>
+      <div><img class="shot" style="height:236px; object-fit:cover; object-position:top;" data-shot="11-pelayanan" alt="Workspace pelayanan"><div class="shot-cap">Point of care — catat bukti saat pelayanan berlangsung</div></div>
+    </div>
+  </div>
+  <div class="s-foot">Tangkapan layar diambil dari prototipe lokal (data sintetis). Seluruh alur demo selesai &lt; 5 menit mengikuti Definition of Done pada PRD.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 9 · PENDEKATAN TEKNIS ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 4 · Pendekatan Teknis &amp; Data</span><h2>Dari mana datanya, diolah bagaimana, jadi apa</h2></div>
+    <div class="s-num"><b>09</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div>
+      <p><b>Input — data apa yang dibutuhkan?</b></p>
+      <p class="mini">Event pelayanan (kedatangan, tindakan, SOAP, billing), identitas faskes &amp; provider, tarif layanan. <b>Sumber saat ini: sintetis lokal.</b> Untuk produksi: adapter ke VClaim / SATUSEHAT (read-only) — tersedia melalui kanal integrasi resmi BPJS.</p>
+      <p style="margin-top:9px;"><b>Proses — kenapa cara ini?</b></p>
+      <p class="mini">Aturan deterministik (bukan LLM) untuk rekonsiliasi &amp; skor — dapat diuji &amp; diaudit. Graf bukti untuk penelusuran relasi. LLM hanya untuk <b>menyusun penjelasan</b> dari bukti yang ada (evidence-grounded, schema-terbatas).</p>
+      <p style="margin-top:9px;"><b>Output — untuk siapa?</b></p>
+      <p class="mini">Reviewer (keputusan pra-payar), faskes (klarifikasi), admin (governance jaringan) — semua lewat RBAC.</p>
+      <div class="card" style="margin-top:10px; background:var(--amber-soft); border-color:#E7C489;">
+        <h4>Asumsi &amp; keterbatasan yang kami sadari</h4>
+        <p>Data masih sintetis · integrasi VClaim/SATUSEHAT belum dilakukan (dirancang lewat adapter) · kualitas penjelasan AI bergantung kelengkapan bukti masuk.</p>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="arch">
+        <div class="arch-col">
+          <div class="ah">1 · Input Data</div>
+          <ul>
+            <li><b>Event pelayanan</b> (6 jenis bukti)</li>
+            <li>Identitas faskes &amp; provider</li>
+            <li>Tarif &amp; template layanan</li>
+            <li>QR check-in pasien</li>
+            <li class="mini" style="color:var(--amber);">Prod: adapter VClaim/SATUSEHAT</li>
+          </ul>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-col">
+          <div class="ah">2 · Proses &amp; Model</div>
+          <ul>
+            <li><b>Aturan deterministik</b> reconciliation</li>
+            <li>Evidence Graph 86 node/113 rel</li>
+            <li>Skor risiko + ambang gerbang 65</li>
+            <li>LLM <b>hanya untuk penjelasan</b></li>
+            <li>Risk Signature (pola lintas faskes)</li>
+          </ul>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-col">
+          <div class="ah">3 · Output &amp; Keputusan</div>
+          <ul>
+            <li>Gap &amp; konflik per sesi</li>
+            <li>Penjelasan AI 5 blok</li>
+            <li>Dampak rupiah (tahan/lanjut)</li>
+            <li>Keputusan <b>reviewer</b> → audit log</li>
+            <li>Pola disetujui → mesh aktif</li>
+          </ul>
+        </div>
+        <div class="arch-foot">🔒 Privasi sejak arsitektur: data pasien tidak pernah keluar dari faskes — yang dibagikan ke jaringan hanya <b>pola risiko (signature)</b>, itupun setelah lolos antrean persetujuan.</div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Arsitektur prototipe: Next.js/TypeScript monolitik dengan modul terpisah (capture, passport, reconciliation, graph, AI, mesh) — siap dipecah menjadi service terpisah pada fase MVP (lihat Bagian 6).</div>
+</section>
+
+<!-- ═══════════════ SLIDE 10 · AI ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 4 · Kualitas Teknologi · AI Tepat Guna</span><h2>AI yang menjelaskan — bukan yang menuduh</h2></div>
+    <div class="s-num"><b>10</b>/20</div>
+  </div>
+  <div class="s-body g2">
+    <div>
+      <ul class="pts" style="margin-top:0;">
+        <li><b>5 blok penjelasan:</b> Apa yang kami tahu → Apa yang hilang → Apa yang didukung → Mengapa perlu ditinjau → Yang perlu diperiksa.</li>
+        <li><b>Grounded:</b> penjelasan hanya boleh memakai bukti yang ada di episode — prompt berbasis evidence + output terbatas skema.</li>
+        <li><b>Tanpa vonis fraud:</b> AI tidak pernah menyimpulkan “ini kecurangan”; ia menyusun fakta agar manusia bisa memutuskan.</li>
+        <li><b>Kalkulasi bukan LLM:</b> skor, gap, dan angka rupiah dihitung aturan deterministik.</li>
+        <li><b>Kopilot Klarifikasi:</b> draf surat klarifikasi disusun dari bukti — reviewer tinggal sesuaikan &amp; kirim.</li>
+      </ul>
+      <div class="card" style="margin-top:11px; background:#F1F3F7;">
+        <h4>Batasan yang kami akui</h4>
+        <p>Bias data latih sintetis · penjelasan bisa tidak lengkap bila bukti masuk buruk → reviewer wajib memverifikasi silang (human-in-the-loop tidak bisa dilepas).</p>
+      </div>
+    </div>
+    <div class="visual">
+      <img class="shot" data-shot="21-ai-panel" alt="Panel AI Evidence Reasoner">
+      <div class="shot-cap">Halaman AI klaim — blok penjelasan, sinyal risiko, dan Kopilot Klarifikasi</div>
+    </div>
+  </div>
+  <div class="s-foot">Kepatuhan panduan: “AI harus mendukung, bukan menggantikan, keputusan manusia” — tanpa ketergantungan LLM pada perhitungan deterministik (PRD Bagian Keterbatasan Produk).</div>
+</section>
+
+<!-- ═══════════════ SLIDE 11 · GRAPH & REPLAY ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 4 · Kualitas Teknologi</span><h2>Rekonstruksi episode: bukan klaim, tapi ceritanya</h2></div>
+    <div class="s-num"><b>11</b>/20</div>
+  </div>
+  <div class="s-body" style="grid-template-columns:1fr; gap:14px;">
+    <div style="display:grid; grid-template-columns:56fr 44fr; gap:20px; height:100%;">
+      <div class="visual">
+        <img class="shot" data-shot="17-graph" alt="Graf evidence">
+        <div class="shot-cap">Evidence Graph CLM-08421 — 86 node · 113 rel, dapat ditelusuri per jenis bukti</div>
+      </div>
+      <div>
+        <div style="display:flex; gap:9px; margin-bottom:10px;">
+          <div class="stat blue" style="flex:1;"><div class="v">86</div><div class="l">node bukti</div></div>
+          <div class="stat green" style="flex:1;"><div class="v">113</div><div class="l">relasi terlacak</div></div>
+          <div class="stat amber" style="flex:1;"><div class="v">70</div><div class="l">langkah replay</div></div>
+        </div>
+        <ul class="pts" style="margin-top:0;">
+          <li style="margin-bottom:7px;"><b>Node = kenyataan, bukan opini:</b> pasien, provider, 10 sesi, bukti, klaim, dan sinyal — semuanya bertaut dengan <b>provenance</b>: sumber, waktu observasi, pencatat.</li>
+          <li style="margin-bottom:7px;"><b>Replay:</b> menelusuri ulang kronologi sesi 1–10 langkah demi langkah — melihat persis kapan bukti sesi 09 tidak muncul.</li>
+          <li style="margin-bottom:7px;">Penelusuran inilah yang membuat reviewer bisa menjawab <b>“kenapa”</b>, bukan hanya “berapa skornya”.</li>
+        </ul>
+        <div style="margin-top:9px;"><img class="shot" style="height:170px; object-fit:cover; object-position:top;" data-shot="16-replay" alt="Replay episode"><div class="shot-cap">Replay episode — 70 langkah, dapat dijeda &amp; diskip</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Mode graf prototipe (seed sintetis) — arah yang sama akan dipakai pada data integrasi nyata; PostgreSQL tetap sumber kebenaran transaksional, graf sebagai lapisan analitik-relasional.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 12 · INTEGRITY MESH ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 3/4 · Kreativitas &amp; Inovasi</span><h2>Integrity Mesh — satu temuan, perlindungan bersama</h2></div>
+    <div class="s-num"><b>12</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div>
+      <p class="lead">Pola tervalidasi di satu faskes <span class="hl">meningkatkan kewaspadaan faskes lain</span> — tanpa berbagi satu pun data pasien.</p>
+      <div class="lane" style="background:var(--blue-soft); border:1px solid #C9DBFF; margin-top:11px;">
+        <div class="lane-k" style="color:var(--blue);">Siklus tata kelola signature</div>
+        <div class="lane-row">
+          <span class="lane-step">USULAN</span><span class="lane-arrow">→</span>
+          <span class="lane-step">DISETUJUI</span><span class="lane-arrow">→</span>
+          <span class="lane-step">DIVALIDASI</span><span class="lane-arrow">→</span>
+          <span class="lane-step" style="background:var(--green); border-color:var(--green); color:#fff;">AKTIF</span>
+        </div>
+        <div class="lane-note">Tidak ada pola yang langsung aktif — selalu lewat antrean persetujuan + verifikasi manusia.</div>
+      </div>
+      <ul class="pts">
+        <li><b>Step-up verification:</b> match di tingkat lanjut memicu verifikasi tambahan — lolos (otomatis) / klarifikasi / tinjauan manusia.</li>
+        <li><b>Batas privasi eksplisit:</b> “pola dibagikan, data pasien tidak” — tercantum di UI, bukan cuma di dokumen.</li>
+        <li><b>Skor lokal tidak berubah:</b> lapisan jaringan hanya menambah rekomendasi — peringkas klasik tetap adil.</li>
+      </ul>
+    </div>
+    <div class="visual">
+      <img class="shot" data-shot="19-network" alt="Integrity Mesh">
+      <div class="shot-cap">Integrity Mesh — 4 faskes simulasi, propagation &amp; kekebalan jaringan (sebelum publikasi)</div>
+    </div>
+  </div>
+  <div class="s-foot">Simulasi jaringan prototipe: 4 faskes (A–D), 2 Risk Signature (1 menunggu publikasi), 12 match siap publikasi. Angka sintetis — bukan jaringan faskes nyata.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 13 · KEMATANGAN ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 5 · Tingkat Kematangan &amp; Prototype</span><h2>Jujur di posisi kami: Prototype — sudah berjalan, belum pilot</h2></div>
+    <div class="s-num"><b>13</b>/20</div>
+  </div>
+  <div class="s-body g2">
+    <div>
+      <div class="ladder" style="margin-bottom:14px;">
+        <div class="rung">Ide</div><div class="rung">Mockup</div><div class="rung on">Prototype<small>← posisi kami</small></div><div class="rung">MVP</div><div class="rung">Produk</div>
+      </div>
+      <p class="lead" style="font-size:15px;">Fitur inti <span class="hl">sudah berfungsi dan didemonstrasikan</span> di lingkungan terbatas (data sintetis lokal).</p>
+      <div class="checkgrid" style="margin-top:11px;">
+        <div>Capture QR → passport otomatis</div>
+        <div>Rekonsiliasi gap &amp; konflik</div>
+        <div>Replay 70 langkah</div>
+        <div>Graf 86 node/113 rel</div>
+        <div>AI 5 blok + kopilot klarifikasi</div>
+        <div>Keputusan reviewer + audit log</div>
+        <div>Integrity Mesh + governance</div>
+        <div>RBAC 4 peran + log audit</div>
+      </div>
+      <div class="stat green" style="margin-top:13px;">
+        <div class="v" id="testcount">96 skenario</div>
+        <div class="l">uji otomatis end-to-end lulus (alur, jaringan, sinyal, peran, responsif 390–1440px, tanpa error runtime)</div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:11px;">
+        <h4>Di mana diuji</h4>
+        <p>Pengembangan internal tim: golden case CLM-08421 berjalan end-to-end &lt; 5 menit tanpa data manual; uji regresi otomatis dijalankan di setiap perubahan.</p>
+      </div>
+      <div class="card" style="margin-bottom:11px;">
+        <h4>Skala &amp; hasil saat ini</h4>
+        <p>4 faskes simulasi · 25 klaim dievaluasi di jaringan · kasus emas 10 sesi dengan 2 sinyal — semuanya <b>sintetis</b>. Belum ada pengguna eksternal; angka dampak pada Bagian 7 adalah <b>simulasi prototipe / target pilot</b>.</p>
+      </div>
+      <div class="card" style="background:var(--amber-soft); border-color:#E7C489;">
+        <h4>Yang jujur belum ada</h4>
+        <p>Integrasi VClaim/SATUSEHAT, pengguna nyata, uji lapangan di faskes. Itulah alasan proposal ini meminta dukungan pilot (Bagian 6).</p>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Definisi Prototype sesuai Panduan Healthkathon 2026: “fitur utama sudah berfungsi dalam lingkungan terbatas dan dapat didemonstrasikan”. Semua data ditampilkan berasal dari dataset sintetis.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 14 · RENCANA & KELAYAKAN ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 6 · Rencana &amp; Kelayakan</span><h2>Dari prototipe ke produk JKN — tiga fase, deliverable jelas</h2></div>
+    <div class="s-num"><b>14</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="ph">Fase 1 · 0–3 bulan</div>
+          <div class="tt">MVP Fisioterapi siap integrasi</div>
+          <div class="dd">Adapter VClaim/SATUSEHAT (read-only, sandbox) · hardening RBAC &amp; enkripsi · pindah ke arsitektur service bila perlu. <b>Deliverable:</b> MVP teruji di 1 puskesmas/RS mitra (data resmi berizin).</div>
+        </div>
+        <div class="tl-item">
+          <div class="ph">Fase 2 · 3–9 bulan</div>
+          <div class="tt">Pilot terukur &amp; sinyal kedua</div>
+          <div class="dd">Pilot 3–5 faskes · fingerprint rontgen/laboratorium · kalibrasi threshold bersama reviewer · baseline &amp; uplift metrik (Bagian 16). <b>Deliverable:</b> laporan pilot dengan metrik sebelum–sesudah.</div>
+        </div>
+        <div class="tl-item g">
+          <div class="ph">Fase 3 · 9–18 bulan</div>
+          <div class="tt">Skala jaringan &amp; kemandirian</div>
+          <div class="dd">Aktifkan Integrity Mesh lintas faskes · perluas ke jenis layanan lain · mode operasional siap audit. <b>Deliverable:</b> siap evaluasi implementasi luas dalam ekosistem JKN.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:11px;">
+        <h4>Sumber daya yang dibutuhkan</h4>
+        <p><b>Tim:</b> 1–3 orang (teknis, domain kesehatan, desain) + pendampingan juri/mitra. <b>Data:</b> izin data uji resmi untuk pilot (tanpa izin = tetap sintetis). <b>Teknologi:</b> kanal API resmi BPJS + infrastruktur cloud standar. <b>Mitra:</b> 1 faskes kesediaan uji coba.</p>
+      </div>
+      <div class="card" style="margin-bottom:11px;">
+        <h4>Jika lolos tahap berikutnya</h4>
+        <p>Fase 1 dipercepat (target MVP 2 bulan), dokumentasi integrasi &amp; keamanan disiapkan untuk due-diligence BPJS, dan baseline pilot disepakati bersama mitra faskes.</p>
+      </div>
+      <div class="card" style="background:var(--green-soft); border-color:#9FDEC6;">
+        <h4>Kenapa layak</h4>
+        <p>Prototipe inti sudah jadi (biaya pengembangan terbesar lewat) — dana &amp; waktu tahap berikutnya fokus ke integrasi, uji lapangan, dan penajaman metrik.</p>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Durasi &amp; kapasitas disusun sesuai skala tim 1–3 orang (Panduan Bagian 6: “tahapan harus jelas, terukur, dan realistis sesuai kapasitas tim”).</div>
+</section>
+
+<!-- ═══════════════ SLIDE 15 · DAMPAK ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 7 · Dampak &amp; Nilai yang Diukur</span><h2>Sebelum vs sesudah — perbaikan yang bisa dihitung</h2></div>
+    <div class="s-num"><b>15</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div>
+      <div class="ba">
+        <div class="ba-row">
+          <div class="bl"><b>Titik cek manual per kasus (10 sesi × 6 bukti)</b><span>asumsi: 10 sesi</span></div>
+          <div class="bar"><i class="before" style="width:100%;">60 titik cek terserak — tanpa petunjuk</i></div>
+          <div class="bar" style="margin-top:4px;"><i class="after" style="width:12%;">2</i></div>
+          <div class="mini" style="margin-top:3px;">sesudah: reviewer diarahkan ke <b>2 sinyal teratas</b> — sisanya sudah tervalidasi otomatis</div>
+        </div>
+        <div class="ba-row">
+          <div class="bl"><b>Konteks kasus dalam satu layar</b><span>sebelum: 3 sistem</span></div>
+          <div class="bar f"><i class="before" style="width:33%;"></i><span class="lab">Terpisah: antrean · bukti · billing</span></div>
+          <div class="bar" style="margin-top:4px;"><i class="after" style="width:100%;">Satu halaman: klaim + matriks + replay + AI + dampak</i></div>
+        </div>
+        <div class="ba-row">
+          <div class="bl"><b>Penahanan transparan sebelum bayar</b><span>simulasi kasus emas</span></div>
+          <div class="bar"><i class="before" style="width:80%;">Rp 3.500.000 — status tak terlihat</i></div>
+          <div class="bar" style="margin-top:4px;"><i class="after" style="width:65%;">Rp 2.800.000 lolos (berbukti)</i></div>
+          <div class="bar f" style="margin-top:4px;"><i class="hold" style="width:20%;"></i><span class="lab">Rp 700.000 ditahan → antrean tinjauan (2 sesi)</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="lead" style="font-size:15px;">Siapa yang diuntungkan</p>
+      <ul class="pts" style="margin-top:8px;">
+        <li><b>Peserta JKN:</b> keputusan klaim lebih cepat &amp; berbasis fakta — hak layanan tak tertahan salah.</li>
+        <li><b>Faskes jujur:</b> bukti mereka jadi tameng — tak lagi disamaratakan dengan yang nakal.</li>
+        <li><b>BPJS Kesehatan:</b> pengeluaran yang belum berbukti tertahan <i>sebelum</i> bayar, bukan ditagih ulang sesudah bayar.</li>
+        <li><b>Ekosistem:</b> pola berulang di faskes A memberi peringatan dini ke faskes B–D.</li>
+      </ul>
+      <div class="card" style="margin-top:11px; background:var(--amber-soft); border-color:#E7C489;">
+        <h4>Cara kami mengukurnya di pilot</h4>
+        <p>% sesi ber-bukti lengkap · waktu deteksi gap · waktu review per klaim · % klaim klarifikasi · override reviewer → lihat Bagian 16. <b>Semua angka di slide ini berasal dari simulasi prototipe — diuji ulang pada pilot.</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Angka kasus emas = simulasi data sintetis (10 sesi × Rp 350.000). Klaim dampak disampaikan sesuai panduan: “hindari overclaim — nyatakan transparan bila dampak masih estimasi”.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 16 · METRIK ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 7 · Cara Mengukur</span><h2>Metrik pilot — hitung apa, dari mana, target berapa</h2></div>
+    <div class="s-num"><b>16</b>/20</div>
+  </div>
+  <div class="s-body" style="grid-template-columns:1fr;">
+    <table class="kpi">
+      <thead><tr><th style="width:24%">Metrik</th><th style="width:36%">Cara mengukur</th><th style="width:22%">Target pilot</th><th style="width:18%">Penerima manfaat</th></tr></thead>
+      <tbody>
+        <tr><td><b>Evidence coverage</b> per sesi</td><td>% sesi dengan 6/6 bukti lengkap, dihitung harian dari Service Passport</td><td>Naik dari baseline faskes mitra (diukur sebelum integrasi)</td><td>BPJS &amp; faskes</td></tr>
+        <tr><td><b>Waktu deteksi gap</b></td><td>Selisih waktu pelayanan → gap ditandai (detik, otomatis) vs penemuan manual saat review klaim (hari)</td><td>Dari “setelah klaim masuk” → “saat pelayanan”</td><td>Reviewer BPJS</td></tr>
+        <tr><td><b>Waktu review per klaim</b></td><td>Rata-rata menit dari buka klaim → keputusan, sebelum vs sesudah pakai SELARAS</td><td>Reduksi ≥40% pada kasus berbukti lengkap (asumsi kerja: konteks satu layar)</td><td>Reviewer BPJS</td></tr>
+        <tr><td><b>Nilai klaim tertahan transparan</b></td><td>Rp yang berada di antrean tinjauan (bukti kurang) vs total diajukan — dashboard Analitik</td><td>Tertahan ≠ hilang: keputusan &lt; 3 hari kerja</td><td>BPJS (arus kas)</td></tr>
+        <tr><td><b>Override rate reviewer</b></td><td>% rekomendasi sistem yang dibalik reviewer → indikator kualitas/false-positive</td><td>Dipantau; threshold dikalibrasi ulang bila &gt;20%</td><td>Pengembang &amp; juri</td></tr>
+        <tr><td><b>Pola tervalidasi aktif</b></td><td>Jumlah Risk Signature lolos siklus governance → disetujui → aktif</td><td>Per kuartal, dengan tinjauan etika privasi</td><td>Faskes jaringan</td></tr>
+      </tbody>
+    </table>
+    <div class="mini" style="margin-top:10px; text-align:center;">Baseline diukur <b>sebelum</b> integrasi · target adalah asumsi kerja yang disepakati bersama mitra pilot — bukan hasil yang sudah dicapai.</div>
+  </div>
+  <div class="s-foot">Seluruh metrik dapat diekstrak dari modul Analitik prototipe (metrik operasi, investigasi, bukti, AI) — sumber data sama, hanya skala lingkungannya yang berubah pada pilot.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 17 · RISIKO, PRIVASI & ETIKA ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 8 · Risiko, Privasi &amp; Etika</span><h2>Tanggung jawab etis — dirancang, bukan ditempel</h2></div>
+    <div class="s-num"><b>17</b>/20</div>
+  </div>
+  <div class="s-body g2">
+    <div>
+      <div class="rcards">
+        <div class="rcard g"><h5>🔒 UU PDP &amp; privasi</h5><p>Data peserta <b>tidak dipakai</b> — seluruh demo memakai data sintetis. Integrasi nanti: minimisasi, enkripsi, RBAC per-peran, data pasien tidak pernah keluar faskes.</p></div>
+        <div class="rcard a"><h5>⚖️ Bias &amp; keterbatasan AI</h5><p>Missing ≠ fraud: bukti hilang memicu klarifikasi, bukan penolakan. Threshold dikalibrasi dengan umpan balik reviewer agar tidak diskriminatif.</p></div>
+        <div class="rcard"><h5>🧑‍⚖️ Human-in-the-loop</h5><p>AI menyusun bukti &amp; penjelasan; keputusan selalu reviewer ber-otorisasi. Setiap override tercatat — dapat diaudit kualitasnya.</p></div>
+        <div class="rcard r"><h5>🛡️ Overclaim prototipe</h5><p>Label “Simulasi / Sintetis” tampil di UI &amp; deck. Klaim dampak = target ukur pilot, bukan hasil teruji.</p></div>
+      </div>
+      <div class="card" style="margin-top:11px;">
+        <h4>3 risiko paling kritis + mitigasinya</h4>
+        <p><b>1. False positive →</b> review overload: kalibrasi threshold + feedback reviewer.<br>
+           <b>2. Halusinasi AI →</b> penjelasan menyesatkan: evidence-grounded prompt + output terbatas skema + larangan vonis.<br>
+           <b>3. Kebocoran data →</b> RBAC + enkripsi + minimisasi + pola (bukan data) yang dibagikan.</p>
+      </div>
+    </div>
+    <div class="visual">
+      <img class="shot" data-shot="07-governance" alt="Seksi Tata Kelola">
+      <div class="shot-cap">Lima kendali tata kelola pada pemasangan landing — otorisasi, keputusan beraktor manusia, provenance, jejak audit, dan persetujuan pola jaringan</div>
+    </div>
+  </div>
+  <div class="s-foot">Larangan tegas: tidak menggunakan data peserta JKN riil tanpa izin resmi; tanpa vonis fraud otomatis; tanpa klaim tanpa dasar (Panduan Healthkathon 2026 — Batasan Umum &amp; Bagian 8).</div>
+</section>
+
+<!-- ═══════════════ SLIDE 18 · KEAMANAN & TATA KELOLA ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 8 · Keamanan &amp; Tata Kelola</span><h2>Empat peran, satu jejak audit yang tak bisa diubah</h2></div>
+    <div class="s-num"><b>18</b>/20</div>
+  </div>
+  <div class="s-body g2v">
+    <div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+        <div class="card"><h4>👤 Reviewer</h4><p>Putuskan klaim, minta klarifikasi, putuskan publikasi pola — <b>hanya peran ini memutuskan</b>.</p></div>
+        <div class="card"><h4>🛠️ Admin</h4><p>Atur pengguna, template, dan parameter — tanpa bisa memutuskan klaim sendiri.</p></div>
+        <div class="card"><h4>🏥 Provider</h4><p>Lihat pelayanan faskesnya + bukti terkait — sesuai peran &amp; lingkup faskes.</p></div>
+        <div class="card"><h4>📋 Operator</h4><p>Catat bukti saat pelayanan (capture) — tidak punya akses keputusan klaim.</p></div>
+      </div>
+      <ul class="pts" style="margin-top:0;">
+        <li><b>Prinsip least-privilege:</b> satu aksi → satu peran yang boleh; hak diuji otomatis (9 skenario peran).</li>
+        <li><b>Audit log permanen:</b> setiap keputusan, publikasi pola, dan perubahan template tercatat dengan aktor &amp; waktu.</li>
+        <li><b>Konfigurasi aman:</b> ambang gerbang &amp; aturan berada di satu modul (satu sumber kebenaran) — tidak tercecer di UI.</li>
+        <li><b>Kepatuhan:</b> siapkan DPDP/analisis dampak privasi sebelum integrasi data nyata (Fase 1, Bagian 6).</li>
+      </ul>
+    </div>
+    <div class="visual">
+      <img class="shot" data-shot="20-audit" alt="Log audit">
+      <div class="shot-cap">Log Audit — entri permanen dengan aktor, aksi, dan waktu (tampilan aplikasi)</div>
+    </div>
+  </div>
+  <div class="s-foot">Tata kelola juga berlaku pada Integrity Mesh: pola risiko hanya aktif setelah melewati siklus persetujuan (Bagian 12). Keamanan sistem dikunci pada RBAC — dibuktikan skenario uji peran otomatis.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 19 · PROFIL TIM ═══════════════ -->
+<section class="slide">
+  <div class="s-head">
+    <div><span class="kicker">Bagian 9 · Profil &amp; Pengalaman Tim</span><h2>Tim kecil, peran saling melengkapi</h2></div>
+    <div class="s-num"><b>19</b>/20</div>
+  </div>
+  <div class="s-body" style="grid-template-columns:1fr; gap:16px;">
+    <div class="team">
+      <div class="tcard"><div class="tavatar">?</div><div class="tn">[NAMA ANGGOTA 1]</div><div class="tr">Ketua · Domain Kesehatan / Kebijakan</div><div class="td">[Pengalaman relevan: riset kesehatan, kebijakan JKN, atau kerja sama faskes — isi &amp; sesuaikan]</div></div>
+      <div class="tcard"><div class="tavatar">?</div><div class="tn">[NAMA ANGGOTA 2]</div><div class="tr">Teknis · Full-stack / AI / Data</div><div class="td">[Portofolio: proyek terkait, stack, pengalaman model/analitik — isi &amp; sesuaikan]</div></div>
+      <div class="tcard"><div class="tavatar">?</div><div class="tn">[NAMA ANGGOTA 3]</div><div class="tr">Produk / Desain · Riset Pengguna</div><div class="td">[Portofolio: UI, riset pengguna, dokumentasi — opsional bila tim 2 orang]</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:16px;">
+      <div class="card">
+        <h4>Mengapa tim ini mampu mengeksekusi</h4>
+        <p>Prototipe SELARAS (20+ layar, alur end-to-end, 96 skenario uji otomatis, dokumentasi PRD 2.300+ baris) adalah bukti langsung kapasitas eksekusi dari konsep → implementasi nyata. Komposisi menutup tiga kebutuhan: <b>domain kesehatan</b> (rumusan masalah &amp; etika), <b>teknis</b> (produk berjalan), <b>desain</b> (alur yang bisa dipahami juri lintas disiplin).</p>
+      </div>
+      <div class="card">
+        <h4>Kejujuran portofolio</h4>
+        <p>Pengalaman &amp; kredensial diisi apa adanya pada pengajuan final — tanpa klaim yang tidak dapat diverifikasi. Karya pendukung: repositori + proposal ini.</p>
+        <p class="mini" style="margin-top:7px;">Kontak: [EMAIL TIM] · [TAUTAN REPOSITORI]</p>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">Tim beranggotakan 1–3 orang sesuai Panduan Bagian 9; komposisi keahlian diseimbangkan: teknis, domain kesehatan, dan desain.</div>
+</section>
+
+<!-- ═══════════════ SLIDE 20 · PENUTUP ═══════════════ -->
+<section class="slide closing">
+  <div class="grid-bg"></div>
+  <div class="closing-body">
+    <div class="q">“Apa yang dilayani harus <span>selaras</span> dengan apa yang diklaim.”</div>
+    <div class="sub">
+      SELARAS tidak menunggu klaim bermasalah untuk mencari bukti — ia membentuk bukti ketika pelayanan terjadi,
+      lalu memastikan ceritanya tetap utuh hingga menjadi klaim.<br>
+      Visi jangka panjang: lapisan integritas &amp; bukti pelayanan yang dapat diterapkan lintas jenis layanan dalam ekosistem JKN.
+    </div>
+    <div class="closing-badges">
+      <span>Detect Smarter, Protect JKN</span><span>Phantom &amp; Repeat Billing</span><span>Prototipe · Data Sintetis</span><span>Human-in-the-Loop</span>
+    </div>
+  </div>
+  <div class="cover-foot">
+    <span><b>SELARAS</b> — Sistem Evaluasi Layanan &amp; Rekam Administrasi untuk Risiko Klaim</span>
+    <span>Terima kasih · Tim [NAMA TIM] · [EMAIL]</span>
+  </div>
+</section>
+
+</body>
+</html>
