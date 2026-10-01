@@ -72,7 +72,7 @@ export function FinalCTA() {
               </h2>
 
               <p className="mt-6 max-w-[56ch] text-base leading-relaxed text-slate-600 sm:text-lg">
-                Bukti dibentuk langsung di titik pelayanan, bukan direkayasa di akhir siklus klaim. Buka prototype simulasi: 10 layanan fisioterapi, 8 tervalidasi bukti, 2 memerlukan audit reviewer.
+                Bukti dibentuk langsung di titik pelayanan, bukan direkayasa di akhir siklus klaim. Buka prototipe simulasi: 10 sesi fisioterapi, 8 didukung bukti, 2 menunggu tinjauan reviewer.
               </p>
 
               <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -102,7 +102,7 @@ export function FinalCTA() {
                 >
                   <a href="#golden-case" className="flex items-center gap-2">
                     <ScanSearch aria-hidden="true" className="size-4" />
-                    Buka Prototype Golden Case
+                    Buka Prototipe Golden Case
                   </a>
                 </Button>
               </div>
@@ -133,10 +133,10 @@ export function FinalCTA() {
                 <div className="relative z-10 flex items-center justify-between">
                   <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 font-mono text-[10px] font-bold text-sky-800">
                     <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                    PASSPORT DIGITAL RESMI
+                    PASSPORT DIGITAL PROTOTIPE
                   </div>
                   <span className="font-mono text-[11px] text-slate-400">
-                    Siap BPJS
+                    Desain siap JKN
                   </span>
                 </div>
 

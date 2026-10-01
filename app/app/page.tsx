@@ -65,7 +65,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title={`${greeting()}, ${user.name.split(" ")[0]}`}
-        description={`Ringkasan operasional ${formatDate("2026-09-30")} — pantau evidence, passport, dan antrean klaim dalam satu layar.`}
+        description={`Ringkasan operasional ${formatDate("2026-09-30")} — pantau evidence, passport, dan antrean klaim dalam satu layar. Simulasi berbasis data sintetis.`}
         actions={
           <Button asChild size="sm" className="rounded-full">
             <Link href="/app/pelayanan">

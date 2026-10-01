@@ -28,7 +28,9 @@ export function paymentGate(
       threshold: GATE_THRESHOLD,
       reason: `Skor risiko ${score.score} mencapai ambang gerbang ${GATE_THRESHOLD} — klaim ditahan sebelum pembayaran.`,
       action:
-        "Minta klarifikasi via Kopilot Klarifikasi dan lengkapi evidence; gerbang terbuka otomatis saat skor turun di bawah 65.",
+        "Minta klarifikasi via Kopilot Klarifikasi dan lengkapi evidence; gerbang terbuka otomatis saat skor turun di bawah " +
+        GATE_THRESHOLD +
+        ".",
     };
   }
   if (status === "CONTRADICTED") {

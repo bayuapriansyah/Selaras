@@ -101,7 +101,7 @@ export function GovernanceSection() {
                 </span>
               </>
             }
-            lead="Lima kendali tata kelola yang menemani setiap bukti: otorisasi akses, keputusan beraktor manusia, keaslian sumber data (provenance), dan audit log yang tamper-evident."
+            lead="Lima kendali tata kelola yang menemani setiap bukti: otorisasi akses, keputusan beraktor manusia, keaslian sumber data (provenance), dan jejak audit yang tidak bisa diubah. Jaringan Integrity Mesh memakai aturan yang sama — pola risiko baru hanya terbit ke faskes lain setelah melewati antrean persetujuan di sini."
             size="md"
           />
         </div>

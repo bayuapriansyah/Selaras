@@ -11,9 +11,9 @@ import { EVIDENCE_LABEL } from "@/data/app/types";
 import { evaluateSession, hasTimestampConflict } from "@/lib/app/rules";
 
 export const FOCUS_MODUS = {
-  CLONING: { no: 5, label: "Cloning (penjiplakan klaim)" },
-  PHANTOM: { no: 6, label: "Phantom billing (klaim palsu)" },
-  REPEAT: { no: 11, label: "Repeat billing (klaim berulang)" },
+  CLONING: { no: 5, label: "Penjiplakan klaim (cloning)" },
+  PHANTOM: { no: 6, label: "Tagihan fiktif (phantom billing)" },
+  REPEAT: { no: 11, label: "Klaim berulang (repeat billing)" },
   NOT_DONE: { no: 14, label: "Menagihkan tindakan yang tidak dilakukan" },
   FICTITIOUS: { no: 17, label: "Klaim fiktif tindakan" },
 } as const satisfies Record<string, SignalModus>;

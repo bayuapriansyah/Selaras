@@ -21,6 +21,5 @@ export const footerLinks: { label: string; href: string }[] = [
   { label: "Cara Kerja", href: "#cara-kerja" },
   { label: "Golden Case", href: "#golden-case" },
   { label: "Tata Kelola", href: "#governance" },
-  { label: "GitHub", href: "#" },
-  { label: "Kontak", href: "#" },
+  { label: "GitHub", href: "https://github.com/bayuapriansyah/Selaras" },
 ];

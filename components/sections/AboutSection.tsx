@@ -11,7 +11,7 @@ const NOT_LIST = [
 ];
 
 const META = [
-  { label: "Program", value: "Healthkathon 2026" },
+  { label: "Program", value: "Healthkathon BPJS Kesehatan 2026" },
   { label: "Kategori", value: "Efisiensi Risiko Fasilitas Kesehatan" },
   { label: "Fokus", value: "Phantom & Repeat Billing" },
   { label: "MVP", value: "Integritas Pelayanan Fisioterapi" },

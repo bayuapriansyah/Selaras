@@ -125,12 +125,20 @@ export function ImmunityVisual({ view }: { view: ImmunityView }) {
         </div>
       </div>
 
-      <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold tracking-wide text-emerald-800">
-        SATU POLA Tervalidasi → {inScopeCount} FASKES Terlindungi
+      <p
+        className={cn(
+          "mt-4 rounded-xl border px-4 py-3 text-center text-sm font-semibold tracking-wide",
+          live
+            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+            : "border-sky-200 bg-sky-50 text-sky-800",
+        )}
+      >
+        SATU POLA Tervalidasi → {inScopeCount} FASKES{" "}
+        {live ? "Terlindungi" : "dalam Cakupan — Menunggu Publikasi"}
       </p>
       <p className="mt-2 text-center text-[11px] text-slate-400">
-        Cakupan dihitung dari signature aktif di 4 faskes simulasi — tanpa data
-        pasien berpindah tangan.
+        Cakupan pola saat ini {inScopeCount} dari {view.facilities.length}{" "}
+        faskes simulasi — tanpa data pasien berpindah tangan.
       </p>
     </section>
   );

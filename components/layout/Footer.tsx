@@ -35,7 +35,7 @@ export function Footer() {
             <span>Prototipe Lapisan Integritas Pelayanan</span>
           </div>
           <p className="max-w-xl text-xs leading-relaxed text-slate-500">
-            Data demonstrasi pada prototype ini bersifat sintetis (synthetic illustration) untuk keperluan simulasi arsitektur sistem integritas klaim.
+            Data demonstrasi pada prototipe ini bersifat sintetis — ilustrasi simulasi untuk arsitektur sistem integritas klaim.
           </p>
         </div>
       </div>

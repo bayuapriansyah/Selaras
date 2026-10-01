@@ -124,7 +124,7 @@ export function Hero() {
               className="size-1.5 rounded-full bg-emerald-500 animate-pulse"
             />
             <span className="font-mono text-[10.5px] font-semibold tracking-[0.14em] text-slate-800 uppercase">
-              BPJS Healthkathon 2026
+              Healthkathon BPJS Kesehatan 2026
             </span>
             <span className="hidden sm:inline h-3 w-px bg-slate-300" />
             <span className="hidden sm:inline font-mono text-[10px] text-slate-500 uppercase tracking-wider">
@@ -188,7 +188,7 @@ export function Hero() {
             <span className="inline-flex items-center gap-1.5">
               <Clock className="size-3.5 text-sky-600" />
               <strong className="text-slate-900 font-semibold">&lt;2s</strong>
-              <span>Verifikasi</span>
+              <span>Target Verifikasi</span>
             </span>
             <span className="hidden sm:inline text-slate-300">·</span>
             <span className="inline-flex items-center gap-1.5">
@@ -215,15 +215,15 @@ export function Hero() {
               <span className="size-2.5 rounded-full bg-amber-400 inline-block" />
               <span className="size-2.5 rounded-full bg-emerald-400 inline-block" />
               <span className="ml-3 hidden sm:inline font-mono text-[11px] text-slate-500 tracking-wider">
-                selaras-core v2.4 · point-of-care deterministic runtime
+                selaras-core prototipe · point-of-care runtime deterministik
               </span>
             </div>
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 font-mono text-[10px] text-emerald-700 font-semibold">
-                <Check className="size-3" /> Mesin Live Tersinkron
+                <Check className="size-3" /> Sinkron (Simulasi)
               </span>
               <span className="font-mono text-[11px] text-slate-500 font-medium hidden md:inline">
-                BPJS VClaim / SATUSEHAT
+                Target: VClaim / SATUSEHAT
               </span>
             </div>
           </div>
@@ -289,8 +289,8 @@ export function Hero() {
                   sha256: 9b2d8f1e4c70a31481e3a95c47fb1...
                 </div>
                 <div className="mt-1.5 flex items-center justify-between text-[9.5px] text-slate-500">
-                  <span>Validasi BPJS Instan</span>
-                  <span>Latensi: 1.4s</span>
+                  <span>Validasi Klaim (Simulasi)</span>
+                  <span>Target latensi: 1,4s</span>
                 </div>
               </div>
             </div>

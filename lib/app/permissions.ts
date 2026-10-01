@@ -2,7 +2,7 @@ import type { EvidenceKind, Role } from "@/data/app/types";
 import { ROLE_LABEL } from "@/lib/app/actions";
 
 /**
- * Prototype RBAC (mock auth demo) — bukan production authorization.
+ * Prototipe RBAC (mock auth demo) — bukan production authorization.
  * Satu sumber kebenaran untuk permission; UI tidak boleh menduplikasi aturan.
  */
 export type Permission =
@@ -88,7 +88,7 @@ export const CAPTURE_HELPER: Record<Role, string> = {
   operator:
     "Peran Operator — evidence operasional (Kedatangan, Verifikasi Provider, Billing, Klaim) dapat dicatat; evidence klinis dicatat Provider.",
   provider:
-    "Peran Provider — evidence klinis (Tindakan, Catatan Klinis, Penyelesaian) dapat dicatat; evidence operasional dicatat Operator.",
+    "Peran Provider — evidence klinis (Tindakan, Catatan Klinis, Penyelesaian) serta Billing dan Klaim dapat dicatat; Kedatangan & Verifikasi Provider dicatat Operator.",
   reviewer:
     "Peran Reviewer — peran ini meninjau klaim; pencatatan evidence dilakukan Operator dan Provider.",
   admin:

@@ -1189,7 +1189,7 @@ export const auditLog: AuditEntry[] = [
     action: "SIGNAL_GENERATED",
     entity: "Signal",
     entityId: "SIGC-08610-PEER_OUTLIER-C",
-    description: "Sinyal outlier peer menghasilkan untuk CLM-08610.",
+    description: "Sinyal outlier peer dihasilkan untuk CLM-08610.",
   },
   {
     id: "AUD-0013",

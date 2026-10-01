@@ -184,12 +184,12 @@ export const signatureSeeds: RiskSignature[] = [
     serviceScope: "Fisioterapi · seluruh faskes jaringan",
     detectionConditions: [
       { kind: "template", templateId: "TPL-PHYSIO" },
-      { kind: "sameProviderWindow", days: 14 },
+      { kind: "sameProviderWindow", days: 16 },
     ],
     signalNotes: [
       "same service family",
       "overlapping claim period",
-      "same provider within 14 days",
+      "same provider within 16 days",
       "reused evidence reference pattern",
     ],
     requiredEvidence: [

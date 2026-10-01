@@ -118,6 +118,17 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
   const activeMatch = net.matches[0];
   const latest = feedbacks[0];
   const showVerify = activeMatch != null;
+  const gap = claim.baseStatus !== "SUPPORTED";
+  const actionReason =
+    pendingHits.length > 0
+      ? "Match menunggu publikasi — signature jaringan belum aktif"
+      : net.matches.length > 0 && gap
+        ? "Match jaringan aktif dan status lokal belum lengkap"
+        : net.matches.length > 0
+          ? "Match jaringan aktif — status lokal lengkap"
+          : gap
+            ? "Status lokal belum lengkap — tanpa match jaringan"
+            : "Status lokal lengkap — tanpa match jaringan";
 
   return (
     <section
@@ -179,7 +190,7 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
           <p className="mt-1 text-sm font-semibold text-sky-900">
             {ADAPTIVE_ACTION[net.level]}
           </p>
-          <p className="mt-0.5 text-[11px] text-slate-600">{net.action}</p>
+          <p className="mt-0.5 text-[11px] text-slate-600">{actionReason}</p>
         </div>
       </div>
 

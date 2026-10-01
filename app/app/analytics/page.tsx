@@ -264,7 +264,7 @@ export default function AnalyticsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Analitik"
-        description="Metrik operasional evidence: status klaim, cakupan passport, dan distribusi pelayanan."
+            description="Metrik operasional evidence: status klaim, cakupan passport, dan distribusi pelayanan. Simulasi berbasis data sintetis."
         actions={
           <span className="inline-flex h-8 items-center rounded-full border border-slate-200 bg-white px-3 font-mono text-[11px] tracking-wider text-slate-600">
             {data.rows.length} klaim · {src.services.length} layanan
@@ -314,7 +314,7 @@ export default function AnalyticsPage() {
         <MetricCard
           label="Klaim berisiko tinggi"
           value={data.highRiskClaims}
-          hint="skor ≥ 65 — wajib klarifikasi"
+          hint="skor ≥ 65 — klaim ditahan"
           icon={ShieldAlert}
           tone="slate"
         />

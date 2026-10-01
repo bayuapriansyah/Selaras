@@ -514,11 +514,12 @@ export default function ClaimDetailPage() {
             <div>
               <h2 className="text-sm font-semibold text-slate-900">Dampak klaim</h2>
               <p className="text-xs text-slate-500">
-                Simulasi finansial dari dukungan evidence (API impact).
+                Simulasi finansial dari dukungan evidence — dihitung otomatis
+                dari data lokal.
               </p>
             </div>
             <span className="inline-flex h-6 items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 font-mono text-[10px] tracking-wider text-slate-500">
-              {apiImpact ? "server ✓" : "lokal"}
+              {apiImpact ? "via server" : "via lokal"}
             </span>
           </div>
 
@@ -826,7 +827,7 @@ export default function ClaimDetailPage() {
                     <span
                       key={m.no}
                       className="inline-flex items-center gap-1 rounded-full border border-slate-300/70 bg-white/80 px-2 py-0.5 text-[10px] font-medium text-slate-600"
-                      title="Pemetaan ke modus fraud resmi Healthkathon 2026 (kategori Fasilitas Kesehatan)"
+                      title="Pemetaan ke modus fraud resmi Healthkathon BPJS Kesehatan 2026 (kategori Fasilitas Kesehatan)"
                     >
                       <span className="font-mono font-semibold">#{m.no}</span>
                       {m.label}
