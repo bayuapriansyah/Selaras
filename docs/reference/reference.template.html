@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<title>SELARAS — Dokumentasi Proyek Lengkap</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --ink: #0A1424; --paper: #FBFCFE; --blue: #2F6BFF; --blue-soft: #EAF1FF;
+    --green: #0E9F6E; --green-soft: #E6F7F0; --amber: #C2740A; --amber-soft: #FDF3E2;
+    --red: #C73737; --red-soft: #FBECEC; --muted: #566480; --line: #E3E9F2; --dark2: #12213A;
+  }
+  html, body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: #fff; }
+  body { font-size: 10.2pt; line-height: 1.55; }
+  .sheet { padding: 15mm 15mm 16mm; }
+  section.bab { break-before: page; page-break-before: always; }
+
+  /* ---------- cover ---------- */
+  .cover { height: 297mm; background: radial-gradient(340mm 200mm at 78% -8%, #1C3B6E 0%, var(--dark2) 45%, var(--ink) 100%);
+           color: #fff; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .cover .grid-bg { position: absolute; inset: 0; opacity: .5;
+    background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 44px 44px; }
+  .cover-body { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 20mm; }
+  .theme-pill { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 2.6px; text-transform: uppercase;
+                color: #9EC1FF; border: 1px solid #33507F; background: rgba(47,107,255,.14); padding: 6px 15px; border-radius: 999px; align-self: flex-start; }
+  .cover h1 { font-size: 62px; font-weight: 800; letter-spacing: -2px; margin-top: 20px; line-height: 1.02; }
+  .cover h1 span { color: #6FE3B8; }
+  .cover .sub { font-size: 20px; line-height: 1.4; color: #D7E2F5; margin-top: 14px; font-weight: 600; max-width: 560px; }
+  .cover .cat { margin-top: 20px; font-size: 12.5px; color: #AFC3E4; line-height: 1.7; }
+  .cover .cat b { color: #fff; }
+  .cover-meta { position: relative; display: flex; gap: 10px; flex-wrap: wrap; padding: 0 20mm 6mm; }
+  .cover-meta .m { border: 1px solid #33507F; background: rgba(255,255,255,.05); border-radius: 10px; padding: 9px 14px; font-size: 11px; color: #C7D6F2; }
+  .cover-meta .m b { color: #6FE3B8; display: block; font-size: 15px; margin-top: 2px; }
+  .cover-foot { position: relative; padding: 0 20mm 10mm; font-size: 10.5px; color: #8FA5CC; line-height: 1.6; }
+  .cover-foot b, .cover-foot code { color: #6FE3B8; background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 4px; font-size: 9.5px; }
+
+  /* ---------- headings ---------- */
+  h2.bab-title { font-size: 24px; font-weight: 800; letter-spacing: -.4px; line-height: 1.15; margin-bottom: 4px; }
+  .kicker { font-size: 9.5px; font-weight: 800; letter-spacing: 2.2px; color: var(--blue); text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .bab-rule { height: 4px; width: 64px; background: var(--green); border-radius: 2px; margin: 10px 0 16px; }
+  h3 { font-size: 13.5px; font-weight: 800; margin: 16px 0 7px; color: var(--ink); }
+  h3:first-child { margin-top: 0; }
+  h4 { font-size: 11.5px; font-weight: 800; margin: 10px 0 4px; }
+  p { margin-bottom: 7px; color: #243046; }
+  p.lead { font-size: 11.5pt; font-weight: 600; color: var(--ink); }
+  b, strong { color: var(--ink); }
+  ul.pts { margin: 6px 0 9px 17px; }
+  ul.pts li { margin-bottom: 4.5px; color: #243046; }
+  ul.pts li b { color: var(--ink); }
+  ol.num { margin: 6px 0 9px 18px; }
+  ol.num li { margin-bottom: 4.5px; color: #243046; }
+  .mini { font-size: 9pt; color: var(--muted); line-height: 1.5; }
+
+  /* ---------- citation ---------- */
+  .c { font-size: 7.5pt; font-weight: 800; color: var(--blue); text-decoration: none; vertical-align: super; line-height: 0; }
+
+  /* ---------- blocks ---------- */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; margin-bottom: 9px; break-inside: avoid; }
+  .card h4 { margin-top: 0; }
+  .card p, .card li { font-size: 9.5pt; color: #3A465E; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 9px; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; break-inside: avoid; }
+  .stat .v { font-size: 21px; font-weight: 800; letter-spacing: -.6px; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 8.5pt; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+  .stat.green .v { color: var(--green); } .stat.blue .v { color: var(--blue); } .stat.amber .v { color: var(--amber); }
+  .stat.red .v { color: var(--red); }
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 8.5pt; font-weight: 700;
+          padding: 3px 9px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); margin: 0 4px 5px 0; }
+  .chip.g { background: var(--green-soft); color: var(--green); }
+  .chip.a { background: var(--amber-soft); color: var(--amber); }
+  .chip.r { background: var(--red-soft); color: var(--red); }
+  .chip.n { background: #EEF1F6; color: var(--muted); }
+  .box { border-radius: 10px; padding: 10px 13px; margin: 9px 0; break-inside: avoid; font-size: 9.5pt; line-height: 1.5; }
+  .box b { color: inherit; }
+  .box.dark { background: linear-gradient(135deg, #0A1424, #16305A); color: #E8EFFB; border: 1px solid #29456F; }
+  .box.dark b { color: #6FE3B8; }
+  .box.warn { background: var(--amber-soft); border: 1px dashed #E7C489; color: #6B4A08; }
+  .box.info { background: var(--blue-soft); border: 1px solid #C9DBFF; color: #1E3E8F; }
+  .box.ok { background: var(--green-soft); border: 1px solid #B9E8D4; color: #0A6B4A; }
+  .box.danger { background: var(--red-soft); border: 1px solid #F0C4C4; color: #8F2020; }
+  .quote { border-left: 4px solid var(--green); background: #F6FAF8; padding: 10px 14px; margin: 9px 0; font-size: 11pt;
+           font-weight: 600; color: var(--ink); break-inside: avoid; }
+  .quote .who { display: block; font-size: 8.5pt; font-weight: 600; color: var(--muted); margin-top: 5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 8px 0 11px; break-inside: avoid; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 6px 9px; font-size: 8.5pt; letter-spacing: .3px; }
+  td { padding: 6px 9px; border-bottom: 1px solid var(--line); color: #31405C; vertical-align: top; }
+  tr:nth-child(even) td { background: #F7F9FC; }
+  td b { color: var(--ink); }
+  .foot-note { font-size: 8pt; color: #8A96AC; border-top: 1px solid var(--line); padding-top: 6px; margin-top: 10px; line-height: 1.5; }
+  .shot { border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 22px rgba(10,20,36,.10); display: block; width: 100%; background: #fff; }
+  .shot-cap { font-size: 8.5pt; color: var(--muted); margin-top: 5px; text-align: center; }
+  .shot-wrap { break-inside: avoid; margin: 8px 0; }
+  .flow { list-style: none; counter-reset: fl; margin: 7px 0; }
+  .flow li { counter-increment: fl; position: relative; padding: 0 0 6px 26px; font-size: 9.5pt; color: #243046; }
+  .flow li::before { content: counter(fl); position: absolute; left: 0; top: 0; width: 17px; height: 17px; border-radius: 50%;
+                     background: var(--ink); color: #fff; font-size: 8.5pt; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .flow li::after { content: ""; position: absolute; left: 8px; top: 17px; bottom: 0; width: 1.5px; background: var(--line); }
+  .flow li:last-child::after { display: none; }
+  .flow li b { display: block; color: var(--ink); }
+  .lane { border-radius: 10px; padding: 9px 12px; margin-bottom: 8px; break-inside: avoid; }
+  .lane .lane-k { font-size: 8.5pt; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
+  .lane-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .lane-step { font-size: 8.5pt; font-weight: 700; padding: 5px 9px; border-radius: 7px; background: #fff; border: 1px solid var(--line); color: #34405A; }
+  .lane-arrow { color: #9AA7BE; font-size: 11px; font-weight: 800; }
+  .lane-a { background: #F1F3F7; border: 1px solid #DFE4EC; } .lane-a .lane-k { color: var(--muted); }
+  .lane-b { background: linear-gradient(135deg, #0A1424, #16305A); border: 1px solid #29456F; }
+  .lane-b .lane-k { color: #6FE3B8; } .lane-b .lane-step { background: rgba(255,255,255,.08); border-color: #3B5A8A; color: #E4EDFC; }
+  .lane-b .lane-step.acc { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .lane-b .lane-arrow { color: #7E97C4; }
+
+  /* ---------- TOC ---------- */
+  .toc-item { display: flex; align-items: baseline; gap: 8px; padding: 7px 0; border-bottom: 1px dotted var(--line); font-size: 11pt; }
+  .toc-item .n { font-weight: 800; color: var(--blue); width: 34px; flex: none; }
+  .toc-item .t { font-weight: 600; color: var(--ink); }
+  .toc-item .d { font-size: 8.5pt; color: var(--muted); margin-left: auto; text-align: right; }
+
+  /* bibliography */
+  .ref { display: grid; grid-template-columns: 30px 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); break-inside: avoid; font-size: 9.3pt; }
+  .ref .rn { font-weight: 800; color: var(--blue); }
+  .ref .rt { color: #31405C; }
+  .ref .rt b { color: var(--ink); }
+  .ref .ru { color: var(--blue); font-size: 8.3pt; word-break: break-all; display: block; margin-top: 2px; }
+
+  .cols2 { column-count: 2; column-gap: 14px; }
+  .avoid { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<div class="cover">
+  <div class="grid-bg"></div>
+  <div class="cover-body">
+    <span class="theme-pill">Detect Smarter, Protect JKN</span>
+    <h1>SELARAS<span>.</span></h1>
+    <div class="sub">Dokumentasi Proyek Lengkap — satu acuan untuk seluruh tim.</div>
+    <div class="cat">
+      <b>Sistem Evaluasi Layanan &amp; Rekam Administrasi untuk Risiko Klaim</b><br />
+      Prototipe <i>evidence-first</i> untuk integritas klaim fasilitas kesehatan dalam ekosistem JKN.
+    </div>
+  </div>
+  <div class="cover-meta">
+    <div class="m">Kompetisi<b>Healthkathon 2026</b></div>
+    <div class="m">Kategori<b>Fasilitas Kesehatan</b></div>
+    <div class="m">Sub-fokus<b>Phantom &amp; Repeat Billing</b></div>
+    <div class="m">Tingkat kematangan<b>Prototype</b></div>
+    <div class="m">Status dokumen<b>v1.0 · 2 Okt 2026</b></div>
+  </div>
+  <div class="cover-foot">
+    Dokumen internal tim — bukan dokumen proposal resmi. Seluruh angka operasional dalam prototipe berasal dari <b>data sintetis</b>, bukan data peserta JKN riil.
+    Proposal resmi terpisah: <b>docs/deck/SELARAS-Healthkathon-2026.pdf</b> · Sumber kebenaran produk: <b>SELARAS_PRD_Healthkathon_2026.md</b>.
+  </div>
+</div>
+
+<!-- ============================ TOC ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Navigasi</span>
+  <h2 class="bab-title">Daftar Isi</h2>
+  <div class="bab-rule"></div>
+
+  <div class="toc-item"><span class="n">1</span><span class="t">Ringkasan Eksekutif</span><span class="d">Apa SELARAS + 6 fakta kunci</span></div>
+  <div class="toc-item"><span class="n">2</span><span class="t">Konteks Kompetisi Healthkathon 2026</span><span class="d">Kategori, aturan, tenggat</span></div>
+  <div class="toc-item"><span class="n">3</span><span class="t">Masalah Nyata — Fakta &amp; Sumber</span><span class="d">Fraud JKN, kasus nyata, akar masalah</span></div>
+  <div class="toc-item"><span class="n">4</span><span class="t">Rumusan Masalah Proyek</span><span class="d">Hero problem &amp; core shift</span></div>
+  <div class="toc-item"><span class="n">5</span><span class="t">Solusi: SELARAS</span><span class="d">Alur 9 langkah, 8 modul, mesh</span></div>
+  <div class="toc-item"><span class="n">6</span><span class="t">Kasus Emas CLM-08421</span><span class="d">Demo end-to-end + skor</span></div>
+  <div class="toc-item"><span class="n">7</span><span class="t">Bukti Eksekusi Prototipe</span><span class="d">Status, cakupan, uji</span></div>
+  <div class="toc-item"><span class="n">8</span><span class="t">Arsitektur &amp; Tech Stack</span><span class="d">Target vs prototipe aktual</span></div>
+  <div class="toc-item"><span class="n">9</span><span class="t">Keamanan, Privasi &amp; Etika AI</span><span class="d">RBAC, PDP, guardrails</span></div>
+  <div class="toc-item"><span class="n">10</span><span class="t">Dampak &amp; Metrik</span><span class="d">KPI, before/after, target pilot</span></div>
+  <div class="toc-item"><span class="n">11</span><span class="t">Roadmap, Risiko &amp; Sumber Daya</span><span class="d">3 fase proposal + 7 fase PRD</span></div>
+  <div class="toc-item"><span class="n">12</span><span class="t">Profil Tim</span><span class="d">Placeholder 1–3 orang</span></div>
+  <div class="toc-item"><span class="n">13</span><span class="t">Daftar Pustaka</span><span class="d">14 sumber bernomor</span></div>
+  <div class="toc-item"><span class="n">14</span><span class="t">Lampiran</span><span class="d">Fakta terverifikasi, pemetaan komponen, glosarium, cara verifikasi</span></div>
+
+  <div class="box info" style="margin-top:16px;">
+    <b>Cara pakai dokumen ini.</b> Setiap klaim faktual eksternal bernomor <b>[n]</b> merujuk ke Bab 13 (Daftar Pustaka).
+    Angka internal prototipe tercatat utuh di Lampiran A — sumber tunggal saat menulis deck, slide, atau jawaban juri.
+    Bila angka berbeda antara dokumen ini dan kode, <b>kode yang menang</b> (lihat Lampiran E untuk cara verifikasi).
+  </div>
+</section>
+
+<!-- ============================ BAB 1 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 1</span>
+  <h2 class="bab-title">Ringkasan Eksekutif</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">SELARAS adalah lapisan integritas pelayanan untuk Program JKN: setiap episode pelayanan dibekali <b>Service Passport</b> dan <b>bukti terekam sejak titik pelayanan (point of care)</b>, sehingga ketika klaim datang, sistem tinggal menyusun — bukan mencari — buktinya. Klaim adalah pernyataan; SELARAS membangun dan menyusun buktinya sejak pelayanan terjadi.</p>
+
+  <div class="grid3">
+    <div class="stat green"><div class="v">10 → 8 → 2</div><div class="l">Kasus emas CLM-08421: 10 sesi diklaim, 8 berbukti lengkap, 2 ditahan untuk tinjauan</div></div>
+    <div class="stat blue"><div class="v">96</div><div class="l">Skenario uji otomatis lulus (alur, jaringan, sinyal, peran, responsif)</div></div>
+    <div class="stat"><div class="v">22 + 3</div><div class="l">Halaman aplikasi (App Router) + endpoint API yang berjalan</div></div>
+    <div class="stat"><div class="v">2.334</div><div class="l">Baris PRD — sumber kebenaran produk (57 bagian)</div></div>
+    <div class="stat amber"><div class="v">27 / 65</div><div class="l">Skor risiko kasus emas vs ambang gerbang — band RENDAH, gerbang tetap terbuka untuk yang berbukti</div></div>
+    <div class="stat"><div class="v">&lt; 5 menit</div><div class="l">Alur demo end-to-end (Definition of Done prototipe)</div></div>
+  </div>
+
+  <h3>Inti cerita (hook yang dipakai di semua materi)</h3>
+  <div class="grid2">
+    <div class="box dark"><b>“Anda menjual bukti saat pelayanan terjadi.”</b><br />Evidence-first: bukti dibentuk di titik pelayanan, bukan ditambang ulang setelah klaim bermasalah.</div>
+    <div class="box dark"><b>“Satu temuan — semua terlindungi.”</b><br />Integrity Mesh: pola risiko yang tervalidasi di satu faskes melindungi seluruh jaringan, tanpa berbagi data pasien.</div>
+  </div>
+
+  <h3>Posisi resmi dalam kompetisi</h3>
+  <table>
+    <tr><th style="width:34%">Aspek</th><th>Posisi SELARAS</th></tr>
+    <tr><td>Kompetisi</td><td>Healthkathon 2026 — <b>Detect Smarter, Protect JKN</b><a class="c" href="#ref12">[12]</a></td></tr>
+    <tr><td>Kategori</td><td><b>Efficiency Risk — Fasilitas Kesehatan</b>, sub-fokus <b>Phantom &amp; Repeat Billing</b><a class="c" href="#ref3">[3]</a></td></tr>
+    <tr><td>Tingkat kematangan</td><td><b>Prototype</b> — fitur utama berfungsi di lingkungan terbatas dan dapat didemonstrasikan</td></tr>
+    <tr><td>Satu solusi / satu kategori</td><td>Ikut 1 kategori dengan 1 solusi; tidak mengaku mengerjakan banyak masalah sekaligus</td></tr>
+    <tr><td>Tim</td><td>1–3 orang</td></tr>
+    <tr><td>Dokumen terkait</td><td>PRD (57 bagian) · Proposal deck (20 slide) · Dokumen ini (acuan internal)</td></tr>
+  </table>
+
+  <div class="foot-note">Angka pada bagian ini bersifat terverifikasi — daftar lengkap dengan asal file/lokasi kode ada di Lampiran A.</div>
+</section>
+
+<!-- ============================ BAB 2 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 2</span>
+  <h2 class="bab-title">Konteks Kompetisi Healthkathon 2026</h2>
+  <div class="bab-rule"></div>
+
+  <h3>Apa itu Healthkathon 2026</h3>
+  <p>BPJS Kesehatan membuka <b>Healthkathon 2026</b> pada 14 Agustus 2026 (pendaftaran 14 Agustus–14 September 2026) untuk mendorong pemanfaatan AI dan analitik data dalam mengidentifikasi risiko, mendeteksi potensi fraud dini, serta mendukung keputusan JKN berbasis data. Kriteria kompetisi: <b>efisiensi risiko pada peserta, fasilitas kesehatan, dan pemberi kerja</b><a class="c" href="#ref12">[12]</a><a class="c" href="#ref13">[13]</a>. Tema resmi: <b>“Detect Smarter, Protect JKN”</b>; laman resmi <i>healthkathon.bpjs-kesehatan.go.id</i><a class="c" href="#ref3">[3]</a>.</p>
+
+  <div class="quote">“Bukan AI yang terlihat canggih, tetapi AI yang benar-benar bekerja untuk orang yang benar-benar membutuhkannya. Pemanfaatan AI perlu dimulai dari identifikasi masalah, bukan dari teknologi yang tersedia.”
+    <span class="who">— Setiaji, Direktur Teknologi Informasi BPJS Kesehatan, Seminar Series Healthkathon 2026, BINUS Jakarta, 25 September 2026 (wawancara 26 September 2026)<a class="c" href="#ref2">[2]</a></span>
+  </div>
+
+  <p>Kutipan di atas adalah <b>kompas arah proyek</b>: SELARAS memilih masalah (bukti pelayanan yang tidak tersusun → phantom &amp; repeat billing) <i>sebelum</i> memilih teknologinya. Pendekatan “problem-first” juga ditekankan penyelenggara<a class="c" href="#ref13">[13]</a>.</p>
+
+  <h3>Aturan main yang mengikat dokumen &amp; produk</h3>
+  <div class="grid2">
+    <div class="card"><h4>Komposisi proposal (9 komponen wajib)</h4>
+      <p class="mini">1 Identitas &amp; Positioning · 2 Masalah &amp; Urgensi · 3 Solusi &amp; Keunggulan · 4 Pendekatan Teknis &amp; Data · 5 Kematangan/Prototype · 6 Rencana &amp; Kelayakan · 7 Dampak &amp; Nilai Terukur · 8 Risiko-Privasi-Etika · 9 Profil Tim<a class="c" href="#ref3">[3]</a></p></div>
+    <div class="card"><h4>Enam dimensi penilaian</h4>
+      <p class="mini">Relevansi masalah · Kreativitas &amp; inovasi · Kualitas teknologi · Efektivitas &amp; dampak · Kesiapan &amp; skalabilitas · Keamanan &amp; tata kelola<a class="c" href="#ref3">[3]</a></p></div>
+    <div class="card"><h4>Batasan keras</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li><b>Dilarang</b> memakai data JKN riil tanpa izin resmi.</li>
+        <li><b>Tanpa vonis fraud otomatis</b> — AI mendukung, manusia memutuskan.</li>
+        <li>Sitasi wajib untuk klaim faktual eksternal; hindari overclaim.</li>
+        <li>1 kategori, 1 solusi; tim 1–3 orang.</li>
+      </ul></div>
+    <div class="card"><h4>Format proposal resmi</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>PDF, <b>maks 20 slide, maks 10 MB</b>.</li>
+        <li>Data dampak = estimasi/target, wajib dilabeli transparan.</li>
+        <li>Semua data prototipe dilabeli <b>sintetis</b>.</li>
+      </ul></div>
+  </div>
+
+  <h3>Tenggat &amp; artefak</h3>
+  <table>
+    <tr><th style="width:30%">Artefak</th><th style="width:34%">Isi</th><th>File</th></tr>
+    <tr><td>PRD</td><td>Sumber kebenaran produk, 57 bagian</td><td><code>SELARAS_PRD_Healthkathon_2026.md</code></td></tr>
+    <tr><td>Proposal deck</td><td>20 slide, ikut 9 komponen panduan</td><td><code>docs/deck/SELARAS-Healthkathon-2026.pdf</code></td></tr>
+    <tr><td>Prototipe</td><td>Next.js, 22 halaman + 3 API</td><td><code>app/</code></td></tr>
+    <tr><td>Dokumen ini</td><td>Acuan internal tim (fakta + sumber)</td><td><code>docs/reference/SELARAS-Dokumentasi-Lengkap.pdf</code></td></tr>
+  </table>
+
+  <div class="foot-note">Panduan proposal Healthkathon 2026 = dokumen resmi penyelenggara (laman kompetisi &amp; template peserta)<a class="c" href="#ref3">[3]</a>. Dokumen ini mengikuti struktur &amp; batasan tersebut, tetapi <b>bukan</b> dokumen yang diunggah ke sistem kompetisi.</div>
+</section>
+
+<!-- ============================ BAB 3 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 3</span>
+  <h2 class="bab-title">Masalah Nyata — Fakta &amp; Sumber</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Bagian ini adalah <b>bahan bakar urgensitas</b> untuk deck, slide, dan jawaban juri. Semua angka eksternal bernomor [n] merujuk ke Daftar Pustaka (Bab 13). Jangan pernah menyebut angka ini tanpa sumbernya.</p>
+
+  <h3>3.1 Skala paparan: JKN sangat besar, titik pembentukan bukti sangat banyak</h3>
+  <div class="grid4">
+    <div class="stat"><div class="v">284.514.113</div><div class="l">Peserta JKN — s.d. 31 Agustus 2026<a class="c" href="#ref1">[1]</a></div></div>
+    <div class="stat blue"><div class="v">23.812</div><div class="l">FKTP — titik pelayanan pertama<a class="c" href="#ref1">[1]</a></div></div>
+    <div class="stat green"><div class="v">3.222</div><div class="l">RS / Klinik Utama (FKRTL)<a class="c" href="#ref1">[1]</a></div></div>
+    <div class="stat"><div class="v">6.631</div><div class="l">Apotek / Optik mitra<a class="c" href="#ref1">[1]</a></div></div>
+  </div>
+  <p style="margin-top:8px;">Cakupan JKN mencapai <b>&gt;98% penduduk Indonesia</b>; 31 provinsi dan 397 kab/kota mencapai UHC pada 2026<a class="c" href="#ref14">[14]</a>. Dana yang dikelola besar: iuran <b>Rp 190 triliun</b> (2025)<a class="c" href="#ref11">[11]</a>. Di skala ini, satu kekeliruan klaim kecil pun terakumulasi menjadi angka besar — dan setiap klaim berdiri di atas <b>bukti pelayanan yang harusnya sudah terbentuk di 23.812 titik tersebut</b>.</p>
+
+  <h3>3.2 Besaran fraud: masalah nyata, bukan asumsi</h3>
+  <div class="grid3">
+    <div class="stat red"><div class="v">Rp 6,8 T</div><div class="l">Fraud faskes tercatat Jan–Okt 2025 (Rp 5,1 T dicegah + Rp 1,7 T terdeteksi &amp; tertangani)<a class="c" href="#ref4">[4]</a></div></div>
+    <div class="stat red"><div class="v">Rp 20 T</div><div class="l">Estimasi kerugian fraud kesehatan = 10% anggaran kesehatan (KPK, Sep 2024)<a class="c" href="#ref9">[9]</a></div></div>
+    <div class="stat amber"><div class="v">~Rp 6 T</div><div class="l">Angka terbaru menurun (BPJS Kesehatan, Jul 2026) — tetap triliunan<a class="c" href="#ref11">[11]</a></div></div>
+  </div>
+  <p style="margin-top:8px;">Jenis kecurangan yang diakui resmi antara lain: <b>klaim fiktif</b> (klaim tanpa pasien), <b>manipulasi diagnosis</b>, pengubahan kode diagnosis ke tarif lebih tinggi, pemecahan paket layanan (<i>fragmentation</i>), <b>klaim yang diulang untuk kasus yang sama (<i>repeat billing</i>)</b>, dan penarikan biaya tidak sesuai aturan<a class="c" href="#ref4">[4]</a>. Dua modus terbesar menurut audit tim gabungan: <b>phantom billing</b> dan <b>manipulation diagnosis</b>; modus lain termasuk <i>self-referral, upcoding, repeat billing, fragmentation</i>, serta suap/gratifikasi<a class="c" href="#ref7">[7]</a>.</p>
+
+  <div class="box warn"><b>Kecocokan kategori:</b> Healthkathon memilih sub-kategori <b>Phantom &amp; Repeat Billing</b> untuk kategori Fasilitas Kesehatan<a class="c" href="#ref3">[3]</a> — persis dua modus teratas pada temuan audit di atas. SELARAS memang dirancang untuk keduanya (lihat Bab 4).</div>
+
+  <h3>3.3 Kasus nyata: 3 rumah sakit, phantom billing fisioterapi (Juli 2024)</h3>
+  <p>Tim Pencegahan dan Penanganan Fraud JKN (KPK + Kemenkes + BPJS Kesehatan + BPKP) mengumumkan temuan dari sampel 6 RS di 3 provinsi (periksa: Juli 2017–Juni 2018 layanan fisioterapi &amp; operasi katarak):</p>
+  <table>
+    <tr><th style="width:44%">Temuan</th><th style="width:26%">Angka</th><th>Sumber</th></tr>
+    <tr><td>Klaim layanan fisioterapi di 3 RS</td><td><b>4.341 kasus</b></td><td rowspan="3">Kemenkes/KPK, 24–26 Juli 2024<a class="c" href="#ref5">[5]</a><a class="c" href="#ref6">[6]</a><a class="c" href="#ref8">[8]</a></td></tr>
+    <tr><td>…yang memiliki catatan rekam medis</td><td><b>1.072 (24,7%)</b></td></tr>
+    <tr><td>…diduga fiktif, nilai klaim</td><td><b>3.269 kasus (75,3%) · Rp 501,27 juta</b></td></tr>
+    <tr><td>Manipulasi diagnosis operasi katarak (sampel 39 pasien)</td><td>hanya <b>14</b> sesuai diagnosis</td><td>KPK<a class="c" href="#ref5">[5]</a><a class="c" href="#ref6">[6]</a></td></tr>
+    <tr><td>3 RS phantom billing (1 Jateng, 2 Sumut) — nilai tercatat</td><td><b>± Rp 34 miliar</b> (Rp 29 M; Rp 4 M; Rp 1 M)</td><td>KPK/BPJS audit<a class="c" href="#ref6">[6]</a><a class="c" href="#ref7">[7]</a><a class="c" href="#ref8">[8]</a></td></tr>
+    <tr><td>BPJS Kesehatan memutus kerja sama</td><td><b>&gt;5 rumah sakit</b></td><td>Bisnis.com, 24 Jul 2024<a class="c" href="#ref7">[7]</a></td></tr>
+  </table>
+  <div class="box danger"><b>Pola yang terlihat (dan kenapa ini masalah SELARAS):</b> 75,3% klaim fisioterapi <b>tidak punya rekam medis yang mendukung</b> — artinya klaim ada, rangkaian bukti pelayanan tidak ada atau tidak bisa direkonstruksi. Itu persis <i>hero problem</i> SELARAS: <b>claim atas pelayanan yang tidak memiliki rangkaian bukti yang cukup, konsisten, atau dapat direkonstruksi</b> (Bab 4).</div>
+
+  <h3>3.4 Mengapa deteksi yang ada masih terlambat</h3>
+  <ul class="pts">
+    <li><b>Verifikasi berlapis tetapi reaktif.</b> BPJS Kesehatan punya 3 lapis: verifikasi awal, verifikasi pasca-klaim (VPK), dan audit administrasi klaim (AAK) — semuanya bekerja <i>setelah</i> klaim masuk<a class="c" href="#ref5">[5]</a>. Artinya bukti baru dirakit ketika uang sudah hampir/telah keluar.</li>
+    <li><b>Penanganan = pengejaran setelah bayar.</b> Bila ditemukan ketidaksesuaian pasca-bayar, barulah Tim Anti Kecurangan &amp; Tim PK-JKN melakukan penelusuran/investigasi<a class="c" href="#ref5">[5]</a> — proses lambat, bukti lama sudah tersebar.</li>
+    <li><b>Skala tim kecil vs volume besar.</b> ±1.900 pegawai BPJS ditugaskan mencegah fraud di seluruh sistem<a class="c" href="#ref10">[10]</a>; tanpa bukti yang tersusun, reviewer harus merakit cerita manual dari banyak sistem.</li>
+    <li><b>Bukti berpindah tangan pun jadi modus.</b> Oknum RS mengumpulkan data warga (KTP, kartu JKN) via bakti sosial untuk membuat klaim fiktif — identitas ada, pelayanan tidak ada<a class="c" href="#ref8">[8]</a>.</li>
+  </ul>
+
+  <div class="box ok"><b>Sintesis masalah (pakai kalimat ini):</b> di satu sisi triliunan rupiah fraud tercatat setiap tahun dan 75% sampel klaim fisioterapi kasus nyata tidak didukung rekam medis; di sisi lain seluruh mekanisme deteksi bekerja <i>setelah</i> klaim. <b>SELARAS memindahkan pembentukan bukti ke titik pelayanan</b> — deteksi jadi dini karena bukti sudah ada sebelum klaim terbentuk.</div>
+
+  <div class="foot-note">Angka fraud bersifat dinamis dan dilaporkan berjenjang (KPK 2024: ~Rp 20 T estimasi<a class="c" href="#ref9">[9]</a>; BPJS 2025: Rp 6,8 T tercatat<a class="c" href="#ref4">[4]</a>; BPJS Jul 2026: ~Rp 6 T<a class="c" href="#ref11">[11]</a>). Saat menyebut, selalu ikutkan periode + sumbernya, jangan gabung angka lintas tahun.</div>
+</section>
+
+<!-- ============================ BAB 4 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 4</span>
+  <h2 class="bab-title">Rumusan Masalah Proyek</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Sumber: PRD Bagian 2. Masalahnya bukan sekadar mendeteksi anomali — masalah utamanya adalah <b>rekonstruksi dan pembuktian konteks pelayanan</b>.</p>
+
+  <h3>4.1 Masalah inti</h3>
+  <p>Dalam satu episode pelayanan, informasi terbentuk bertahap dan tersebar: <i>appointment → encounter → provider → treatment/procedure → clinical note → operational event → billing → claim</i>. Ketika sebuah klaim harus diverifikasi, reviewer menjawab 7 pertanyaan ini:</p>
+  <div class="grid2">
+    <ol class="num">
+      <li>Apa yang sebenarnya diklaim?</li>
+      <li>Bukti apa yang <i>seharusnya</i> ada?</li>
+      <li>Bukti apa yang benar-benar ditemukan?</li>
+    </ol>
+    <ol class="num" start="4" style="counter-reset:item 3;">
+      <li>Bagian mana yang hilang / tidak konsisten?</li>
+      <li>Kapan perbedaan terjadi?</li>
+      <li>Bagaimana dampaknya pada klaim?</li>
+      <li>Apakah kasus perlu diperiksa lebih lanjut?</li>
+    </ol>
+  </div>
+
+  <h3>4.2 Hero problem</h3>
+  <div class="box dark"><b>Phantom / Unsubstantiated Service</b> — klaim atas pelayanan yang <b>tidak memiliki rangkaian bukti pelayanan yang cukup, konsisten, atau dapat direkonstruksi</b> dari data yang tersedia. Contoh fisioterapi: klaim menyatakan 10 sesi, hanya 8 sesi yang punya <i>evidence chain</i> memadai → SELARAS menghasilkan <b>Evidence Gap / Claim–Service Divergence</b>, bukan vonis fraud.</div>
+
+  <h3>4.3 Mengapa point of care (dan bukan setelah klaim)</h3>
+  <p>Jika bukti baru dicari <i>setelah</i> klaim bermasalah, bukti dapat tersebar, terlambat, atau sulit direkonstruksi. SELARAS memindahkan pembentukan bukti ke titik pelayanan agar setiap episode berkonteks sejak awal. Inilah pergeseran inti:</p>
+  <div class="lane lane-a">
+    <div class="lane-k">Pendekatan umum — reaktif</div>
+    <div class="lane-row">
+      <span class="lane-step">Klaim masuk</span><span class="lane-arrow">→</span>
+      <span class="lane-step">Skor anomali</span><span class="lane-arrow">→</span>
+      <span class="lane-step">Reviewer cari bukti lama</span><span class="lane-arrow">→</span>
+      <span class="lane-step">Cerita tercecer</span><span class="lane-arrow">→</span>
+      <span class="lane-step">Keputusan diragukan</span>
+    </div>
+  </div>
+  <div class="lane lane-b">
+    <div class="lane-k">Pendekatan SELARAS — proaktif</div>
+    <div class="lane-row">
+      <span class="lane-step">Pelayanan dicatat</span><span class="lane-arrow">→</span>
+      <span class="lane-step acc">Service Passport otomatis</span><span class="lane-arrow">→</span>
+      <span class="lane-step acc">Rekonsiliasi klaim ↔ bukti</span><span class="lane-arrow">→</span>
+      <span class="lane-step acc">AI menjelaskan gap</span><span class="lane-arrow">→</span>
+      <span class="lane-step">Reviewer memutuskan</span>
+    </div>
+  </div>
+
+  <h3>4.4 Lingkup &amp; batasan (PRD Non-Goals — baca sebelum menjanjikan sesuatu)</h3>
+  <ul class="pts">
+    <li><b>Tidak</b> menetapkan fraud secara otomatis; <b>Tidak</b> menggantikan proses resmi verifikasi BPJS.</li>
+    <li><b>Tidak</b> menggantikan RME/SIMRS; <b>Tidak</b> mengintegrasikan data JKN riil tanpa otorisasi.</li>
+    <li><b>Tidak</b> menyelesaikan seluruh modus risiko faskes sekaligus — MVP fokus 1 hero problem.</li>
+    <li><b>Tidak</b> memberikan diagnosis/keputusan klinis; <b>Tidak</b> mengklaim outcome klinis tanpa validasi.</li>
+  </ul>
+
+  <div class="foot-note">Lokasi: PRD §2.1–2.4 (Masalah Inti, Hero Problem, MVP Example, Point-of-Care) dan §3.3 Non-Goals.</div>
+</section>
+
+<!-- ============================ BAB 5 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 5</span>
+  <h2 class="bab-title">Solusi: SELARAS</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead"><b>Product thesis:</b> “Klaim adalah pernyataan. SELARAS membangun dan menyusun buktinya sejak pelayanan terjadi.” MVP = <b>Physiotherapy Service Integrity</b>; hero risk = <b>Phantom &amp; Repeat Billing</b>.</p>
+
+  <h3>5.1 Alur utama — 9 langkah (PRD §55)</h3>
+  <div class="grid2">
+    <ol class="flow">
+      <li><b>Service</b>Pelayanan dimulai di titik layanan.</li>
+      <li><b>Capture</b>Operator mencatat peristiwa + 6 jenis bukti per sesi (kedatangan, provider, tindakan, catatan klinis, billing, klaim).</li>
+      <li><b>Service Passport</b>Ringkasan satu episode, dibentuk otomatis — status kelengkapan per sesi.</li>
+      <li><b>Evidence Graph</b>Semua entitas bertaut: 86 node · 113 rel (kasus emas).</li>
+      <li><b>Episode Reconstruction</b>10 sesi direkonstruksi dalam satu garis waktu.</li>
+    </ol>
+    <ol class="flow" start="6" style="counter-reset:item 5;">
+      <li><b>Service ↔ Claim Reconciliation</b>Klaim dicocokkan dengan jejak bukti: 6 pemeriksaan (kuantitas, temporal, identitas, kelengkapan, duplikasi, konflik).</li>
+      <li><b>Gap / Conflict / Impact</b>Sesi 09–10 ditandai · Rp 700.000 antre tinjauan.</li>
+      <li><b>AI Evidence Reasoner</b>Penjelasan 5 blok berbasis bukti (bukan vonis).</li>
+      <li><b>Human Review</b>Keputusan reviewer tercatat permanen di audit log.</li>
+    </ol>
+  </div>
+
+  <h3>5.2 Delapan modul inti</h3>
+  <table>
+    <tr><th style="width:26%">Modul</th><th>Fungsi satu kalimat</th><th style="width:30%">Bukti di prototipe</th></tr>
+    <tr><td><b>Service Capture</b></td><td>Mencatat pelayanan + bukti saat itu juga (QR check-in, 6 jenis bukti/sesi)</td><td>Halaman Pelayanan, alur start→QR→catat→passport</td></tr>
+    <tr><td><b>Service Passport</b></td><td>Ringkasan otomatis 1 episode: status kelengkapan per sesi</td><td><code>/app/passport</code>, kartu passport</td></tr>
+    <tr><td><b>Reconciliation</b></td><td>6 pemeriksaan klaim ↔ bukti + hitung gap</td><td>Halaman klaim, matriks bukti 10×6</td></tr>
+    <tr><td><b>Proof Gap Engine</b></td><td>Menandai sesi tanpa bukti &amp; estimasi dampak rupiah</td><td>Sesi 09–10, sinyal EVIDENCE_GAP / MISSING_COMPLETION</td></tr>
+    <tr><td><b>Replay</b></td><td>Kronologi episode 70 langkah, bisa dijeda &amp; diskip</td><td><code>/app/claims/[id]/replay</code></td></tr>
+    <tr><td><b>Evidence Graph</b></td><td>Graf bukti + provenance (sumber, waktu, pencatat)</td><td><code>/app/claims/[id]/graph</code> — 86 node/113 rel</td></tr>
+    <tr><td><b>AI Evidence Reasoner</b></td><td>Penjelasan 5 blok + Kopilot Klarifikasi (draf surat)</td><td><code>/app/claims/[id]/ai</code></td></tr>
+    <tr><td><b>Review Workspace</b></td><td>Keputusan 4 aksi + catatan + audit trail</td><td><code>/app/claims/[id]</code>, <code>/app/audit-log</code></td></tr>
+  </table>
+
+  <h3>5.3 Tiga keunggulan (jawaban “kenapa SELARAS”)</h3>
+  <div class="grid3">
+    <div class="card"><h4>1 · Bukti lebih dulu</h4><p>Bukti dibentuk saat pelayanan — celah terdeteksi ketika episode masih hangat, bukan setelah bayar.</p></div>
+    <div class="card"><h4>2 · Dijelaskan, bukan ditebak</h4><p>AI menjawab “apa yang diketahui / hilang / didukung” dari bukti nyata; <b>Missing ≠ fraud</b>.</p></div>
+    <div class="card"><h4>3 · Manusia yang memutuskan</h4><p>Human-in-the-loop: reviewer melihat konteks utuh (klaim+matriks+replay+AI+dampak) dalam satu layar, keputusan tetap miliknya.</p></div>
+  </div>
+
+  <h3>5.4 Integrity Mesh — “satu temuan, semua terlindungi”</h3>
+  <div class="grid2">
+    <div class="card"><h4>Konsep</h4><p>Pola risiko (<b>Risk Signature</b>) yang tervalidasi di satu faskes dapat dipublikasikan ke jaringan sehingga faskes lain <b>terlindungi dari pola yang sama</b> — tanpa berbagi data pasien, hanya pola.</p></div>
+    <div class="card"><h4>Siklus tata kelola (wajib lewat semua tahap)</h4><p class="chip n">USULAN</p><span style="font-weight:800;">→</span> <p class="chip n" style="display:inline-flex;">DISETUJUI</p> → <p class="chip a" style="display:inline-flex;">DIVALIDASI</p> → <p class="chip g" style="display:inline-flex;">AKTIF</p><p class="mini" style="margin-top:5px;">Tidak ada pola yang langsung aktif.</p></div>
+    <div class="card"><h4>Keadaan jaringan (sintetis)</h4><p>4 faskes (A–D) · <b>2 Risk Signature</b> (1 menunggu publikasi) · <b>12 match siap publikasi</b> · <b>25 klaim dievaluasi</b>.</p></div>
+    <div class="card"><h4>Prinsip privasi mesh</h4><p><b>Pola dibagikan, data pasien tidak.</b> Skor lokal faskes tidak berpengaruh oleh jaringan. Step-up verification: lolos → klarifikasi → tinjauan.</p></div>
+  </div>
+
+  <div class="foot-note">Lokasi kode: <code>data/app/network.ts</code> (mesh &amp; signature), <code>app/app/network/*</code> (halaman), PRD §51–52 (Service Fingerprint &amp; future modules).</div>
+</section>
+
+<!-- ============================ BAB 6 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 6</span>
+  <h2 class="bab-title">Kasus Emas CLM-08421</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Satu-satunya cerita yang perlu dihafal dari luar kepala. Ini demo end-to-end prototipe — <b>data sintetis</b>, bukan transaksi JKN riil.</p>
+
+  <h3>6.1 Ceritanya dalam 40 detik</h3>
+  <ol class="num">
+    <li>Klaim <b>CLM-08421</b> masuk: layanan <b>fisioterapi, 10 sesi</b>, tarif <b>Rp 350.000/sesi</b> → total diajukan <b>Rp 3.500.000</b>.</li>
+    <li>SELARAS mencocokkan tiap sesi dengan bukti yang tercatat: <b>8 sesi didukung bukti lengkap</b>, <b>2 sesi (09 &amp; 10) tidak punya bukti tindakan/penyelesaian</b>.</li>
+    <li>Sinyal terpicu: <b>EVIDENCE_GAP sesi 09 (+14 poin)</b> dan <b>MISSING_COMPLETION sesi 10 (+7 poin)</b> + defisit cakupan bukti → total skor <b>27 (RENDAH)</b>, ambang gerbang <b>65</b>.</li>
+    <li>Gerbang pra-bayar: <b>Rp 2.800.000 lolos</b> (8 sesi berbukti), <b>Rp 700.000 ditahan → antrean tinjauan</b> (2 sesi). Transparan, bukan disembunyikan.</li>
+    <li>Reviewer membuka workspace: matriks bukti 10 sesi × 6 jenis bukti, replay 70 langkah, graf 86 node/113 rel, penjelasan AI 5 blok → memutuskan dengan konteks utuh.</li>
+  </ol>
+
+  <div class="grid4">
+    <div class="stat"><div class="v">10 → 8 → 2</div><div class="l">Diklaim → didukung → perlu tinjauan</div></div>
+    <div class="stat amber"><div class="v">27 / 65</div><div class="l">Skor risiko / ambang gerbang (band RENDAH)</div></div>
+    <div class="stat green"><div class="v">Rp 2.800.000</div><div class="l">Lolos — sesi berbukti tetap dibayar</div></div>
+    <div class="stat amber"><div class="v">Rp 700.000</div><div class="l">Ditahan → antrean tinjauan (2 sesi)</div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:9px;">
+    <div class="shot-wrap"><img class="shot" data-shot="13-claim-matriks" alt="Matriks bukti klaim" /><div class="shot-cap">Matriks bukti: 10 sesi × 6 jenis — kolom sesi 09–10 menandai bukti yang hilang</div></div>
+    <div class="shot-wrap"><img class="shot" data-shot="17-graph" alt="Evidence graph" /><div class="shot-cap">Evidence Graph CLM-08421 — 86 node · 113 rel, bertaut per jenis bukti</div></div>
+  </div>
+
+  <h3>6.2 Detail teknis (untuk pertanyaan juri yang dalam)</h3>
+  <table>
+    <tr><th style="width:30%">Aspek</th><th>Detail</th></tr>
+    <tr><td>6 pemeriksaan rekonsiliasi</td><td>Quantity · Temporal · Identity · Evidence Completeness · Duplicate · Conflict (PRD §10)</td></tr>
+    <tr><td>6 jenis bukti per sesi</td><td>Kedatangan · Provider · Tindakan · Catatan klinis · Billing · Klaim (PRD §8–9)</td></tr>
+    <tr><td>Skor risiko</td><td>Sum kontribusi sinyal: critical 22 / warning 14 / info 7 + defisit cakupan (≤30) → cap 100; band RENDAH &lt;35, SEDANG ≥35, TINGGI ≥65. <b>Ambang gerbang 65</b> di satu modul (<code>lib/app/score.ts</code>, <code>lib/app/gate.ts</code>)</td></tr>
+    <tr><td>Sinyal pada kasus ini</td><td><code>EVIDENCE_GAP</code> · sesi 09 · +14 — “menagihkan tindakan yang tidak didukung bukti”; <code>MISSING_COMPLETION</code> · sesi 10 · +7 — “tindakan dicatat tanpa penyelesaian”</td></tr>
+    <tr><td>Replay</td><td>70 langkah kronologi, dapat dijeda/diskip, melihat persis kapan bukti sesi 09 tidak muncul</td></tr>
+    <tr><td>Kelas sinyal</td><td>Sinyal terkait masuk kelas <b>Phantom &amp; Repeat Billing</b> (#14 “Menagihkan tindakan yang tidak dilakukan”)</td></tr>
+    <tr><td>AI 5 blok</td><td>Apa yang diketahui · apa yang hilang · apa yang didukung · mengapa perlu ditinjau · apa yang perlu diperiksa</td></tr>
+  </table>
+
+  <div class="box warn"><b>Aturan bercerita:</b> sebutkan bahwa angka klaim/skor/dampak adalah <b>simulasi prototipe dengan data sintetis</b>. Jangan menyebut kasus ini sebagai kasus JKN nyata. Prinsip <b>“missing ≠ fraud”</b> wajib ikut disebut — gap adalah alasan <i>meninjau</i>, bukan vonis.</div>
+</section>
+
+<!-- ============================ BAB 7 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 7</span>
+  <h2 class="bab-title">Bukti Eksekusi Prototipe</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Yang membedakan proposal “ide” dari “prototype”: ini sudah berjalan. Gunakan bagian ini saat diminta bukti kesiapan (dimensi penilaian <b>kesiapan &amp; skalabilitas</b>).</p>
+
+  <div class="grid4">
+    <div class="stat green"><div class="v">96</div><div class="l">Skenario uji E2E lulus (alur, jaringan, sinyal, peran, responsif, error 0)</div></div>
+    <div class="stat blue"><div class="v">22</div><div class="l">Halaman aplikasi App Router + 3 endpoint API</div></div>
+    <div class="stat"><div class="v">2.334</div><div class="l">Baris PRD, 57 bagian — dari problem sampai DoD</div></div>
+    <div class="stat"><div class="v">4</div><div class="l">Peran RBAC (Reviewer/Admin/Provider/Operator) — 9 skenario peran</div></div>
+  </div>
+
+  <div class="shot-wrap" style="margin-top:10px;"><img class="shot" data-shot="10-dashboard" alt="Dashboard aplikasi" /><div class="shot-cap">Dashboard Reviewer — antrian klaim, cakupan bukti, kasus prioritas (data sintetis)</div></div>
+
+  <h3>Cakupan fitur per modul demo</h3>
+  <div class="grid2">
+    <div class="card"><h4>Point of care</h4><p class="mini">Mulai pelayanan → QR check-in → catat 6 jenis bukti → Service Passport terbentuk otomatis.</p></div>
+    <div class="card"><h4>Antrean &amp; matriks bukti</h4><p class="mini">Daftar klaim → detail klaim → matriks 10 sesi × 6 bukti → gap &amp; dampak rupiah.</p></div>
+    <div class="card"><h4>Replay &amp; graf</h4><p class="mini">70 langkah kronologi + Evidence Graph 86 node/113 rel dengan provenance.</p></div>
+    <div class="card"><h4>AI &amp; kopilot klarifikasi</h4><p class="mini">Penjelasan 5 blok evidence-grounded + draf surat klarifikasi yang disesuaikan reviewer.</p></div>
+    <div class="card"><h4>Integrity Mesh</h4><p class="mini">4 faskes, siklus persetujuan signature, 12 match siap publikasi.</p></div>
+    <div class="card"><h4>Analitik &amp; log audit</h4><p class="mini">Metrik operasi/investigasi/bukti/AI + jejak permanen aktor-keputusan-waktu.</p></div>
+  </div>
+
+  <h3>Definition of Done (PRD §48) — status saat ini</h3>
+  <table>
+    <tr><th style="width:36%">Butir DoD</th><th style="width:20%">Status</th><th>Catatan</th></tr>
+    <tr><td>Service capture → passport</td><td><b>Berfungsi</b></td><td>Alur QR + 6 jenis bukti per sesi</td></tr>
+    <tr><td>Rekonsiliasi → gap engine</td><td><b>Berfungsi</b></td><td>6 pemeriksaan, sinyal + poin skor</td></tr>
+    <tr><td>Replay + Evidence Graph</td><td><b>Berfungsi</b></td><td>70 langkah; 86 node/113 rel dari API graf</td></tr>
+    <tr><td>AI reasoner + kopilot</td><td><b>Berfungsi</b></td><td>5 blok, evidence-grounded, tanpa vonis</td></tr>
+    <tr><td>Review + audit log + RBAC</td><td><b>Berfungsi</b></td><td>4 peran, 9 skenario peran lulus</td></tr>
+    <tr><td>Golden case &lt; 5 menit</td><td><b>Terpenuhi</b></td><td>Definition of Done prototipe</td></tr>
+    <tr><td>Integrasi VClaim/SATUSEHAT</td><td class="chip a" style="display:inline-flex;">Belum</td><td>Dirancang lewat adapter — jujur disebut di deck (Bagian 6)</td></tr>
+    <tr><td>Pengguna nyata / uji lapangan</td><td class="chip a" style="display:inline-flex;">Belum</td><td>Alasan utama permintaan pilot</td></tr>
+  </table>
+
+  <div class="foot-note">Kualitas build terverifikasi pada siklus terakhir: TypeScript 0 error · ESLint 0 error · <code>next build</code> sukses · semua suite uji lulus · 0 overflow halaman.</div>
+</section>
+
+<!-- ============================ BAB 8 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 8</span>
+  <h2 class="bab-title">Arsitektur &amp; Tech Stack</h2>
+  <div class="bab-rule"></div>
+
+  <h3>8.1 Alur data (target arsitektur — PRD §23)</h3>
+  <div class="box dark" style="text-align:center; font-family:Consolas,monospace; font-size:9.5pt; line-height:1.8;">
+    USERS → <b>Next.js Web App</b> → HTTPS → <b>API</b> → { <b>PostgreSQL</b> (transaksional) · <b>Neo4j</b> (graf analitik) · Redis/Queue }<br />
+    → <b>Evidence Engine</b> → { <b>Reconciliation</b> · <b>Risk Engine</b> · <b>AI Reasoner</b> }
+  </div>
+  <div class="box warn"><b>Status jujur:</b> prototipe hackathon berjalan sebagai <b>Next.js/TypeScript monolitik dengan modul terpisah</b> (capture, passport, reconciliation, graph, AI, mesh) — siap dipecah jadi service terpisah pada fase MVP. Stack Python/FastAPI/Neo4j penuh = arsitektur target, bukan klaim yang sudah berjalan.</div>
+
+  <h3>8.2 Stack</h3>
+  <div class="grid2">
+    <div class="card"><h4>Prototipe saat ini (berjalan)</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>Next.js 16 · TypeScript · React 19 · App Router</li>
+        <li>Tailwind CSS 4 · shadcn/ui · Lucide · Recharts</li>
+        <li>Data lokal terstruktur (<code>data/</code>, <code>lib/app/</code>) — mode seed sintetis</li>
+        <li>Neo4j driver opsional untuk seed graf (<code>npm run seed:neo4j</code>)</li>
+      </ul></div>
+    <div class="card"><h4>Target produksi (PRD §22)</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>Backend Python · FastAPI · SQLAlchemy</li>
+        <li>PostgreSQL (sumber kebenaran transaksional) + Neo4j (lapisan analitik-relasional)</li>
+        <li>Redis/Celery · JWT/Supabase Auth · storage S3-compatible</li>
+        <li>LLM API + <b>rule engine deterministik</b> untuk kalkulasi skor/gap</li>
+        <li>Vercel (frontend) + Railway/Render/Fly (backend) + Neo4j Aura</li>
+      </ul></div>
+  </div>
+
+  <h3>8.3 Keputusan arsitektur yang harus bisa dijelaskan</h3>
+  <table>
+    <tr><th style="width:34%">Keputusan</th><th>Alasan</th></tr>
+    <tr><td>PostgreSQL = sumber kebenaran transaksional; graf = lapisan analitik</td><td>Kejelian traversal graf tidak boleh mengorbankan konsistensi data — graf disinkronkan &amp; divalidasi (PRD §14.5, §25)</td></tr>
+    <tr><td>Siklus gerbang pra-bayar di satu modul</td><td>Ambang &amp; aturan dalam satu sumber kebenaran, tidak tercecer di UI (auditability)</td></tr>
+    <tr><td>LLM hanya untuk penjelasan</td><td>Kalkulasi skor/gap deterministik (aturan murni); LLM dibatasi schema-constrained output — ketergantungan LLM untuk angka dilarang (PRD §54)</td></tr>
+    <tr><td>Adapter, bukan integrasi langsung</td><td>Integrasi VClaim/SATUSEHAT dirancang lewat adapter/middleware — mengurangi risiko keterlambatan deployment (PRD §53)</td></tr>
+    <tr><td>Data sintetis sebagai seed</td><td>Menghormati larangan data JKN riil tanpa izin — sekaligus memungkinkan benchmark berbasis ground truth (PRD §28)</td></tr>
+  </table>
+
+  <h3>8.4 Model data inti (PostgreSQL — PRD §24)</h3>
+  <p class="mini"><code>users</code> · <code>facilities</code> · <code>providers</code> · <code>patients</code> · <code>service_episodes</code> · <code>service_events</code> · <code>evidences</code> · <code>claims</code> · <code>claim_items</code> · <code>reconciliations</code> · <code>reviews</code> · <code>audit_logs</code> — plus node/rel graf: pasien, provider, sesi 01–10, bukti, klaim, sinyal (semua bertaut provenance: sumber, waktu observasi, pencatat).</p>
+</section>
+
+<!-- ============================ BAB 9 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 9</span>
+  <h2 class="bab-title">Keamanan, Privasi &amp; Etika AI</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Dimensi penilaian <b>keamanan &amp; tata kelola</b> + <b>Batasan Umum</b> panduan: tanpa data JKN riil tanpa izin, tanpa vonis otomatis, tanpa klaim tanpa dasar. Bagian ini adalah bukti kepatuhannya.</p>
+
+  <h3>9.1 Empat peran RBAC (dibuktikan 9 skenario uji peran)</h3>
+  <table>
+    <tr><th style="width:16%">Peran</th><th>Bisa</th><th style="width:36%">Tidak bisa</th></tr>
+    <tr><td><b>Reviewer</b></td><td>Melihat semua klaim, memutuskan (didukung/ditolak/klarifikasi), mengesahkan pola</td><td>Mengubah data pelayanan, menghapus audit log</td></tr>
+    <tr><td><b>Admin</b></td><td>Kelola pengguna, template layanan, konfigurasi ambang</td><td><b>Tidak punya hak memutuskan klaim</b> (separation of duties)</td></tr>
+    <tr><td><b>Provider</b></td><td>Melihat pelayanan faskesnya sendiri</td><td>Melihat data faskes lain, memutuskan klaim</td></tr>
+    <tr><td><b>Operator</b></td><td>Mencatat bukti saat pelayanan berlangsung</td><td>Melihat keputusan klaim lintas unit</td></tr>
+  </table>
+
+  <h3>9.2 Privasi &amp; kepatuhan</h3>
+  <div class="grid2">
+    <div class="card"><h4>Prinsip desain (by design)</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li><b>Data pasien tidak pernah keluar faskes</b> — yang dibagikan ke mesh hanya <b>pola (signature)</b>, setelah lolos siklus persetujuan.</li>
+        <li>Minimisasi data · enkripsi · RBAC berlapis.</li>
+        <li>Privasi &amp; keamanan rekam medis dirancang sejak awal — sesuai prinsip pengembangan AI ekosistem JKN<a class="c" href="#ref2">[2]</a>.</li>
+      </ul></div>
+    <div class="card"><h4>Larangan eksplisit (PRD §54)</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>Tanpa data JKN riil tanpa otorisasi resmi.</li>
+        <li>Tanpa vonis fraud otomatis.</li>
+        <li>Tanpa metrik fabrikasi / klaim prototipe = produksi.</li>
+        <li>Tanpa ketergantungan LLM pada kalkulasi deterministik.</li>
+      </ul></div>
+  </div>
+
+  <h3>9.3 Guardrails AI (PRD §15.4, §39)</h3>
+  <ul class="pts">
+    <li><b>Evidence-grounded:</b> setiap penjelasan harus menunjuk bukti nyata di kasus; bukti buruk → penjelasan tidak lengkap (dan itu harus terlihat, bukan ditutupi).</li>
+    <li><b>Missing ≠ fraud:</b> gap = sinyal untuk ditinjau, bukan kesimpulan kecurangan. AI tidak menuduh, tidak menghitung uang, tidak menggantikan reviewer.</li>
+    <li><b>Schema-constrained output:</b> LLM hanya mengisi struktur 5 blok yang sudah ditentukan — mengurangi halusinasi interpretatif.</li>
+    <li><b>Pola tidak biasa ≠ kecurangan:</b> butuh konteks dan keadilan sebelum eskalasi<a class="c" href="#ref2">[2]</a> — threshold dikalibrasi ulang dengan feedback reviewer.</li>
+    <li><b>Override tercatat:</b> setiap keputusan manusia (termasuk pembalikan rekomendasi AI) masuk audit trail.</li>
+  </ul>
+
+  <h3>9.4 Risiko utama &amp; mitigasi (PRD §53)</h3>
+  <table>
+    <tr><th style="width:26%">Risiko</th><th style="width:20%">Dampak</th><th>Mitigasi</th></tr>
+    <tr><td>Missing evidence → false concern</td><td>Review salah sasaran</td><td>Missing ≠ fraud; verifikasi manual wajib</td></tr>
+    <tr><td>False positive tinggi</td><td>Reviewer kewalahan</td><td>Kalibrasi threshold + feedback loop reviewer</td></tr>
+    <tr><td>Halusinasi LLM</td><td>Salah interpretasi</td><td>Evidence-grounded prompt + output berstruktur</td></tr>
+    <tr><td>Inkonsistensi graf</td><td>Traversal salah</td><td>PostgreSQL sebagai sumber kebenaran + validasi sinkronisasi</td></tr>
+    <tr><td>Kebocoran data</td><td>Tinggi</td><td>RBAC + enkripsi + minimisasi (data pasien tidak keluar faskes)</td></tr>
+    <tr><td>Overclaim prototipe</td><td>Kredibilitas hilang</td><td>Label sintetis/eksperimental di UI &amp; deck</td></tr>
+    <tr><td>Kompleksitas integrasi</td><td>Delay deploy</td><td>Arsitektur adapter/middleware</td></tr>
+    <tr><td>Feature creep</td><td>Terlambat</td><td>Lock MVP scope — 1 hero problem</td></tr>
+  </table>
+
+  <div class="foot-note">Lokasi: PRD §37 Security · §38 Privacy &amp; Data Governance · §39 AI Governance · §53 Risks · §54 Constraints. UI keamanan terlihat di halaman <i>Tata Kelola</i> &amp; <i>Log Audit</i>.</div>
+</section>
+
+<!-- ============================ BAB 10 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 10</span>
+  <h2 class="bab-title">Dampak &amp; Metrik</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Aturan main: semua angka dampak = <b>simulasi prototipe / target pilot</b>, bukan hasil terukur. Nyatakan transparan bila masih estimasi (panduan: hindari overclaim).</p>
+
+  <h3>10.1 Sebelum vs sesudah (pakai slide 15 deck)</h3>
+  <table>
+    <tr><th style="width:30%">Aspek</th><th style="width:34%">Sebelum (cara lama)</th><th>Sesudah SELARAS (simulasi prototipe)</th></tr>
+    <tr><td>Titik cek manual</td><td>10 sesi × 6 bukti = <b>60 titik terserak</b> di banyak sistem</td><td><b>2 sinyal teratas</b> + matriks 10×6 dalam satu layar</td></tr>
+    <tr><td>Waktu deteksi gap</td><td>Setelah klaim (VPK/AAK — pasca bayar)</td><td><b>Saat pelayanan / sebelum bayar</b></td></tr>
+    <tr><td>Konteks reviewer</td><td>3 sistem terpisah, dirakit manual</td><td>1 halaman: klaim + matriks + replay + AI + dampak</td></tr>
+    <tr><td>Dampak finansial kasus emas</td><td>Rp 3.500.000 status tak terlihat</td><td><b>Rp 2.800.000 lolos + Rp 700.000 ditahan</b> (transparan)</td></tr>
+  </table>
+
+  <h3>10.2 KPI framework (PRD §30) — sumber datanya modul Analitik prototipe</h3>
+  <div class="grid2">
+    <div class="card"><h4>Product KPI</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li><b>Evidence Coverage</b> = sesi didukung / sesi diklaim</li>
+        <li><b>Median Review Time</b> = median keputusan dari buka kasus</li>
+        <li><b>Reconstruction Time</b> = waktu memahami 1 episode</li>
+        <li><b>Gap Detection Rate</b> = gap sintetis terdeteksi / disuntik</li>
+        <li><b>False Positive Rate</b> = kasus normal ter-flag salah / total normal</li>
+      </ul></div>
+    <div class="card"><h4>Governance KPI</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>% klaim dengan provenance lengkap</li>
+        <li>% penjelasan AI yang tertaut ke bukti</li>
+        <li>% keputusan review dengan aktor manusia</li>
+        <li>Kelengkapan audit log</li>
+      </ul></div>
+  </div>
+
+  <h3>10.3 Target pilot (angka = asumsi kerja, bukan hasil)</h3>
+  <table>
+    <tr><th style="width:26%">Metrik</th><th style="width:36%">Cara ukur</th><th>Target pilot</th></tr>
+    <tr><td>Evidence coverage</td><td>% sesi dengan 6/6 bukti (harian, Passport)</td><td>Baseline dulu sebelum integrasi → naik per bulan</td></tr>
+    <tr><td>Waktu deteksi gap</td><td>Detik (otomatis) vs hari (manual)</td><td>Dari “setelah klaim” → “saat pelayanan”</td></tr>
+    <tr><td>Waktu review per klaim</td><td>Menit, sebelum–sesudah</td><td>≥40% lebih cepat pada kasus berbukti (asumsi)</td></tr>
+    <tr><td>Nilai tertahan transparan</td><td>Rp antrean vs diajukan</td><td>Putus &lt;3 hari kerja</td></tr>
+    <tr><td>Override rate</td><td>% rekomendasi AI dibalik reviewer</td><td>Dipantau; kalibrasi bila &gt;20%</td></tr>
+    <tr><td>Pola tervalidasi</td><td>Signature lolos siklus USULAN→AKTIF</td><td>Per kuartal, dengan tinjauan etika</td></tr>
+  </table>
+
+  <div class="box warn"><b>Penerima manfaat:</b> Peserta JKN (klaim lebih cepat &amp; adil) · Faskes jujur (tidak kena imbas false positive, arus kas jelas) · BPJS Kesehatan (arus kas &amp; kepercayaan) · Ekosistem (pola berulang tak lagi lolos diam-diam). Selalu akhiri dengan disclaimer: <b>“simulasi prototipe — diuji ulang pada pilot.”</b></div>
+</section>
+
+<!-- ============================ BAB 11 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 11</span>
+  <h2 class="bab-title">Roadmap, Risiko &amp; Sumber Daya</h2>
+  <div class="bab-rule"></div>
+
+  <h3>11.1 Roadmap proposal (3 fase — untuk slide 14 deck)</h3>
+  <table>
+    <tr><th style="width:20%">Fase</th><th style="width:24%">Durasi</th><th>Isi &amp; deliverable</th></tr>
+    <tr><td><b>Fase 1</b></td><td>0–3 bulan</td><td>MVP Fisioterapi siap integrasi · adapter VClaim/SATUSEHAT (sandbox) · hardening RBAC → <b>Deliverable: MVP teruji di 1 mitra</b></td></tr>
+    <tr><td><b>Fase 2</b></td><td>3–9 bulan</td><td>Pilot 3–5 faskes · fingerprint rontgen/lab · kalibrasi threshold → <b>Deliverable: laporan pilot sebelum–sesudah</b></td></tr>
+    <tr><td><b>Fase 3</b></td><td>9–18 bulan</td><td>Mesh lintas faskes · multi-layanan → <b>Deliverable: siap evaluasi implementasi luas</b></td></tr>
+  </table>
+  <p class="mini">Durasi disusun sesuai skala tim 1–3 orang (“tahapan harus jelas, terukur, dan realistis sesuai kapasitas tim”).</p>
+
+  <h3>11.2 Roadmap internal PRD (7 fase — detail pengembangan)</h3>
+  <table>
+    <tr><th style="width:14%">Fase</th><th style="width:14%">Durasi</th><th>Deliverables</th></tr>
+    <tr><td>P1 Prototype Core</td><td>0–2 bln</td><td>auth · capture · passport · evidence engine · reconciliation · replay · graf · workspace</td></tr>
+    <tr><td>P2 Synthetic Validation</td><td>2–4 bln</td><td>benchmark dataset · ground truth · pola risiko disuntik · laporan deteksi · usability test</td></tr>
+    <tr><td>P3 Pilot Readiness</td><td>4–8 bln</td><td>RBAC hardening · audit log · provenance · security · adapter integrasi</td></tr>
+    <tr><td>P4 Limited Pilot</td><td>8–12 bln</td><td>1 faskes/unit · 1 layanan · studi reviewer · pengukuran dampak</td></tr>
+    <tr><td>P5 Multi-Service</td><td>12–18 bln</td><td>fingerprint radiologi · lab · farmasi · alat kesehatan</td></tr>
+    <tr><td>P6 Advanced Intelligence</td><td>18–24 bln</td><td>deteksi mutasi semantik · penalaran temporal · pembelajaran pola · analisis kontrafaktual</td></tr>
+    <tr><td>P7 Integration Readiness</td><td>24+ bln</td><td>interoperabilitas · monitoring · production controls · kesiapan multi-faskes</td></tr>
+  </table>
+
+  <div class="grid2">
+    <div class="card"><h4>Sumber daya yang dibutuhkan</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li><b>Tim:</b> 1–3 orang (domain kesehatan · teknis · desain)</li>
+        <li><b>Data:</b> tetap sintetis sampai ada izin resmi; baseline diukur SEBELUM integrasi</li>
+        <li><b>Teknologi:</b> API resmi BPJS/Kemenkes (lewat kanal integrasi resmi) + cloud</li>
+        <li><b>Mitra:</b> 1 faskes untuk uji coba terbatas</li>
+      </ul></div>
+    <div class="card"><h4>Jika lolos tahap berikutnya</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>MVP dipercepat ±2 bulan dari rencana internal</li>
+        <li>Menyiapkan dokumen due-diligence teknis (PRD + dokumen ini)</li>
+        <li>Baseline metrik disepakati bersama mitra sebelum pilot</li>
+      </ul></div>
+  </div>
+
+  <div class="foot-note">Prioritas pengembangan PRD: <b>P0 Wajib</b> capture → passport → reconciliation → replay → review · <b>P1 Wow</b> graf → AI → counterfactual · <b>P2 Roadmap</b> service signal → semantic mutation → multi-service → pilot → integrasi.</div>
+</section>
+
+<!-- ============================ BAB 12 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 12</span>
+  <h2 class="bab-title">Profil Tim</h2>
+  <div class="bab-rule"></div>
+
+  <p class="lead">Tim 1–3 orang sesuai panduan. <b>Placeholder</b> — isi dengan data asli sebelum deck dikirim. Jangan mengklaim kredensial yang tak bisa diverifikasi.</p>
+
+  <div class="grid3">
+    <div class="card"><h4>[NAMA 1] — Ketua / Domain</h4><p class="mini">Peran: rumusan masalah, kesehatan publik &amp; kebijakan JKN, etika.<br />Keahlian: [isi — mis. kebijakan kesehatan, riset].<br />Kontak: [EMAIL]</p></div>
+    <div class="card"><h4>[NAMA 2] — Teknis / AI</h4><p class="mini">Peran: arsitektur, full-stack, mesin bukti &amp; alasan AI.<br />Keahlian: [isi — mis. TypeScript, data, LLM].<br />Kontak: [EMAIL]</p></div>
+    <div class="card"><h4>[NAMA 3] — Produk / Desain</h4><p class="mini">Peran: alur pengalaman, riset pengguna, visual.<br />Keahlian: [isi — mis. UX, riset].<br />Kontak: [EMAIL]</p></div>
+  </div>
+
+  <h3>Kenapa tim ini mampu (bukti eksekusi, bukan janji)</h3>
+  <div class="grid4">
+    <div class="stat green"><div class="v">20+</div><div class="l">Layar prototipe terbangun</div></div>
+    <div class="stat blue"><div class="v">96</div><div class="l">Skenario uji lulus</div></div>
+    <div class="stat"><div class="v">2.334</div><div class="l">Baris PRD</div></div>
+    <div class="stat"><div class="v">&lt;5 mnt</div><div class="l">Alur demo end-to-end</div></div>
+  </div>
+  <p class="mini" style="margin-top:7px;">Komposisi ideal kebutuhan: <b>domain kesehatan 1/3 · teknis 1/3 · desain 1/3</b> — sesuaikan jumlah anggota dengan latar yang benar-benar dimiliki. Kejujuran portofolio: semua klaim harus dapat diverifikasi.</p>
+</section>
+
+<!-- ============================ BAB 13 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 13</span>
+  <h2 class="bab-title">Daftar Pustaka</h2>
+  <div class="bab-rule"></div>
+  <p class="mini">Sitasi bernomor dipakai di seluruh dokumen sebagai <b>[n]</b>. Tanggal = tanggal terbit (bila ada) / tanggal akses. Untuk proposal resmi, selalu sertakan minimal penulis/lembaga + judul + tanggal.</p>
+
+  <div class="ref" id="ref1"><div class="rn">[1]</div><div class="rt"><b>BPJS Kesehatan.</b> “Data JKN” — Jumlah Peserta JKN 284.514.113; 23.812 FKTP; 3.222 RS/Klinik Utama; 6.631 Apotek/Optik. Sumber: Laporan Pengelolaan Program Jaminan Sosial Kesehatan s.d. 31 Agustus 2026.<span class="ru">https://www.bpjs-kesehatan.go.id/ (akses Okt 2026)</span></div></div>
+
+  <div class="ref" id="ref2"><div class="rn">[2]</div><div class="rt"><b>Media Indonesia.</b> “BPJS Kesehatan Dorong Pemanfaatan AI untuk Transformasi Layanan JKN”, 26 September 2026 — kutipan Setiaji (Direktur Teknologi Informasi BPJS Kesehatan) dalam Seminar Series Healthkathon BPJS Kesehatan 2026 di BINUS University, Jakarta, 25 September 2026.<span class="ru">https://mediaindonesia.com/kesehatan/937827/bpjs-kesehatan-dorong-pemanfaatan-ai-untuk-transformasi-layanan-jkn</span></div></div>
+
+  <div class="ref" id="ref3"><div class="rn">[3]</div><div class="rt"><b>BPJS Kesehatan.</b> Panduan &amp; laman resmi kompetisi Healthkathon 2026 — kategori, komponen wajib proposal, dimensi penilaian, batasan umum (data sintetis, human-in-the-loop, sitasi).<span class="ru">https://healthkathon.bpjs-kesehatan.go.id/ (akses Okt 2026)</span></div></div>
+
+  <div class="ref" id="ref4"><div class="rn">[4]</div><div class="rt"><b>Kompas.id.</b> Deonisia Arlinta, “Besaran ‘Fraud’ Layanan Kesehatan JKN Capai Rp 6,8 Triliun”, 10 Desember 2025 — data BPJS Kesehatan Jan–Okt 2025 (Rp 5,1 T dicegah, Rp 1,7 T terdeteksi &amp; tertangani); daftar jenis kecurangan termasuk klaim fiktif, manipulasi diagnosis, <i>repeat billing</i>.<span class="ru">https://www.kompas.id/artikel/besaran-fraud-layanan-kesehatan-pada-program-jkn-capai-rp-68-triliun</span></div></div>
+
+  <div class="ref" id="ref5"><div class="rn">[5]</div><div class="rt"><b>Kementerian Kesehatan RI.</b> “Cegah Fraud, Kemenkes Bentuk Tim Pencegahan” — temuan Tim PK-JKN (KPK, Kemenkes, BPJS Kesehatan, BPKP): phantom billing fisioterapi 4.341 kasus → 1.071 ber-catatan rekam medis → 3.269 diduga fiktif Rp 501,27 juta; manipulasi diagnosis katarak (39 pasien → 14 sesuai); lapisan verifikasi BPJS (verifikasi awal, VPK, AAK); penelusuran oleh Tim Anti Kecurangan.<span class="ru">https://kemkes.go.id/id/cegah-fraud-kemenkes-bentuk-tim-pencegahan (2024)</span></div></div>
+
+  <div class="ref" id="ref6"><div class="rn">[6]</div><div class="rt"><b>Inspektorat Jenderal Kementerian Kesehatan RI.</b> “Tindaklanjut dan Pemberian Sanksi atas Dugaan Klaim Fiktif di 3 RS Swasta”, 26 Juli 2024 — angka 4.341 / 1.072 (24,7%) / 3.269 (75,3%) / Rp 501,27 juta; dukungan BPKP; peran Tim Penanganan Fraud JKN.<span class="ru">https://itjen.kemkes.go.id/index.php/berita/detail/tindaklanjut-dan-pemberian-sanksi-atas-dugaan-klaim-fiktif-di-3-rs-swasta</span></div></div>
+
+  <div class="ref" id="ref7"><div class="rn">[7]</div><div class="rt"><b>Bisnis.com.</b> Pernita Hestin Untari, “Rumah Sakit Penyelenggara KRIS JKN Fraud, BPJS Kesehatan Putus Kerja Sama”, 24 Juli 2024 — BPJS memutus kerja sama &gt;5 RS; 8 modus fraud (dua terbesar: <i>phantom billing</i> &amp; <i>manipulation diagnosis</i>; lainnya <i>self-referral, upcoding, repeat billing, fragmentation</i>, suap/gratifikasi); nilai indikasi per RS (Rp 20–30 M; Rp 4–10 M; Rp 1–3 M).<span class="ru">https://finansial.bisnis.com/read/20240724/215/1785144/rumah-sakit-penyelenggara-kris-jkn-fraud-bpjs-kesehatan-putus-kerja-sama</span></div></div>
+
+  <div class="ref" id="ref8"><div class="rn">[8]</div><div class="rt"><b>ANTARA News.</b> “KPK bakal usut klaim fiktif BPJS Kesehatan oleh tiga rumah sakit”, 24 Juli 2024 — Pahala Nainggolan (Deputi Pencegahan &amp; Monitoring KPK): 3 RS phantom billing (Jateng ± Rp 29 M; Sumut Rp 4 M &amp; Rp 1 M, hasil audit BPJS); modus pengumpulan data warga via bakti sosial untuk klaim fiktif.<span class="ru">https://www.antaranews.com/berita/4214447/kpk-bakal-usut-klaim-fiktif-bpjs-kesehatan-oleh-tiga-rumah-sakit</span></div></div>
+
+  <div class="ref" id="ref9"><div class="rn">[9]</div><div class="rt"><b>RMOL.id.</b> “KPK Sebut Kerugian Akibat Fraud di Bidang Kesehatan Capai Rp 20 Triliun”, 19 September 2024 — Alexander Marwata (Wakil Ketua KPK): kerugian fraud kesehatan ± Rp 20 triliun = 10% pengeluaran kesehatan; kasus phantom billing di pelayanan JKN.<span class="ru">https://rmol.id/hukum/read/2024/09/19/637593/kpk-sebut-kerugian-akibat-fraud-di-bidang-kesehatan-capai-rp-20-triliun</span></div></div>
+
+  <div class="ref" id="ref10"><div class="rn">[10]</div><div class="rt"><b>Kontan.co.id.</b> “BPJS Kesehatan Ungkap Temukan Banyak Fraud Klaim dari Rumah Sakit”, 12 Desember 2023 — Dirut BPJS Ali Ghufron Mukti: Rp 866 miliar fraud dicegah (2023); ±1.900 pegawai BPJS ditugaskan mencegah fraud; kerja sama anti-fraud dengan Kemenkes &amp; asosiasi RS.<span class="ru">https://nasional.kontan.co.id/news/bpjs-kesehatan-ungkap-temukan-banyak-fraud-klaim-dari-rumah-sakit</span></div></div>
+
+  <div class="ref" id="ref11"><div class="rn">[11]</div><div class="rt"><b>CNN Indonesia.</b> “Dirut BPJS: Kerugian Fraud Bidang Kesehatan Turun Jadi Rp6 Triliun”, 8 Juli 2026 — Prihati Pujowaskito (Dirut BPJS Kesehatan): tren fraud turun menjadi ± Rp 6 triliun; iuran dikelola Rp 190 triliun (2025); kerja sama pengawasan dengan KPK + Whistleblower System.<span class="ru">https://www.cnnindonesia.com/nasional/20260708140052-12-1378333/dirut-bpjs-kerugian-fraud-bidang-kesehatan-turun-jadi-rp6-triliun</span></div></div>
+
+  <div class="ref" id="ref12"><div class="rn">[12]</div><div class="rt"><b>IDN Times.</b> Ezri Tri Suro, “Healthkathon 2026: AI dan Data untuk JKN”, 14 Agustus 2026 — pembukaan Healthkathon 2026; tujuan: identifikasi risiko, deteksi fraud dini, keputusan JKN berbasis data; pendaftaran 14 Agustus–14 September 2026; kriteria efisiensi risiko peserta/faskes/pemberi kerja.<span class="ru">https://www.idntimes.com/news/indonesia/bpjs-kesehatan-gelar-healthkathon-2026-02-hs754-6165c3</span></div></div>
+
+  <div class="ref" id="ref13"><div class="rn">[13]</div><div class="rt"><b>beritaantara.net.</b> “Healthkathon 2026 Digelar, BPJS Kesehatan Dorong Pemanfaatan AI untuk Perkuat JKN”, 14 Agustus 2026 — Alex Budiyanto (Presiden Asosiasi Manajemen Data Indonesia): pendekatan <i>problem-first</i>, kualitas data menentukan hasil AI, keputusan akhir tetap manusia.<span class="ru">https://beritaantara.net/2026/08/14/healthkathon-2026-digelar-bpjs-kesehatan-dorong-pemanfaatan-ai-untuk-perkuat-jkn/</span></div></div>
+
+  <div class="ref" id="ref14"><div class="rn">[14]</div><div class="rt"><b>Warta Ekonomi.</b> “BPJS Kesehatan Medan Dorong Media Perkuat Edukasi Layanan JKN”, 28 September 2026 — per 31 Agustus 2026: ±284,51 juta peserta (&gt;98% penduduk), 31 provinsi &amp; 397 kab/kota UHC, 23.812 FKTP, 3.222 RS/klinik utama, 6.631 apotek/optik.<span class="ru">https://wartaekonomi.co.id/read637351/bpjs-kesehatan-medan-dorong-media-perkuat-edukasi-layanan-jkn</span></div></div>
+
+  <div class="foot-note">Sumber internal (bukan pustaka eksternal): PRD <code>SELARAS_PRD_Healthkathon_2026.md</code> · Proposal deck <code>docs/deck/SELARAS-Healthkathon-2026.pdf</code> · Kode prototipe (repo ini).</div>
+</section>
+
+<!-- ============================ BAB 14 ============================ -->
+<section class="bab sheet">
+  <span class="kicker">Bab 14</span>
+  <h2 class="bab-title">Lampiran</h2>
+  <div class="bab-rule"></div>
+
+  <h3>Lampiran A — Tabel fakta terverifikasi (sumber tunggal angka)</h3>
+  <p class="mini">Angka persis yang BOLEH dipakai di deck/slide/jawaban juri. Jangan diubah, jangan ditambah tanpa verifikasi ulang.</p>
+  <table>
+    <tr><th style="width:34%">Fakta</th><th style="width:30%">Angka persis</th><th>Asal verifikasi</th></tr>
+    <tr><td>Peserta JKN</td><td><b>284.514.113</b></td><td>BPJS Kesehatan, s.d. 31 Agu 2026<a class="c" href="#ref1">[1]</a></td></tr>
+    <tr><td>Jaringan faskes</td><td><b>23.812</b> FKTP · <b>3.222</b> RS/Klinik Utama · <b>6.631</b> apotek/optik</td><td>BPJS Kesehatan<a class="c" href="#ref1">[1]</a></td></tr>
+    <tr><td>Kasus emas</td><td><b>CLM-08421</b> · 10 sesi → 8 didukung → 2 tinjauan · Rp 350.000/sesi</td><td><code>data/app/seed.ts</code></td></tr>
+    <tr><td>Skor &amp; gerbang</td><td><b>27 (RENDAH)</b> vs ambang <b>65</b>; sinyal +14 (EVIDENCE_GAP S09), +7 (MISSING_COMPLETION S10)</td><td><code>lib/app/score.ts</code> (GATE_THRESHOLD=65), <code>lib/app/gate.ts</code></td></tr>
+    <tr><td>Dampak finansial kasus emas</td><td><b>Rp 3.500.000</b> diajukan → <b>Rp 2.800.000</b> lolos + <b>Rp 700.000</b> ditahan</td><td>10 × Rp 350.000 (sintetis) — 8/2 split</td></tr>
+    <tr><td>Graf</td><td><b>86 node · 113 rel</b></td><td>API graf prototipe (kasus CLM-08421)</td></tr>
+    <tr><td>Replay</td><td><b>70 langkah</b></td><td>Seed replay (<code>data/</code>)</td></tr>
+    <tr><td>Integrity Mesh</td><td><b>4</b> faskes (A–D) · <b>2</b> Risk Signature (1 menunggu publikasi) · <b>12</b> match siap publikasi · <b>25</b> klaim dievaluasi · siklus USULAN→DISETUJUI→DIVALIDASI→AKTIF</td><td><code>data/app/network.ts</code></td></tr>
+    <tr><td>AI</td><td><b>5</b> blok penjelasan + Kopilot Klarifikasi</td><td><code>app/api/ai/explain</code>, halaman AI</td></tr>
+    <tr><td>Uji</td><td><b>96</b> skenario E2E lulus · <b>9</b> skenario peran · 0 error runtime · 0 overflow</td><td>Suite uji otomatis (puppeteer)</td></tr>
+    <tr><td>Ukuran produk</td><td><b>22</b> halaman app + <b>3</b> API · PRD <b>2.334</b> baris · <b>6</b> jenis bukti/sesi · <b>4</b> peran RBAC</td><td><code>app/</code>, PRD, kode</td></tr>
+    <tr><td>Demo</td><td>Golden case <b>&lt; 5 menit</b> (Definition of Done)</td><td>PRD §48</td></tr>
+  </table>
+
+  <h3>Lampiran B — Pemetaan 9 komponen wajib → isi dokumen</h3>
+  <table>
+    <tr><th style="width:38%">Komponen wajib</th><th style="width:30%">Di dokumen ini</th><th>Di deck (slide)</th></tr>
+    <tr><td>1 Identitas &amp; Positioning</td><td>Bab 1, 2</td><td>1–2</td></tr>
+    <tr><td>2 Masalah &amp; Urgensi</td><td>Bab 3, 4</td><td>3–4</td></tr>
+    <tr><td>3 Solusi &amp; Keunggulan</td><td>Bab 5, 6</td><td>5–8</td></tr>
+    <tr><td>4 Pendekatan Teknis &amp; Data</td><td>Bab 8</td><td>9–11</td></tr>
+    <tr><td>5 Kematangan / Prototype</td><td>Bab 7</td><td>12–13</td></tr>
+    <tr><td>6 Rencana &amp; Kelayakan</td><td>Bab 11</td><td>14</td></tr>
+    <tr><td>7 Dampak &amp; Nilai Terukur</td><td>Bab 10</td><td>15–16</td></tr>
+    <tr><td>8 Risiko-Privasi-Etika</td><td>Bab 9</td><td>17–18</td></tr>
+    <tr><td>9 Profil Tim</td><td>Bab 12</td><td>19</td></tr>
+    <tr><td>Penutup</td><td>—</td><td>20</td></tr>
+  </table>
+
+  <h3>Lampiran C — Glosarium (istilah produk TETAP dalam bahasa Inggris)</h3>
+  <table>
+    <tr><th style="width:30%">Istilah</th><th>Makna singkat</th></tr>
+    <tr><td><b>Service Passport</b></td><td>Ringkasan otomatis satu episode pelayanan + status kelengkapan bukti</td></tr>
+    <tr><td><b>Evidence / bukti</b></td><td>6 jenis catatan per sesi: kedatangan, provider, tindakan, catatan klinis, billing, klaim</td></tr>
+    <tr><td><b>Integrity Mesh</b></td><td>Jaringan faskes yang saling terlindungi lewat pola risiko (bukan data pasien)</td></tr>
+    <tr><td><b>Risk Signature</b></td><td>Pola risiko tervalidasi; hanya aktif setelah siklus USULAN→AKTIF</td></tr>
+    <tr><td><b>Golden Case</b></td><td>CLM-08421 — kasus demo utama (10 sesi fisioterapi)</td></tr>
+    <tr><td><b>Point of care</b></td><td>Titik pelayanan tempat bukti dibentuk (bukan kantor klaim)</td></tr>
+    <tr><td><b>Replay</b></td><td>Rekonstruksi kronologi episode (70 langkah), bisa dijeda/diskip</td></tr>
+    <tr><td><b>Provenance</b></td><td>Jejak asal bukti: sumber, waktu observasi, siapa pencatat</td></tr>
+    <tr><td><b>Human-in-the-loop</b></td><td>AI merekomendasikan; manusia memutuskan — aturan tanpa kecuali</td></tr>
+    <tr><td><b>RBAC</b></td><td>Kontrol akses 4 peran: Reviewer, Admin, Provider, Operator</td></tr>
+    <tr><td><b>Missing ≠ fraud</b></td><td>Bukti hilang = alasan meninjau, bukan vonis kecurangan</td></tr>
+    <tr><td><b>Reviewer/Admin/Provider/Operator</b></td><td>Empat peran pengguna sistem</td></tr>
+    <tr><td><b>BPJS · JKN · VClaim · SATUSEHAT</b></td><td>Lembaga &amp; sistem eksternal — disebut apa adanya; integrasi = target (adapter)</td></tr>
+  </table>
+
+  <h3>Lampiran D — Aturan anti-overclaim (cek sebelum kirim apa pun)</h3>
+  <div class="grid2">
+    <div class="card"><h4 style="color:var(--red);">JANGAN pernah</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>“Anti-fraud 100%” / “menjamin tidak ada fraud”.</li>
+        <li>Klaim integrasi VClaim/SATUSEHAT sudah berjalan (status: dirancang via adapter).</li>
+        <li>Angka dampak sebagai hasil nyata (semua = simulasi/target pilot).</li>
+        <li>Menyebut data prototipe sebagai data JKN riil.</li>
+        <li>Vonis “fraud” terhadap kasus mana pun dari output sistem.</li>
+      </ul></div>
+    <div class="card"><h4 style="color:var(--green);">SELALU lakukan</h4>
+      <ul class="pts mini" style="margin-left:14px;">
+        <li>Label “prototipe” (istilah kategori resmi) &amp; “data sintetis” pada materi.</li>
+        <li>Sitasi [n] untuk setiap angka eksternal; ikutkan periode sumber.</li>
+        <li>Sebut “AI mendukung, manusia memutuskan” saat bicara AI.</li>
+        <li>Sampaikan keterbatasan apa adanya (integrasi &amp; uji lapangan = belum) — justru alasan pilot.</li>
+        <li>Tim 1–3 orang; klaim tim dapat diverifikasi.</li>
+      </ul></div>
+  </div>
+
+  <h3>Lampiran E — Cara memverifikasi &amp; membangun ulang</h3>
+  <ol class="num">
+    <li><b>Jalankan aplikasi:</b> <code>npm install</code> → <code>npm run dev</code> (dev) atau <code>npm run build</code> + <code>npm run start</code> (produksi). Halaman inti: <code>/</code> (landing), <code>/app</code> (dashboard), <code>/app/claims</code>, <code>/app/claims/CLM-08421</code>.</li>
+    <li><b>Seed graf opsional:</b> <code>npm run seed:neo4j</code> (butuh Neo4j berjalan).</li>
+    <li><b>Regenerasi deck:</b> <code>node build-deck.js</code> (dari tooling shots) → <code>docs/deck/SELARAS-Healthkathon-2026.pdf</code>.</li>
+    <li><b>Regenerasi dokumen ini:</b> <code>node docs/reference/build.js</code> → <code>docs/reference/SELARAS-Dokumentasi-Lengkap.pdf</code>.</li>
+    <li><b>Cek kualitas:</b> TypeScript (<code>npx tsc --noEmit</code>) · lint (<code>npm run lint</code>) · build (<code>npm run build</code>) — semuanya harus bersih sebelum commit.</li>
+    <li><b>Cek fakta:</b> cocokkan setiap angka di materi baru dengan Lampiran A; bila beda dari kode, <b>kode yang menang</b> → perbarui Lampiran A.</li>
+  </ol>
+
+  <div class="box dark" style="margin-top:14px; text-align:center;">
+    <b>“Apa yang dilayani harus selaras dengan apa yang diklaim.”</b><br />
+    <span style="font-size:9pt; color:#9DB4DA;">SELARAS — Dokumen acuan internal v1.0 · Healthkathon 2026 · Data sintetis</span>
+  </div>
+</section>
+</body>
+</html>
