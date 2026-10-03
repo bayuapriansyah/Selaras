@@ -24,6 +24,13 @@ export const AUDIT_LABEL: Record<string, string> = {
   NET_MATCH: "Match jaringan aktif",
   NET_VERIFICATION_STARTED: "Verifikasi step-up dimulai",
   NET_VERIFICATION_RESULT: "Hasil verifikasi step-up",
+  IDENTITY_BOUND: "Identitas terikat",
+  SERVICE_ANCHORED: "Anchor layanan tercatat",
+  EVIDENCE_RECORDED: "Bukti terekam",
+  EVIDENCE_UPDATED: "Bukti diperbarui",
+  PROOF_ASSESSED: "Proof dinilai",
+  PROOF_SEALED: "Proof diseal",
+  PROVENANCE_RECORDED: "Provenance direkam",
 };
 
 export const REVIEW_LABEL: Record<ReviewActionKind, string> = {

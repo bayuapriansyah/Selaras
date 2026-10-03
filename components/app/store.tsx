@@ -15,6 +15,7 @@ import { seedSource, type DataSource } from "@/lib/app/selectors";
 import {
   applyEvidenceAdds,
   initialPersistedState,
+  mergePersistedState,
   nowStamp,
   pushAudit,
   uid,
@@ -37,7 +38,6 @@ import type {
   EvidenceEvent,
   ProofAssessment,
   ProofState,
-  ProvenanceRecord,
   ServiceAnchorEvent,
 } from "@/data/app/proof";
 import { PROOF_MODEL_VERSION } from "@/data/app/proof";
@@ -51,6 +51,15 @@ import {
   startService as startServiceReducer,
 } from "@/lib/app/services/serviceService";
 import { submitReview as submitReviewReducer } from "@/lib/app/services/reviewService";
+import {
+  appendAnchorEvent,
+  assessProofAction,
+  sealProofAction,
+} from "@/lib/app/services/proofService";
+import {
+  appendProvenance,
+  type ProvenanceAppendInput,
+} from "@/lib/app/services/provenanceService";
 
 export type { EvidenceAdd, StartServiceInput } from "@/lib/app/appState";
 
@@ -81,10 +90,7 @@ export type AttestationInput = Omit<Attestation, "id" | "at">;
 
 export type AnchorEventInput = Omit<ServiceAnchorEvent, "id" | "anchoredAt">;
 
-export type ProvenanceInput = Omit<
-  ProvenanceRecord,
-  "id" | "timestamp" | "version"
->;
+export type ProvenanceInput = ProvenanceAppendInput;
 
 export type ProofAssessmentInput = Omit<
   ProofAssessment,
@@ -138,6 +144,8 @@ type AppContextValue = {
   addProvenanceRecord: (input: ProvenanceInput) => string;
   setProofState: (subjectId: string, state: ProofState) => void;
   setProofAssessment: (claimId: string, input: ProofAssessmentInput) => void;
+  assessProof: (claimId: string) => void;
+  sealProof: (claimId: string) => boolean;
 };
 
 const AppContext = React.createContext<AppContextValue | null>(null);
@@ -151,10 +159,7 @@ function loadCache(): PersistedState {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        cacheState = {
-          ...initialPersistedState,
-          ...(JSON.parse(raw) as Partial<PersistedState>),
-        };
+        cacheState = mergePersistedState(JSON.parse(raw));
       }
     } catch {
       // storage tidak tersedia — pakai state awal
@@ -244,23 +249,37 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     (input: StartServiceInput): string => {
       let id = "";
       setState((prev) => {
-        const result = startServiceReducer(prev, input, user.name, user.role);
+        const result = startServiceReducer(
+          prev,
+          input,
+          user.name,
+          user.role,
+          user.id,
+        );
         id = result.serviceId;
         return result.state;
       });
       return id;
     },
-    [setState, user.name],
+    [setState, user],
   );
 
   const addEvidence = React.useCallback(
     (serviceId: string, kind: EvidenceKind, channel?: CaptureChannel) => {
-      setState((prev) =>
-        captureEvidence(prev, serviceId, kind, user.name, user.role, channel) ??
-        prev,
+      setState(
+        (prev) =>
+          captureEvidence(
+            prev,
+            serviceId,
+            kind,
+            user.name,
+            user.role,
+            channel,
+            user.id,
+          ) ?? prev,
       );
     },
-    [setState, user.name],
+    [setState, user],
   );
 
   const submitReview = React.useCallback(
@@ -589,11 +608,17 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 
   const addAnchorEvent = React.useCallback(
     (input: AnchorEventInput): string => {
-      const id = uid("ANC");
-      setState((prev) => ({
-        ...prev,
-        anchors: [{ ...input, id, anchoredAt: nowStamp() }, ...prev.anchors],
-      }));
+      let id = "";
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        const result = appendAnchorEvent(prev, input, {
+          id: u?.id,
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+        id = result.id;
+        return result.state;
+      });
       return id;
     },
     [setState],
@@ -601,26 +626,16 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 
   const addProvenanceRecord = React.useCallback(
     (input: ProvenanceInput): string => {
-      const id = uid("PRV");
+      let id = "";
       setState((prev) => {
-        const latest = prev.provenance
-          .filter((r) => r.resourceId === input.resourceId)
-          .reduce((max, r) => Math.max(max, r.version), 0);
-        return {
-          ...prev,
-          provenance: [
-            {
-              ...input,
-              id,
-              version: latest + 1,
-              timestamp: nowStamp(),
-              previousIntegrityRef: prev.provenance.find(
-                (r) => r.resourceId === input.resourceId,
-              )?.integrityRef,
-            },
-            ...prev.provenance,
-          ],
-        };
+        const u = users.find((x) => x.role === prev.role);
+        const result = appendProvenance(
+          prev,
+          input,
+          { name: u?.name ?? "Pengguna Demo", role: prev.role },
+        );
+        id = result.record.id;
+        return result.state;
       });
       return id;
     },
@@ -658,6 +673,38 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [setState],
   );
 
+  const assessProof = React.useCallback(
+    (claimId: string) => {
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        return assessProofAction(prev, claimId, {
+          id: u?.id,
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+      });
+    },
+    [setState],
+  );
+
+  const sealProof = React.useCallback(
+    (claimId: string): boolean => {
+      let sealed = false;
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        const next = sealProofAction(prev, claimId, {
+          id: u?.id,
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+        sealed = next.proofStates[claimId] === "SEALED";
+        return next;
+      });
+      return sealed;
+    },
+    [setState],
+  );
+
   const value = React.useMemo<AppContextValue>(
     () => ({
       hydrated,
@@ -686,6 +733,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       addProvenanceRecord,
       setProofState,
       setProofAssessment,
+      assessProof,
+      sealProof,
     }),
     [
       hydrated,
@@ -713,6 +762,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       addProvenanceRecord,
       setProofState,
       setProofAssessment,
+      assessProof,
+      sealProof,
     ],
   );
 

@@ -33,6 +33,13 @@ const ACTION_TONE: Record<string, string> = {
   NET_MATCH: "border-amber-200 bg-amber-50 text-amber-700",
   NET_VERIFICATION_STARTED: "border-sky-200 bg-sky-50 text-sky-700",
   NET_VERIFICATION_RESULT: "border-slate-200 bg-slate-50 text-slate-600",
+  IDENTITY_BOUND: "border-sky-200 bg-sky-50 text-sky-700",
+  SERVICE_ANCHORED: "border-sky-200 bg-sky-50 text-sky-700",
+  EVIDENCE_RECORDED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  EVIDENCE_UPDATED: "border-amber-200 bg-amber-50 text-amber-700",
+  PROOF_ASSESSED: "border-slate-200 bg-slate-50 text-slate-600",
+  PROOF_SEALED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  PROVENANCE_RECORDED: "border-slate-200 bg-slate-50 text-slate-600",
 };
 
 export default function AuditLogPage() {

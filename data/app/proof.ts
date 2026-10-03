@@ -19,12 +19,24 @@ export type EvidenceProvenance = {
   eventId: string;
 };
 
+export type ProofEventType =
+  | "IDENTITY_BOUND"
+  | "SERVICE_STARTED"
+  | "SERVICE_ANCHORED"
+  | "EVIDENCE_RECORDED"
+  | "SERVICE_COMPLETED"
+  | "PROOF_ASSESSED"
+  | "PROOF_SEALED"
+  | "EVIDENCE_UPDATED"
+  | "PROVENANCE_RECORDED";
+
 export type EvidenceEvent = {
   id: string;
   serviceId: string;
   sessionId?: number;
   claimId?: string;
-  kind: EvidenceKind;
+  kind?: EvidenceKind;
+  proofType?: ProofEventType;
   source: EvidenceSource;
   channel: CaptureChannel;
   observedAt: string;
@@ -34,6 +46,9 @@ export type EvidenceEvent = {
   status: EvidenceEventStatus;
   provenance: EvidenceProvenance;
   supersededById?: string;
+  actorId?: string;
+  actorRole?: Role;
+  version?: number;
 };
 
 export type AttestationStatus = "PENDING" | "ATTESTED" | "REVOKED";
@@ -100,6 +115,7 @@ export type ProvenanceRecord = {
   reason?: string;
   integrityRef: string;
   previousIntegrityRef?: string;
+  content?: unknown;
 };
 
 export type ProofState =
@@ -229,6 +245,7 @@ export type ProofAssessment = {
   traceStatus?: ClaimTraceStatus;
   assessedAt: string;
   modelVersion: number;
+  stale?: boolean;
 };
 
 export type WitnessSource = EvidenceSource | "Jaringan";

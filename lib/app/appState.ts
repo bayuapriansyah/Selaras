@@ -101,6 +101,11 @@ export function uid(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4)}`;
 }
 
+export function mergePersistedState(raw: unknown): PersistedState {
+  if (!raw || typeof raw !== "object") return initialPersistedState;
+  return { ...initialPersistedState, ...(raw as Partial<PersistedState>) };
+}
+
 export function pushAudit(
   list: AuditEntry[],
   entry: Omit<AuditEntry, "id" | "at" | "user" | "role">,
