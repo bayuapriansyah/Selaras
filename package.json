@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:neo4j": "tsx scripts/seed-neo4j.ts"
+    "seed:neo4j": "tsx scripts/seed-neo4j.ts",
+    "test:proof": "tsx scripts/test-proof.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

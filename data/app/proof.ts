@@ -185,14 +185,37 @@ export type ProofDimensionResult = {
 };
 
 export type ProofGapItem = {
+  dimension: ProofDimension;
   serviceId: string;
   claimId?: string;
   gaps: EvidenceKind[];
+  status?: "OPEN" | "RESOLVED";
   severity: SignalSeverity;
   reasons: string[];
 };
 
 export const PROOF_MODEL_VERSION = 1;
+
+export type TriangulationOutcome =
+  | "PENDING"
+  | "AGREE"
+  | "PARTIAL"
+  | "CONFLICT";
+
+export type ConformanceStatus =
+  | "CONFORMANT"
+  | "DEVIATED"
+  | "MISSING_STAGE"
+  | "OUT_OF_ORDER";
+
+export type ConformanceResult = {
+  status: ConformanceStatus;
+  missing: ConformanceStage[];
+  outOfOrder: ConformanceStage[];
+  reasons: string[];
+};
+
+export type ClaimTraceStatus = "TRACEABLE" | "LINKAGE_GAP";
 
 export type ProofAssessment = {
   claimId: string;
@@ -201,6 +224,9 @@ export type ProofAssessment = {
   dimensions: ProofDimensionResult[];
   gaps: ProofGapItem[];
   conflicts: string[];
+  triangulation?: TriangulationOutcome;
+  conformance?: ConformanceResult;
+  traceStatus?: ClaimTraceStatus;
   assessedAt: string;
   modelVersion: number;
 };
@@ -217,12 +243,6 @@ export type Witness = {
   actorId?: string;
   at: string;
 };
-
-export type TriangulationOutcome =
-  | "PENDING"
-  | "AGREE"
-  | "PARTIAL"
-  | "CONFLICT";
 
 export const TRIANGULATION_OUTCOME_LABEL: Record<TriangulationOutcome, string> =
   {
@@ -285,6 +305,8 @@ export type ConformanceWorkflow = {
   claimId: string;
   serviceId: string;
   stages: WorkflowStage[];
+  windowStart?: string;
+  windowEnd?: string;
   createdAt: string;
   updatedAt?: string;
 };
