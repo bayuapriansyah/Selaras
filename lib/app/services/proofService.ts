@@ -66,6 +66,35 @@ function resolveClaim(claimId: string, src: DataSource) {
   };
 }
 
+/**
+ * Pembaca proof-layer (tanpa mutasi) — dipakai halaman Proof View /
+ * Service Passport untuk menampilkan evaluasi terkini tanpa menulis state.
+ * Satu-satunya sumber evaluasi: assessClaimProof (Phase 3 evaluator).
+ */
+export function proofEventsOf(
+  prev: PersistedState,
+  claimId: string,
+  src: DataSource,
+): EvidenceEvent[] {
+  return claimProofEvents(prev, claimId, src);
+}
+
+export function previewProof(
+  prev: PersistedState,
+  claimId: string,
+): ProofEvaluationResult | null {
+  const src = sourceFrom(prev);
+  const sealed = prev.proofStates[claimId] === "SEALED";
+  return assessClaimProof(claimId, {
+    src,
+    evidenceEvents: claimProofEvents(prev, claimId, src),
+    attestations: prev.attestations,
+    anchors: prev.anchors,
+    sealed,
+    assessedAt: prev.proofAssessments[claimId]?.assessedAt ?? "",
+  });
+}
+
 export function assessClaimProof(
   claimId: string,
   opts: ProofAssessOptions,

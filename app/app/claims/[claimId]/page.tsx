@@ -18,6 +18,7 @@ import {
   Send,
   Share2,
   ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
@@ -272,6 +273,12 @@ export default function ClaimDetailPage() {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={status} />
+            <Button asChild size="sm" variant="outline" className="rounded-full">
+              <Link href={`/app/proof/${claim.id}`}>
+                <ShieldCheck aria-hidden="true" className="size-3.5" />
+                Proof
+              </Link>
+            </Button>
             <Button asChild size="sm" variant="outline" className="rounded-full">
               <Link href={`/app/claims/${claim.id}/graph`}>
                 <Share2 aria-hidden="true" className="size-3.5" />

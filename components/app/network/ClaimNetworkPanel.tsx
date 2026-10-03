@@ -484,6 +484,19 @@ export function ClaimNetworkPanel({ claimId }: { claimId: string }) {
           </div>
         ) : null}
 
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Lihat rangkuman bukti klaim ini — 7 dimensi, jejak, dan provenance —
+            di Proof View.
+          </p>
+          <Link
+            href={`/app/proof/${claimId}`}
+            className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline"
+          >
+            Buka Proof View →
+          </Link>
+        </div>
+
         <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
           Lapisan jaringan hanya menambah rekomendasi. Skor, status klaim, dan
           antrean prioritas reviewer tetap sama seperti sebelumnya.

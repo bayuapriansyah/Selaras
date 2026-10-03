@@ -20,7 +20,14 @@ import {
   passportStageOf,
 } from "@/lib/app/rules";
 import { passportRow } from "@/lib/app/services/passportService";
+import { previewProof } from "@/lib/app/services/proofService";
 import { formatDate, formatDateTime } from "@/lib/app/format";
+import { ProofStream } from "@/components/proof/ProofStream";
+import {
+  PROOF_DIMENSIONS,
+  PROOF_DIMENSION_LABEL,
+} from "@/data/app/proof";
+import { SECTIONS, STATE_UI, VERDICT_UI } from "@/components/proof/proofUi";
 
 const STATUS_TEXT: Record<string, string> = {
   SUPPORTED: "Didukung",
@@ -36,9 +43,30 @@ const STATUS_TEXT: Record<string, string> = {
 export default function PassportDetailPage() {
   const params = useParams<{ serviceId: string }>();
   const serviceId = params.serviceId;
-  const { src, addEvidence } = useApp();
+  const { src, state, addEvidence } = useApp();
 
   const row = React.useMemo(() => passportRow(serviceId, src), [serviceId, src]);
+  const claimId = row?.service.claimId;
+  const proof = React.useMemo(
+    () => (claimId ? previewProof(state, claimId) : null),
+    [state, claimId],
+  );
+  const proofEvents = React.useMemo(
+    () => state.proofEvents.filter((ev) => ev.serviceId === serviceId),
+    [state.proofEvents, serviceId],
+  );
+  const provenance = React.useMemo(
+    () =>
+      state.provenance
+        .filter(
+          (r) =>
+            r.resourceId === serviceId || (claimId && r.resourceId === claimId),
+        )
+        .sort((a, b) => b.version - a.version),
+    [state.provenance, serviceId, claimId],
+  );
+  const proofState =
+    state.proofStates[serviceId] ?? proof?.assessment.state ?? null;
 
   if (!row) {
     return (
@@ -237,6 +265,139 @@ export default function PassportDetailPage() {
           </section>
         </div>
       </div>
+
+      <section
+        aria-label={SECTIONS.passport}
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-[11px] font-medium tracking-[0.16em] text-slate-400 uppercase">
+              Attested service passport
+            </p>
+            <h2 className="mt-0.5 text-sm font-semibold text-slate-900">
+              Proof state, 7 dimensi, stream, dan provenance passport ini
+            </h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {proofState ? (
+              <span
+                className={
+                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] font-semibold tracking-wider " +
+                  (STATE_UI[proofState]?.chip ?? "border-slate-200 bg-slate-50 text-slate-600")
+                }
+              >
+                PROOF STATE: {proofState}
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 px-3 py-1 font-mono text-[11px] tracking-wider text-slate-600">
+                NOT YET ASSESSED
+              </span>
+            )}
+            {claimId ? (
+              <Button asChild size="sm" variant="outline" className="rounded-full">
+                <Link href={`/app/proof/${claimId}`}>
+                  Buka Proof View
+                  <ArrowRight aria-hidden="true" className="size-3.5" />
+                </Link>
+              </Button>
+            ) : null}
+          </div>
+        </div>
+
+        {proof ? (
+          <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+            {PROOF_DIMENSIONS.map((d) => {
+              const verdict =
+                proof.assessment.dimensions.find((x) => x.dimension === d)
+                  ?.verdict ?? "UNKNOWN";
+              const ui = VERDICT_UI[verdict];
+              return (
+                <li
+                  key={d}
+                  className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-slate-50/70 px-2.5 py-2"
+                >
+                  <span className="text-[10px] font-medium leading-tight text-slate-500">
+                    {PROOF_DIMENSION_LABEL[d]}
+                  </span>
+                  <span
+                    className={
+                      "inline-flex w-fit items-center gap-1 rounded-full border px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-wider " +
+                      ui.chip
+                    }
+                  >
+                    <span aria-hidden="true">{ui.glyph}</span>
+                    {ui.token}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="mt-4 rounded-xl border border-dashed border-slate-300 px-4 py-3 text-xs text-slate-500">
+            {claimId
+              ? "Dimensi proof belum dapat dinilai untuk passport ini."
+              : "Passport belum tertaut ke klaim — 7 dimensi belum dapat dinilai."}
+          </p>
+        )}
+
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {[
+            ["PROVENANCE VERSION", provenance[0] ? `v${provenance[0].version}` : "—"],
+            ["INTEGRITY REFERENCE", provenance[0]?.integrityRef ?? "—"],
+            ["CREATED BY", provenance[0]?.actorId ?? "—"],
+          ].map(([k, v]) => (
+            <div
+              key={k}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2"
+            >
+              <p className="font-mono text-[10px] tracking-wider text-slate-400">
+                {k}
+              </p>
+              <p className="mt-0.5 text-xs font-medium break-words text-slate-700">
+                {v}
+              </p>
+            </div>
+          ))}
+        </div>
+        {provenance.length === 0 ? (
+          <p className="mt-2 text-xs text-slate-500">
+            Belum ada catatan provenance untuk passport ini.
+          </p>
+        ) : null}
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+          <p className="text-xs text-slate-500">
+            {claimId
+              ? `Jejak klaim ${claimId} — CLAIM → INVOICE → CHARGE → SERVICE → ENCOUNTER → PROVIDER → EVIDENCE.`
+              : "Jejak klaim tersedia setelah passport tertaut ke klaim."}
+          </p>
+          {claimId ? (
+            <span className="flex flex-wrap items-center gap-3">
+              <Link
+                href={`/app/proof/${claimId}`}
+                className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
+              >
+                Claim trace di Proof View →
+              </Link>
+              <Link
+                href={`/app/claims/${claimId}/graph`}
+                className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
+              >
+                Graf bukti →
+              </Link>
+            </span>
+          ) : null}
+        </div>
+
+        <div className="mt-4 border-t border-slate-100 pt-4">
+          <ProofStream
+            events={proofEvents}
+            provenance={provenance}
+            framed={false}
+          />
+        </div>
+      </section>
     </div>
   );
 }

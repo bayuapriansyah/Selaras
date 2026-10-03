@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { EVIDENCE_LABEL, EVIDENCE_ORDER } from "@/data/app/types";
 import type { EvidenceKind } from "@/data/app/types";
+import type { EvidenceEvent } from "@/data/app/proof";
+import { roleLabel, shortRef } from "@/components/proof/proofUi";
 import { getPatient, getTemplate } from "@/lib/app/selectors";
 import { view as claimView } from "@/lib/app/services/claimService";
 import { formatDate } from "@/lib/app/format";
@@ -37,7 +39,7 @@ type Step = {
 export default function ClaimReplayPage() {
   const params = useParams<{ claimId: string }>();
   const claimId = params.claimId;
-  const { src } = useApp();
+  const { src, state } = useApp();
 
   const view = React.useMemo(() => claimView(claimId, src), [claimId, src]);
 
@@ -408,6 +410,94 @@ export default function ClaimReplayPage() {
           </p>
         ) : null}
       </section>
+
+      <ReplayStepDetail
+        step={revealed.length ? revealed[revealed.length - 1] : null}
+        events={state.proofEvents}
+      />
     </div>
+  );
+}
+
+function ReplayStepDetail({
+  step,
+  events,
+}: {
+  step: Step | null;
+  events: EvidenceEvent[];
+}) {
+  const match = step
+    ? events
+        .filter(
+          (e) =>
+            e.serviceId === step.serviceId &&
+            (e.kind === step.kind || e.kind === undefined),
+        )
+        .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0]
+    : undefined;
+
+  return (
+    <section
+      aria-label="Detail langkah aktif"
+      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 className="text-sm font-semibold text-slate-900">
+            Detail langkah aktif
+          </h2>
+          <p className="text-xs text-slate-500">
+            Actor, timestamp, version, dan provenance untuk langkah yang sedang
+            ditampilkan — jumlah langkah replay tidak berubah.
+          </p>
+        </div>
+        {step ? (
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-[10px] tracking-wider text-slate-500">
+            SESI {String(step.sessionId).padStart(2, "0")} · {step.kind}
+          </span>
+        ) : null}
+      </div>
+
+      {!step ? (
+        <p className="mt-4 rounded-xl border border-dashed border-slate-300 px-4 py-4 text-center text-sm text-slate-500">
+          Tekan Putar untuk memulai replay — detail langkah muncul di sini.
+        </p>
+      ) : (
+        <dl className="mt-4 grid grid-cols-1 gap-2 text-xs sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ["WHAT", step.label],
+            ["WHEN", step.at ?? "—"],
+            ["SERVICE", step.serviceId],
+            ["PROOF EVENT", match?.proofType ?? "BELUM ADA"],
+            ["WHO", match?.actorId ?? "—"],
+            ["ROLE", match ? roleLabel(match.actorRole) : "—"],
+            ["VERSION", match?.version != null ? `v${match.version}` : "—"],
+            [
+              "PROVENANCE · INTEGRITY REFERENCE",
+              match
+                ? `${match.provenance.source} · ${shortRef(match.payloadHash)}`
+                : "—",
+            ],
+          ].map(([k, v]) => (
+            <div
+              key={k}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2"
+            >
+              <dt className="font-mono text-[10px] tracking-wider text-slate-400">
+                {k}
+              </dt>
+              <dd className="mt-0.5 font-medium break-words text-slate-700">
+                {v}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
+        Detail diambil dari slice proof event — tanpa peristiwa buatan. Buka
+        Proof View untuk melihat seluruh stream.
+      </p>
+    </section>
   );
 }
