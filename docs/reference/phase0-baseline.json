@@ -1,0 +1,53 @@
+{
+  "phase": 0,
+  "name": "official-baseline",
+  "recordedAt": "2026-10-03",
+  "commit": "f5b261d",
+  "environment": {
+    "node": "v22.16.0",
+    "next": "16.3.7",
+    "server": "next start -p 4321 (production build)",
+    "suites": "puppeteer-core @ %TEMP%/opencode/shots, NODE_PATH local"
+  },
+  "staticGates": {
+    "tsc": { "command": "npx tsc --noEmit", "result": "OK" },
+    "eslint": {
+      "command": "npx eslint",
+      "result": "OK",
+      "errors": 0,
+      "warnings": 13,
+      "fix": "eslint.config.mjs globalIgnores += \"docs/**\" (config-only, 9 errors were docs tooling scripts)"
+    },
+    "build": { "command": "npm run build", "result": "OK" }
+  },
+  "suites": {
+    "signals": { "checks": 22, "passed": 22 },
+    "network": { "checks": 16, "passed": 16 },
+    "p8": { "checks": 17, "passed": 17 },
+    "f3a": { "checks": 10, "passed": 10 },
+    "f3b": { "checks": 7, "passed": 7 },
+    "f3c": { "checks": 6, "passed": 6 },
+    "f4": { "checks": "10+2", "gate": true },
+    "roles": { "checks": 9, "passed": 9 },
+    "p9": { "checks": 5, "passed": 5 }
+  },
+  "gates": {
+    "f3d": { "graph": "86 nodes / 113 rel", "pass": true },
+    "f3e": { "replay": "70 langkah", "pass": true },
+    "f4": { "golden": true },
+    "overflow-landing": { "viewports": "all 0", "pass": true }
+  },
+  "totals": {
+    "namedChecks": 92,
+    "gates": 4,
+    "combined": 96,
+    "suitesRun": 12,
+    "suitesFailed": 0
+  },
+  "landingFrozen": {
+    "baseline": "landing-md5-p2.txt (52 source hashes)",
+    "verified": "52/52 match, 0 mismatch, 0 missing"
+  },
+  "graphApi": { "endpoint": "/api/graph/CLM-08421", "nodes": 86, "edges": 113 },
+  "next": "Phase 1 only after this baseline is recorded and user-confirmed"
+}

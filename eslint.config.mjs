@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Repo-local tooling/docs scripts (Node-only, not application code):
+    "docs/**",
   ]),
 ]);
 
