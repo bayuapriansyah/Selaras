@@ -6,6 +6,20 @@ import type {
   SignatureStatus,
 } from "@/data/app/network";
 import type {
+  EvidenceEvent,
+  Attestation,
+  ServiceAnchorEvent,
+  ProvenanceRecord,
+  ProofState,
+  ProofAssessment,
+} from "@/data/app/proof";
+import {
+  EMPTY_EVIDENCE_EVENTS,
+  EMPTY_ATTESTATIONS,
+  EMPTY_ANCHOR_EVENTS,
+  EMPTY_PROVENANCE_RECORDS,
+} from "@/data/app/proof";
+import type {
   AuditEntry,
   CaptureChannel,
   ClaimStatus,
@@ -39,6 +53,12 @@ export type PersistedState = {
   proposals: NetworkProposal[];
   signatureStatus: Record<string, SignatureStatus>;
   feedbacks: SignatureFeedback[];
+  proofEvents: EvidenceEvent[];
+  attestations: Attestation[];
+  anchors: ServiceAnchorEvent[];
+  provenance: ProvenanceRecord[];
+  proofStates: Record<string, ProofState>;
+  proofAssessments: Record<string, ProofAssessment>;
 };
 
 export type StartServiceInput = {
@@ -61,6 +81,12 @@ export const initialPersistedState: PersistedState = {
   proposals: [],
   signatureStatus: {},
   feedbacks: [],
+  proofEvents: EMPTY_EVIDENCE_EVENTS,
+  attestations: EMPTY_ATTESTATIONS,
+  anchors: EMPTY_ANCHOR_EVENTS,
+  provenance: EMPTY_PROVENANCE_RECORDS,
+  proofStates: {},
+  proofAssessments: {},
 };
 
 export function clockHM(): string {

@@ -32,6 +32,15 @@ import {
   type VerificationResult,
 } from "@/data/app/network";
 import type { NetworkCondition } from "@/data/app/network";
+import type {
+  Attestation,
+  EvidenceEvent,
+  ProofAssessment,
+  ProofState,
+  ProvenanceRecord,
+  ServiceAnchorEvent,
+} from "@/data/app/proof";
+import { PROOF_MODEL_VERSION } from "@/data/app/proof";
 import {
   allMatches,
   facilityNodeLabel,
@@ -65,6 +74,22 @@ export type NetworkRuntime = {
   proposals: NetworkProposal[];
   feedbacks: SignatureFeedback[];
 };
+
+export type ProofEventInput = Omit<EvidenceEvent, "id" | "recordedAt">;
+
+export type AttestationInput = Omit<Attestation, "id" | "at">;
+
+export type AnchorEventInput = Omit<ServiceAnchorEvent, "id" | "anchoredAt">;
+
+export type ProvenanceInput = Omit<
+  ProvenanceRecord,
+  "id" | "timestamp" | "version"
+>;
+
+export type ProofAssessmentInput = Omit<
+  ProofAssessment,
+  "assessedAt" | "modelVersion"
+>;
 
 type AppContextValue = {
   hydrated: boolean;
@@ -107,6 +132,12 @@ type AppContextValue = {
     result: VerificationResult,
     note?: string,
   ) => void;
+  addProofEvent: (input: ProofEventInput) => string;
+  addAttestation: (input: AttestationInput) => string;
+  addAnchorEvent: (input: AnchorEventInput) => string;
+  addProvenanceRecord: (input: ProvenanceInput) => string;
+  setProofState: (subjectId: string, state: ProofState) => void;
+  setProofAssessment: (claimId: string, input: ProofAssessmentInput) => void;
 };
 
 const AppContext = React.createContext<AppContextValue | null>(null);
@@ -532,6 +563,101 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [setState],
   );
 
+  const addProofEvent = React.useCallback(
+    (input: ProofEventInput): string => {
+      const id = uid("PEV");
+      setState((prev) => ({
+        ...prev,
+        proofEvents: [{ ...input, id, recordedAt: nowStamp() }, ...prev.proofEvents],
+      }));
+      return id;
+    },
+    [setState],
+  );
+
+  const addAttestation = React.useCallback(
+    (input: AttestationInput): string => {
+      const id = uid("ATT");
+      setState((prev) => ({
+        ...prev,
+        attestations: [{ ...input, id, at: nowStamp() }, ...prev.attestations],
+      }));
+      return id;
+    },
+    [setState],
+  );
+
+  const addAnchorEvent = React.useCallback(
+    (input: AnchorEventInput): string => {
+      const id = uid("ANC");
+      setState((prev) => ({
+        ...prev,
+        anchors: [{ ...input, id, anchoredAt: nowStamp() }, ...prev.anchors],
+      }));
+      return id;
+    },
+    [setState],
+  );
+
+  const addProvenanceRecord = React.useCallback(
+    (input: ProvenanceInput): string => {
+      const id = uid("PRV");
+      setState((prev) => {
+        const latest = prev.provenance
+          .filter((r) => r.resourceId === input.resourceId)
+          .reduce((max, r) => Math.max(max, r.version), 0);
+        return {
+          ...prev,
+          provenance: [
+            {
+              ...input,
+              id,
+              version: latest + 1,
+              timestamp: nowStamp(),
+              previousIntegrityRef: prev.provenance.find(
+                (r) => r.resourceId === input.resourceId,
+              )?.integrityRef,
+            },
+            ...prev.provenance,
+          ],
+        };
+      });
+      return id;
+    },
+    [setState],
+  );
+
+  const setProofState = React.useCallback(
+    (subjectId: string, state: ProofState) => {
+      setState((prev) => {
+        if (prev.proofStates[subjectId] === state) return prev;
+        return {
+          ...prev,
+          proofStates: { ...prev.proofStates, [subjectId]: state },
+        };
+      });
+    },
+    [setState],
+  );
+
+  const setProofAssessment = React.useCallback(
+    (claimId: string, input: ProofAssessmentInput) => {
+      setState((prev) => ({
+        ...prev,
+        proofAssessments: {
+          ...prev.proofAssessments,
+          [claimId]: {
+            ...input,
+            claimId,
+            assessedAt: nowStamp(),
+            modelVersion: PROOF_MODEL_VERSION,
+          },
+        },
+      }));
+    },
+    [setState],
+  );
+
   const value = React.useMemo<AppContextValue>(
     () => ({
       hydrated,
@@ -554,6 +680,12 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       publishSignature,
       startVerification,
       completeVerification,
+      addProofEvent,
+      addAttestation,
+      addAnchorEvent,
+      addProvenanceRecord,
+      setProofState,
+      setProofAssessment,
     }),
     [
       hydrated,
@@ -575,6 +707,12 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       publishSignature,
       startVerification,
       completeVerification,
+      addProofEvent,
+      addAttestation,
+      addAnchorEvent,
+      addProvenanceRecord,
+      setProofState,
+      setProofAssessment,
     ],
   );
 
