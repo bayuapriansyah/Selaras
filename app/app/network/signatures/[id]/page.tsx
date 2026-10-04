@@ -8,6 +8,8 @@ import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatusBadge, SeverityBadge } from "@/components/app/network/Badges";
 import { PrivacyBoundary } from "@/components/app/network/PrivacyBoundary";
+import { SignatureLearningPanel } from "@/components/app/network/SignatureLearningPanel";
+import { SignatureGovernancePanel } from "@/components/app/network/SignatureGovernancePanel";
 import { entries as auditEntries } from "@/lib/app/services/auditService";
 import { conditionLabel, facilityNodeLabel } from "@/lib/app/network";
 import { can } from "@/lib/app/permissions";
@@ -17,19 +19,36 @@ import * as networkSvc from "@/lib/app/services/networkService";
 export default function SignatureDetailPage() {
   const params = useParams<{ id: string }>();
   const signatureId = params.id;
-  const { src, role, networkRuntime, publishSignature } = useApp();
+  const { src, role, state, networkRuntime, publishSignature } = useApp();
   const [published, setPublished] = React.useState(false);
 
   const sig = React.useMemo(
     () => networkSvc.signatureById(signatureId, networkRuntime, src),
     [signatureId, networkRuntime, src],
   );
+  const history = React.useMemo(
+    () => state.signatureHistory.filter((h) => h.signatureId === signatureId),
+    [state.signatureHistory, signatureId],
+  );
+  /**
+   * Phase 9 — match live hanya saat ACTIVE (matcher TIDAK diubah); status
+   * non-ACTIVE menampilkan snapshot match historis dari riwayat transisi
+   * terakhir (match versi lama tidak dipindahkan ke versi baru §8/§10).
+   */
   const matches = React.useMemo(() => {
-    if (!sig || sig.status !== "ACTIVE") return [];
-    return networkSvc
-      .activeMatches(networkRuntime, src)
-      .filter((m) => m.signatureId === sig.id);
-  }, [sig, networkRuntime, src]);
+    if (!sig) return [];
+    if (sig.status === "ACTIVE") {
+      return networkSvc
+        .activeMatches(networkRuntime, src)
+        .filter((m) => m.signatureId === sig.id);
+    }
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i].snapshotMatches.length > 0) {
+        return history[i].snapshotMatches;
+      }
+    }
+    return [];
+  }, [sig, networkRuntime, src, history]);
 
   const audit = React.useMemo(() => {
     return auditEntries(src).filter(
@@ -250,12 +269,55 @@ export default function SignatureDetailPage() {
           Aktivitas jaringan
         </h2>
         {sig.status !== "ACTIVE" ? (
-          <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
-            Signature belum AKTIF — match akan muncul setelah publikasi.
-            {sig.status === "VALIDATED"
-              ? " Seorang Admin dapat mempublikasikannya dari tombol di atas."
-              : ""}
-          </p>
+          <>
+            <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
+              {sig.status === "VALIDATED"
+                ? "Signature belum AKTIF — match akan muncul setelah publikasi. Seorang Admin dapat mempublikasikannya dari tombol di atas."
+                : sig.status === "MONITORED"
+                  ? "Signature sedang DIPANTAU — detector dinonaktifkan; daftar di bawah adalah snapshot match historis yang dibekukan saat monitoring."
+                  : sig.status === "RETIRED"
+                    ? "Signature TIDAK BERLAKU — tidak menghasilkan match baru; match historis, feedback, dan riwayat lifecycle tetap tersimpan."
+                    : "Signature DIPERBARUI — versi baru menunggu publikasi ulang; match di bawah berasal dari snapshot versi sebelumnya."}
+            </p>
+            {matches.length === 0 ? (
+              <p className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-500 shadow-sm">
+                Tidak ada match pada snapshot terakhir.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {matches.map((m) => (
+                  <article
+                    key={`${m.key}-historical`}
+                    aria-label={`Match ${m.claimId}`}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-mono text-[11px] tracking-wider text-slate-500">
+                        {m.claimId} · {facilityNodeLabel(m.facilityId)}
+                      </p>
+                      <p className="mt-0.5 text-sm font-semibold text-slate-900">
+                        {m.matchedConditions.length} kondisi terpenuhi
+                      </p>
+                      <p className="mt-0.5 font-mono text-[10px] tracking-wider text-slate-400">
+                        SNAPSHOT HISTORIS — v
+                        {
+                          [...history]
+                            .reverse()
+                            .find((h) => h.snapshotMatches.length > 0)?.version
+                        }
+                      </p>
+                    </div>
+                    <Link
+                      href={`/app/claims/${m.claimId}`}
+                      className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
+                    >
+                      Buka klaim + verifikasi adaptif →
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            )}
+          </>
         ) : matches.length === 0 ? (
           <p className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-500 shadow-sm">
             Signature aktif tetapi belum ada match di 4 faskes simulasi.
@@ -287,6 +349,15 @@ export default function SignatureDetailPage() {
           </div>
         )}
       </section>
+
+      <SignatureLearningPanel
+        sig={sig}
+        matches={matches}
+        feedbacks={networkRuntime.feedbacks}
+        history={history}
+      />
+
+      <SignatureGovernancePanel sig={sig} history={history} />
 
       <PrivacyBoundary />
     </div>

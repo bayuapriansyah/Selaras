@@ -53,12 +53,14 @@ export interface RiskSignatureRepository {
     statusOverrides: Record<string, SignatureStatus> | undefined,
     proposals: NetworkProposal[],
     src: DataSource,
+    definitions?: Record<string, RiskSignature>,
   ): RiskSignature[];
   byId(
     signatureId: string,
     statusOverrides: Record<string, SignatureStatus> | undefined,
     proposals: NetworkProposal[],
     src: DataSource,
+    definitions?: Record<string, RiskSignature>,
   ): RiskSignature | undefined;
 }
 
@@ -80,12 +82,14 @@ export interface NetworkRiskRepository {
     proposals: NetworkProposal[];
     feedbacks: SignatureFeedback[];
     src: DataSource;
+    definitions?: Record<string, RiskSignature>;
   }): NetworkStats;
   immunity(
     signatureId: string,
     statusOverrides: Record<string, SignatureStatus> | undefined,
     proposals: NetworkProposal[],
     src: DataSource,
+    definitions?: Record<string, RiskSignature>,
   ): ImmunityView;
 }
 

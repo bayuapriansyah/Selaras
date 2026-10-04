@@ -12,7 +12,8 @@
     "test:proof:p4": "tsx scripts/test-proof-phase4.ts",
     "test:proof:p6": "tsx scripts/test-proof-phase6.ts",
     "test:network:p7": "tsx scripts/test-network-phase7.ts",
-    "test:network:p8": "tsx scripts/test-network-phase8.ts"
+    "test:network:p8": "tsx scripts/test-network-phase8.ts",
+    "test:network:p9": "tsx scripts/test-network-phase9.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

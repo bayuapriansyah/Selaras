@@ -2,7 +2,9 @@ import { APP_TODAY } from "@/data/app/seed";
 import { EVIDENCE_LABEL } from "@/data/app/types";
 import type {
   NetworkProposal,
+  RiskSignature,
   SignatureFeedback,
+  SignatureHistoryRecord,
   SignatureStatus,
   VerificationSession,
 } from "@/data/app/network";
@@ -56,6 +58,11 @@ export type PersistedState = {
   feedbacks: SignatureFeedback[];
   /** Phase 8 — sesi verifikasi jaringan (persist via store pattern). */
   verificationSessions: VerificationSession[];
+  /** Phase 9 — definisi signature ter-update (RS-017 v2 dst, konten saja;
+   * status tetap melalui signatureStatus). */
+  signatureDefinitions: Record<string, RiskSignature>;
+  /** Phase 9 — riwayat versi & lifecycle governance per signature. */
+  signatureHistory: SignatureHistoryRecord[];
   proofEvents: EvidenceEvent[];
   attestations: Attestation[];
   anchors: ServiceAnchorEvent[];
@@ -85,6 +92,8 @@ export const initialPersistedState: PersistedState = {
   signatureStatus: {},
   feedbacks: [],
   verificationSessions: [],
+  signatureDefinitions: {},
+  signatureHistory: [],
   proofEvents: EMPTY_EVIDENCE_EVENTS,
   attestations: EMPTY_ATTESTATIONS,
   anchors: EMPTY_ANCHOR_EVENTS,

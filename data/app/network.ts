@@ -189,6 +189,41 @@ export type NetworkFacility = {
   role: string;
 };
 
+/**
+ * Phase 9 — jenis transisi governance yang tercatat pada riwayat signature.
+ * Bukan status signature: lifecycle enum SignatureStatus tidak berubah (§12).
+ */
+export type SignatureHistoryKind = "MONITORED" | "UPDATE" | "RETIRED";
+
+/**
+ * Phase 9 — riwayat versi & lifecycle per signature (persist via PersistedState).
+ *
+ * - kind UPDATE menyimpan versi sebelumnya + alasan + siapa + waktu + kondisi
+ *   deteksi lama (§8/§10); version = versi BARU setelah update.
+ * - snapshotMatches dibekukan pada momen transisi sehingga match historis tetap
+ *   terlihat setelah signature dipantau/diperbarui/dipensiunkan, DAN match lama
+ *   tidak dipindahkan ke versi baru secara otomatis (label `version` = versi
+ *   yang menghasilkan match tersebut).
+ */
+export type SignatureHistoryRecord = {
+  id: string;
+  signatureId: string;
+  kind: SignatureHistoryKind;
+  /** Versi signature pada saat transisi; untuk UPDATE = versi baru. */
+  version: number;
+  previousVersion: number;
+  previousStatus: SignatureStatus;
+  newStatus: SignatureStatus;
+  changeReason: string;
+  updatedBy: string;
+  updatedAt: string;
+  /** Kondisi deteksi sebelum transisi — dipertahankan untuk audit/riwayat. */
+  previousConditions: NetworkCondition[];
+  previousPattern: string;
+  /** Snapshot match (evaluasi kondisi saat itu) — historical matches. */
+  snapshotMatches: SignatureMatch[];
+};
+
 export const MESH_FACILITIES: NetworkFacility[] = [
   { id: "FAC-01", node: "A", role: "Faskes asal pola (origin)" },
   { id: "FAC-03", node: "B", role: "Faskes peer jaringan" },

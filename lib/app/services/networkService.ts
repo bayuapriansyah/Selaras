@@ -13,6 +13,8 @@ export type NetworkRuntime = {
   statusOverrides: Record<string, SignatureStatus>;
   proposals: NetworkProposal[];
   feedbacks: SignatureFeedback[];
+  /** Phase 9 — definisi signature ter-update (opsional; konten v2 dst). */
+  definitions?: Record<string, RiskSignature>;
 };
 
 export function signatures(
@@ -23,6 +25,7 @@ export function signatures(
     runtime.statusOverrides,
     runtime.proposals,
     src,
+    runtime.definitions,
   );
 }
 
@@ -36,6 +39,7 @@ export function signatureById(
     runtime.statusOverrides,
     runtime.proposals,
     src,
+    runtime.definitions,
   );
 }
 
@@ -44,8 +48,12 @@ export function activeMatches(
   src: DataSource = seedSource,
 ): SignatureMatch[] {
   return repositories.matches.active(
-    signatureBundle(signatureSeeds, runtime.proposals, runtime.statusOverrides)
-      .active,
+    signatureBundle(
+      signatureSeeds,
+      runtime.proposals,
+      runtime.statusOverrides,
+      runtime.definitions,
+    ).active,
     src,
   );
 }
@@ -57,8 +65,12 @@ export function matchesForClaim(
 ): SignatureMatch[] {
   return repositories.matches.byClaim(
     claimId,
-    signatureBundle(signatureSeeds, runtime.proposals, runtime.statusOverrides)
-      .active,
+    signatureBundle(
+      signatureSeeds,
+      runtime.proposals,
+      runtime.statusOverrides,
+      runtime.definitions,
+    ).active,
     src,
   );
 }
@@ -72,6 +84,7 @@ export function stats(
     proposals: runtime.proposals,
     feedbacks: runtime.feedbacks,
     src,
+    definitions: runtime.definitions,
   });
 }
 
@@ -85,6 +98,7 @@ export function immunity(
     runtime.statusOverrides,
     runtime.proposals,
     src,
+    runtime.definitions,
   );
 }
 

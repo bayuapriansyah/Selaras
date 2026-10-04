@@ -534,14 +534,19 @@ export function signatureBundle(
   seeds: RiskSignature[],
   proposals: NetworkProposal[],
   statusOverrides: Record<string, SignatureStatus> | undefined,
+  definitions?: Record<string, RiskSignature>,
 ): SignatureBundle {
   const approved = proposals
     .filter((p) => p.status === "APPROVED")
     .map(signatureFromProposal);
-  const all = [...seeds, ...approved].map((sig) => ({
-    ...sig,
-    status: effectiveStatus(sig.id, sig.status, statusOverrides),
-  }));
+  const all = [...seeds, ...approved].map((sig) => {
+    const def = definitions?.[sig.id];
+    const content = def ? { ...sig, ...def } : sig;
+    return {
+      ...content,
+      status: effectiveStatus(sig.id, content.status, statusOverrides),
+    };
+  });
   return {
     all,
     active: all.filter((s) => s.status === "ACTIVE"),
@@ -570,11 +575,13 @@ export function networkStats(input: {
   statusOverrides: Record<string, SignatureStatus> | undefined;
   feedbacks: SignatureFeedback[];
   src: DataSource;
+  definitions?: Record<string, RiskSignature>;
 }): NetworkStats {
   const bundle = signatureBundle(
     input.seeds,
     input.proposals,
     input.statusOverrides,
+    input.definitions,
   );
   const activeMatches = allMatches(bundle.active, input.src);
   const pendingMatches = allMatches(bundle.pending, input.src);
@@ -628,8 +635,9 @@ export function immunityView(
   proposals: NetworkProposal[],
   statusOverrides: Record<string, SignatureStatus> | undefined,
   src: DataSource,
+  definitions?: Record<string, RiskSignature>,
 ): ImmunityView {
-  const bundle = signatureBundle(seeds, proposals, statusOverrides);
+  const bundle = signatureBundle(seeds, proposals, statusOverrides, definitions);
   const target =
     bundle.all.find((s) => s.id === signatureId) ??
     seeds.find((s) => s.id === signatureId);

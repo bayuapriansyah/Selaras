@@ -67,6 +67,7 @@ function resolveSignature(
     signatureSeeds,
     state.proposals,
     state.signatureStatus,
+    state.signatureDefinitions,
   ).all.find((s) => s.id === signatureId);
 }
 

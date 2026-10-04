@@ -15,12 +15,16 @@ import type {
 
 export const networkRiskRepositories = {
   signatures: {
-    list: (statusOverrides, proposals, _src) =>
-      signatureBundle(signatureSeeds, proposals, statusOverrides).all,
-    byId: (signatureId, statusOverrides, proposals, _src) =>
-      signatureBundle(signatureSeeds, proposals, statusOverrides).all.find(
-        (s) => s.id === signatureId,
-      ),
+    list: (statusOverrides, proposals, _src, definitions) =>
+      signatureBundle(signatureSeeds, proposals, statusOverrides, definitions)
+        .all,
+    byId: (signatureId, statusOverrides, proposals, _src, definitions) =>
+      signatureBundle(
+        signatureSeeds,
+        proposals,
+        statusOverrides,
+        definitions,
+      ).all.find((s) => s.id === signatureId),
   } satisfies RiskSignatureRepository,
 
   matches: {
@@ -34,21 +38,23 @@ export const networkRiskRepositories = {
   } satisfies NetworkFeedbackRepository,
 
   network: {
-    stats: ({ statusOverrides, proposals, feedbacks, src }) =>
+    stats: ({ statusOverrides, proposals, feedbacks, src, definitions }) =>
       networkStats({
         seeds: signatureSeeds,
         proposals,
         statusOverrides,
         feedbacks,
         src,
+        definitions,
       }),
-    immunity: (signatureId, statusOverrides, proposals, src) =>
+    immunity: (signatureId, statusOverrides, proposals, src, definitions) =>
       immunityView(
         signatureId,
         signatureSeeds,
         proposals,
         statusOverrides,
         src,
+        definitions,
       ),
   } satisfies NetworkRiskRepository,
 };

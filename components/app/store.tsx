@@ -27,6 +27,7 @@ import {
   signatureSeeds,
   type AdaptiveLevel,
   type NetworkProposal,
+  type RiskSignature,
   type SignatureFeedback,
   type SignatureSeverity,
   type SignatureStatus,
@@ -69,6 +70,13 @@ import {
   submitNetworkVerification,
   toggleVerificationStep as toggleVerificationStepReducer,
 } from "@/lib/app/services/verificationService";
+import {
+  monitorSignature as monitorSignatureReducer,
+  retireSignature as retireSignatureReducer,
+  updateSignature as updateSignatureReducer,
+  type GovernanceBlocked,
+  type UpdateSignatureInput,
+} from "@/lib/app/services/governanceService";
 
 export type { EvidenceAdd, StartServiceInput } from "@/lib/app/appState";
 
@@ -91,6 +99,8 @@ export type NetworkRuntime = {
   statusOverrides: Record<string, SignatureStatus>;
   proposals: NetworkProposal[];
   feedbacks: SignatureFeedback[];
+  /** Phase 9 — definisi signature ter-update (opsional, konten v2 dst). */
+  definitions?: Record<string, RiskSignature>;
 };
 
 export type ProofEventInput = Omit<EvidenceEvent, "id" | "recordedAt">;
@@ -151,6 +161,15 @@ type AppContextValue = {
     outcome: SubmittableOutcome,
     note?: string,
   ) => void;
+  monitorSignature: (signatureId: string) => GovernanceBlocked | null;
+  updateSignature: (
+    signatureId: string,
+    input: UpdateSignatureInput,
+  ) => GovernanceBlocked | null;
+  retireSignature: (
+    signatureId: string,
+    reason: string,
+  ) => GovernanceBlocked | null;
   addProofEvent: (input: ProofEventInput) => string;
   addAttestation: (input: AttestationInput) => string;
   addAnchorEvent: (input: AnchorEventInput) => string;
@@ -352,8 +371,14 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       statusOverrides: state.signatureStatus,
       proposals: state.proposals,
       feedbacks: state.feedbacks,
+      definitions: state.signatureDefinitions,
     }),
-    [state.signatureStatus, state.proposals, state.feedbacks],
+    [
+      state.signatureStatus,
+      state.proposals,
+      state.feedbacks,
+      state.signatureDefinitions,
+    ],
   );
 
   const proposeSignature = React.useCallback(
@@ -460,6 +485,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
           signatureSeeds,
           prev.proposals,
           prev.signatureStatus,
+          prev.signatureDefinitions,
         );
         const sig = bundle.all.find((s) => s.id === signatureId);
         if (!sig || sig.status === "ACTIVE" || sig.status === "RETIRED") {
@@ -561,6 +587,60 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
           { name: u?.name ?? "Pengguna Demo", role: prev.role },
         ).state;
       });
+    },
+    [setState],
+  );
+
+  const monitorSignature = React.useCallback(
+    (signatureId: string): GovernanceBlocked | null => {
+      let blocked: GovernanceBlocked | null = null;
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        const r = monitorSignatureReducer(prev, signatureId, {
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+        blocked = r.blocked ?? null;
+        return r.state;
+      });
+      return blocked;
+    },
+    [setState],
+  );
+
+  const updateSignature = React.useCallback(
+    (
+      signatureId: string,
+      input: UpdateSignatureInput,
+    ): GovernanceBlocked | null => {
+      let blocked: GovernanceBlocked | null = null;
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        const r = updateSignatureReducer(prev, signatureId, input, {
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+        blocked = r.blocked ?? null;
+        return r.state;
+      });
+      return blocked;
+    },
+    [setState],
+  );
+
+  const retireSignature = React.useCallback(
+    (signatureId: string, reason: string): GovernanceBlocked | null => {
+      let blocked: GovernanceBlocked | null = null;
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        const r = retireSignatureReducer(prev, signatureId, reason, {
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+        blocked = r.blocked ?? null;
+        return r.state;
+      });
+      return blocked;
     },
     [setState],
   );
@@ -743,6 +823,9 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       startVerification,
       toggleVerificationStep,
       submitVerification,
+      monitorSignature,
+      updateSignature,
+      retireSignature,
       addProofEvent,
       addAttestation,
       addAnchorEvent,
@@ -775,6 +858,9 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       startVerification,
       toggleVerificationStep,
       submitVerification,
+      monitorSignature,
+      updateSignature,
+      retireSignature,
       addProofEvent,
       addAttestation,
       addAnchorEvent,
