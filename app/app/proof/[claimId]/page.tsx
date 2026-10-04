@@ -203,6 +203,8 @@ export default function ProofOverviewPage() {
         </div>
       </section>
 
+      <ProofPassportCard entries={entries} state={liveState ?? "REGISTERED"} />
+
       {liveState ? (
         <ProofStateRail
           state={liveState}
@@ -343,8 +345,6 @@ export default function ProofOverviewPage() {
         ) : null}
       </section>
 
-      <ProofPassportCard entries={entries} state={liveState ?? "REGISTERED"} />
-
       {assessment ? (
         <ProofDimensions dimensions={assessment.dimensions} />
       ) : null}
@@ -360,6 +360,8 @@ export default function ProofOverviewPage() {
         />
       </div>
 
+      <ProofStream events={events} provenance={provenance} />
+
       <ClaimTraceChain
         trace={proof?.trace}
         status={assessment?.traceStatus ?? "PENDING"}
@@ -370,11 +372,10 @@ export default function ProofOverviewPage() {
         <ProofGapList
           gaps={assessment?.gaps ?? []}
           conflicts={assessment?.conflicts ?? []}
+          replayHref={`/app/claims/${claimId}/replay`}
         />
         <ProvenancePanel records={provenance} anchors={anchors} />
       </div>
-
-      <ProofStream events={events} provenance={provenance} />
 
       <nav
         aria-label="Tautan terkait"

@@ -6,6 +6,7 @@ import { Waypoints } from "lucide-react";
 import { cn } from "cn";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
+import { NetworkPrivacyNote } from "@/components/app/network/NetworkPrivacyNote";
 import { NETWORK_SIMULATION_LABEL, type SignatureFeedback } from "@/data/app/network";
 import { allMatches, facilityNodeLabel } from "@/lib/app/network";
 import { formatDateTime } from "@/lib/app/format";
@@ -283,11 +284,16 @@ export default function NetworkMatchesPage() {
         )}
       </section>
 
-      <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
-        Match &amp; status “NETWORK STATUS” ditampilkan sebagai lapisan tambahan.
-        Status klaim asli (SUPPORTED / gap) dan antrean prioritas reviewer tetap
-        dihitung oleh mesin klaim yang lama — jaringan tidak mengubahnya.
-      </p>
+      <NetworkPrivacyNote
+        extra={
+          <>
+            Match &amp; status “NETWORK STATUS” ditampilkan sebagai lapisan
+            tambahan. Status klaim asli (SUPPORTED / gap) dan antrean prioritas
+            reviewer tetap dihitung oleh mesin klaim yang lama — jaringan tidak
+            mengubahnya.
+          </>
+        }
+      />
     </div>
   );
 }

@@ -194,7 +194,7 @@
 
   <div class="grid3">
     <div class="stat green"><div class="v">10 → 8 → 2</div><div class="l">Kasus emas CLM-08421: 10 sesi diklaim, 8 berbukti lengkap, 2 ditahan untuk tinjauan</div></div>
-    <div class="stat blue"><div class="v">96</div><div class="l">Skenario uji otomatis lulus (alur, jaringan, sinyal, peran, responsif)</div></div>
+    <div class="stat blue"><div class="v">155</div><div class="l">Skenario uji E2E lulus (alur, proof, jaringan, sinyal, peran, responsif) + 475 pemeriksaan unit</div></div>
     <div class="stat"><div class="v">22 + 3</div><div class="l">Halaman aplikasi (App Router) + endpoint API yang berjalan</div></div>
     <div class="stat"><div class="v">2.334</div><div class="l">Baris PRD — sumber kebenaran produk (57 bagian)</div></div>
     <div class="stat amber"><div class="v">27 / 65</div><div class="l">Skor risiko kasus emas vs ambang gerbang — band RENDAH, gerbang tetap terbuka untuk yang berbukti</div></div>
@@ -431,8 +431,8 @@
   <h3>5.4 Integrity Mesh — “satu temuan, semua terlindungi”</h3>
   <div class="grid2">
     <div class="card"><h4>Konsep</h4><p>Pola risiko (<b>Risk Signature</b>) yang tervalidasi di satu faskes dapat dipublikasikan ke jaringan sehingga faskes lain <b>terlindungi dari pola yang sama</b> — tanpa berbagi data pasien, hanya pola.</p></div>
-    <div class="card"><h4>Siklus tata kelola (wajib lewat semua tahap)</h4><p class="chip n">USULAN</p><span style="font-weight:800;">→</span> <p class="chip n" style="display:inline-flex;">DISETUJUI</p> → <p class="chip a" style="display:inline-flex;">DIVALIDASI</p> → <p class="chip g" style="display:inline-flex;">AKTIF</p><p class="mini" style="margin-top:5px;">Tidak ada pola yang langsung aktif.</p></div>
-    <div class="card"><h4>Keadaan jaringan (sintetis)</h4><p>4 faskes (A–D) · <b>2 Risk Signature</b> (1 menunggu publikasi) · <b>12 match siap publikasi</b> · <b>25 klaim dievaluasi</b>.</p></div>
+    <div class="card"><h4>Siklus tata kelola (wajib lewat semua tahap)</h4><p class="chip n">USULAN</p><span style="font-weight:800;">→</span> <p class="chip n" style="display:inline-flex;">DISETUJUI</p> → <p class="chip a" style="display:inline-flex;">DIVALIDASI</p> → <p class="chip g" style="display:inline-flex;">AKTIF</p><p class="mini" style="margin-top:5px;">Tidak ada pola yang langsung aktif. Setelah aktif: DIPANTAU / DIPERBARUI (v+1) / TIDAK BERLAKU lewat governance — dengan riwayat versi &amp; snapshot match.</p></div>
+    <div class="card"><h4>Keadaan jaringan (sintetis)</h4><p>4 faskes (A–D) · <b>4 Risk Signature</b> (2 aktif, 1 menunggu publikasi, 1 tidak berlaku) · <b>6 match aktif + 1 match siap publikasi</b> · <b>25 klaim dievaluasi</b>.</p></div>
     <div class="card"><h4>Prinsip privasi mesh</h4><p><b>Pola dibagikan, data pasien tidak.</b> Skor lokal faskes tidak berpengaruh oleh jaringan. Step-up verification: lolos → klarifikasi → tinjauan.</p></div>
   </div>
 
@@ -492,7 +492,7 @@
   <p class="lead">Yang membedakan proposal “ide” dari “prototype”: ini sudah berjalan. Gunakan bagian ini saat diminta bukti kesiapan (dimensi penilaian <b>kesiapan &amp; skalabilitas</b>).</p>
 
   <div class="grid4">
-    <div class="stat green"><div class="v">96</div><div class="l">Skenario uji E2E lulus (alur, jaringan, sinyal, peran, responsif, error 0)</div></div>
+    <div class="stat green"><div class="v">155</div><div class="l">Skenario uji E2E lulus (alur, proof, jaringan, sinyal, peran, responsif, error 0)</div></div>
     <div class="stat blue"><div class="v">22</div><div class="l">Halaman aplikasi App Router + 3 endpoint API</div></div>
     <div class="stat"><div class="v">2.334</div><div class="l">Baris PRD, 57 bagian — dari problem sampai DoD</div></div>
     <div class="stat"><div class="v">4</div><div class="l">Peran RBAC (Reviewer/Admin/Provider/Operator) — 9 skenario peran</div></div>
@@ -506,7 +506,8 @@
     <div class="card"><h4>Antrean &amp; matriks bukti</h4><p class="mini">Daftar klaim → detail klaim → matriks 10 sesi × 6 bukti → gap &amp; dampak rupiah.</p></div>
     <div class="card"><h4>Replay &amp; graf</h4><p class="mini">70 langkah kronologi + Evidence Graph 86 node/113 rel dengan provenance.</p></div>
     <div class="card"><h4>AI &amp; kopilot klarifikasi</h4><p class="mini">Penjelasan 5 blok evidence-grounded + draf surat klarifikasi yang disesuaikan reviewer.</p></div>
-    <div class="card"><h4>Integrity Mesh</h4><p class="mini">4 faskes, siklus persetujuan signature, 12 match siap publikasi.</p></div>
+    <div class="card"><h4>Proof View</h4><p class="mini">Service Passport → proof state (7 dimensi) → live proof stream → claim trace → provenance; PROOF_GAP/INCONSISTENT dengan alasan + jalan verifikasi (replay).</p></div>
+    <div class="card"><h4>Integrity Mesh</h4><p class="mini">4 faskes, siklus persetujuan + governance signature (monitor/perbarui/pensiun), 6 match aktif + 1 siap publikasi, learning loop feedback.</p></div>
     <div class="card"><h4>Analitik &amp; log audit</h4><p class="mini">Metrik operasi/investigasi/bukti/AI + jejak permanen aktor-keputusan-waktu.</p></div>
   </div>
 
@@ -744,7 +745,7 @@
   <h3>Kenapa tim ini mampu (bukti eksekusi, bukan janji)</h3>
   <div class="grid4">
     <div class="stat green"><div class="v">20+</div><div class="l">Layar prototipe terbangun</div></div>
-    <div class="stat blue"><div class="v">96</div><div class="l">Skenario uji lulus</div></div>
+    <div class="stat blue"><div class="v">155</div><div class="l">Skenario uji lulus</div></div>
     <div class="stat"><div class="v">2.334</div><div class="l">Baris PRD</div></div>
     <div class="stat"><div class="v">&lt;5 mnt</div><div class="l">Alur demo end-to-end</div></div>
   </div>
@@ -806,9 +807,9 @@
     <tr><td>Dampak finansial kasus emas</td><td><b>Rp 3.500.000</b> diajukan → <b>Rp 2.800.000</b> lolos + <b>Rp 700.000</b> ditahan</td><td>10 × Rp 350.000 (sintetis) — 8/2 split</td></tr>
     <tr><td>Graf</td><td><b>86 node · 113 rel</b></td><td>API graf prototipe (kasus CLM-08421)</td></tr>
     <tr><td>Replay</td><td><b>70 langkah</b></td><td>Seed replay (<code>data/</code>)</td></tr>
-    <tr><td>Integrity Mesh</td><td><b>4</b> faskes (A–D) · <b>2</b> Risk Signature (1 menunggu publikasi) · <b>12</b> match siap publikasi · <b>25</b> klaim dievaluasi · siklus USULAN→DISETUJUI→DIVALIDASI→AKTIF</td><td><code>data/app/network.ts</code></td></tr>
+    <tr><td>Integrity Mesh</td><td><b>4</b> faskes (A–D) · <b>4</b> Risk Signature (2 aktif, 1 menunggu publikasi, 1 tidak berlaku) · <b>6</b> match aktif + <b>1</b> siap publikasi · <b>25</b> klaim dievaluasi · siklus USULAN→DISETUJUI→DIVALIDASI→AKTIF→DIPANTAU/DIPERBARUI→TIDAK BERLAKU</td><td><code>data/app/network.ts</code></td></tr>
     <tr><td>AI</td><td><b>5</b> blok penjelasan + Kopilot Klarifikasi</td><td><code>app/api/ai/explain</code>, halaman AI</td></tr>
-    <tr><td>Uji</td><td><b>96</b> skenario E2E lulus · <b>9</b> skenario peran · 0 error runtime · 0 overflow</td><td>Suite uji otomatis (puppeteer)</td></tr>
+    <tr><td>Uji</td><td><b>155</b> skenario E2E lulus · <b>475</b> pemeriksaan unit · <b>9</b> skenario peran · 0 error runtime · 0 overflow</td><td>Suite uji otomatis (puppeteer)</td></tr>
     <tr><td>Ukuran produk</td><td><b>22</b> halaman app + <b>3</b> API · PRD <b>2.334</b> baris · <b>6</b> jenis bukti/sesi · <b>4</b> peran RBAC</td><td><code>app/</code>, PRD, kode</td></tr>
     <tr><td>Demo</td><td>Golden case <b>&lt; 5 menit</b> (Definition of Done)</td><td>PRD §48</td></tr>
   </table>

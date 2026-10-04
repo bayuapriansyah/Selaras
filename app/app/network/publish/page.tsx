@@ -7,6 +7,7 @@ import { cn } from "cn";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ProposalBadge, SeverityBadge } from "@/components/app/network/Badges";
+import { NetworkPrivacyNote } from "@/components/app/network/NetworkPrivacyNote";
 import { NETWORK_SIMULATION_LABEL, type NetworkProposal } from "@/data/app/network";
 import { allMatches, conditionLabel, facilityNodeLabel } from "@/lib/app/network";
 import { can } from "@/lib/app/permissions";
@@ -251,6 +252,8 @@ export default function NetworkPublishPage() {
         dipublikasikan, dasbor jaringan, daftar match, dan halaman klaim
         terkait langsung menampilkan perubahannya.
       </p>
+
+      <NetworkPrivacyNote />
     </div>
   );
 }

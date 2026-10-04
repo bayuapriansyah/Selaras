@@ -25,7 +25,6 @@ import { patients, providers } from "@/data/app/seed";
 import { ANCHOR_REGISTRY } from "@/data/app/anchorRegistry";
 import type { AnchorMethod } from "@/data/app/proof";
 import type { AnchorConfirmResult } from "@/lib/app/services/proofService";
-import { getTemplate } from "@/lib/app/selectors";
 import { passportRow } from "@/lib/app/services/passportService";
 import {
   mintQrToken,

@@ -7,6 +7,7 @@ import { cn } from "cn";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
 import { SignatureTable, type SignatureRow } from "@/components/app/network/SignatureTable";
+import { NetworkPrivacyNote } from "@/components/app/network/NetworkPrivacyNote";
 import { NETWORK_SIMULATION_LABEL, type SignatureStatus } from "@/data/app/network";
 import { allMatches } from "@/lib/app/network";
 import { can } from "@/lib/app/permissions";
@@ -163,6 +164,8 @@ export default function SignaturesPage() {
           </p>
         </div>
       </section>
+
+      <NetworkPrivacyNote />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { CircleAlert, ShieldCheck, TriangleAlert } from "lucide-react";
+import Link from "next/link";
 import type { ProofGapItem } from "@/data/app/proof";
 import { PROOF_DIMENSION_LABEL } from "@/data/app/proof";
 import { EVIDENCE_LABEL } from "@/data/app/types";
@@ -18,9 +19,11 @@ const SEVERITY_CLS: Record<string, string> = {
 export function ProofGapList({
   gaps,
   conflicts,
+  replayHref,
 }: {
   gaps: ProofGapItem[];
   conflicts: string[];
+  replayHref?: string;
 }) {
   const clean = gaps.length === 0 && conflicts.length === 0;
 
@@ -45,6 +48,15 @@ export function ProofGapList({
           {gaps.length} CELAH · {conflicts.length} KONFLIK
         </span>
       </div>
+
+      {replayHref && !clean ? (
+        <Link
+          href={replayHref}
+          className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
+        >
+          Verifikasi bukti lewat episode replay →
+        </Link>
+      ) : null}
 
       {clean ? (
         <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">

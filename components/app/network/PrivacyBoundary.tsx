@@ -10,6 +10,9 @@ export function PrivacyBoundary() {
       <p className="text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
         Batas Privasi
       </p>
+      <p className="mt-1 font-mono text-[10px] font-semibold tracking-[0.14em] text-slate-700 uppercase">
+        Shared Intelligence — Not Shared Identity
+      </p>
       <p className="mt-1 text-xs leading-relaxed text-slate-500">
         Lapisan jaringan hanya berbagi METADATA POLA antar faskes — bukan data
         pasien. Pencocokan dilakukan lokal di tiap faskes.
@@ -47,6 +50,12 @@ export function PrivacyBoundary() {
       <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
         Prinsip: sinyal berpindah, data tidak. Faskes menerima “vaksin pola”
         (signature), bukan rekam medis tetangganya.
+      </p>
+
+      <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+        Network menggunakan data sintetis untuk demonstrasi. Integrasi lintas
+        fasilitas dan data produksi memerlukan governance, authorization, dan
+        privacy-preserving infrastructure.
       </p>
     </section>
   );

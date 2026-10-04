@@ -18,11 +18,11 @@ import { PropagationVisual } from "@/components/app/network/PropagationVisual";
 import { ImmunityVisual } from "@/components/app/network/ImmunityVisual";
 import { SignatureTable, type SignatureRow } from "@/components/app/network/SignatureTable";
 import { ProposalBadge } from "@/components/app/network/Badges";
+import { NetworkPrivacyNote } from "@/components/app/network/NetworkPrivacyNote";
 import {
   NETWORK_SIMULATION_LABEL,
   type RiskSignature,
 } from "@/data/app/network";
-import { allMatches } from "@/lib/app/network";
 import { can } from "@/lib/app/permissions";
 import { formatDateTime } from "@/lib/app/format";
 import * as networkSvc from "@/lib/app/services/networkService";
@@ -145,13 +145,20 @@ export default function NetworkPage() {
         />
       </section>
 
-      <PropagationVisual
-        signature={featured}
-        active={featured?.status === "ACTIVE"}
-        matchCount={totalMatches}
-      />
-
-      <ImmunityVisual view={immunity} />
+      <section aria-label="Registri Risk Signature" className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold tracking-tight text-slate-900">
+            Registri Risk Signature
+          </h2>
+          <Link
+            href="/app/network/signatures"
+            className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
+          >
+            Lihat semua →
+          </Link>
+        </div>
+        <SignatureTable rows={rows} compact />
+      </section>
 
       <section aria-label="Pola muncul" className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2">
@@ -219,20 +226,13 @@ export default function NetworkPage() {
         )}
       </section>
 
-      <section aria-label="Registri Risk Signature" className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold tracking-tight text-slate-900">
-            Registri Risk Signature
-          </h2>
-          <Link
-            href="/app/network/signatures"
-            className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-sky-400"
-          >
-            Lihat semua →
-          </Link>
-        </div>
-        <SignatureTable rows={rows} compact />
-      </section>
+      <PropagationVisual
+        signature={featured}
+        active={featured?.status === "ACTIVE"}
+        matchCount={totalMatches}
+      />
+
+      <ImmunityVisual view={immunity} />
 
       <section
         aria-label="Siklus belajar"
@@ -269,12 +269,16 @@ export default function NetworkPage() {
         </p>
       </section>
 
-      <p className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs leading-relaxed text-sky-800">
-        Semua data di halaman ini adalah simulasi jaringan sintetis (4 faskes)
-        — bukan data JKN nyata. Lapisan jaringan hanya menambah rekomendasi
-        (LOCAL STATUS + NETWORK STATUS + RECOMMENDED ACTION); skor, ranking, dan
-        perilaku klaim yang sudah ada tidak berubah.
-      </p>
+      <NetworkPrivacyNote
+        extra={
+          <>
+            Semua data di halaman ini adalah simulasi jaringan sintetis (4
+            faskes) — bukan data JKN nyata. Lapisan jaringan hanya menambah
+            rekomendasi (LOCAL STATUS + NETWORK STATUS + RECOMMENDED ACTION);
+            skor, ranking, dan perilaku klaim yang sudah ada tidak berubah.
+          </>
+        }
+      />
     </div>
   );
 }
