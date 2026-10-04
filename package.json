@@ -10,7 +10,8 @@
     "seed:neo4j": "tsx scripts/seed-neo4j.ts",
     "test:proof": "tsx scripts/test-proof.ts",
     "test:proof:p4": "tsx scripts/test-proof-phase4.ts",
-    "test:proof:p6": "tsx scripts/test-proof-phase6.ts"
+    "test:proof:p6": "tsx scripts/test-proof-phase6.ts",
+    "test:network:p7": "tsx scripts/test-network-phase7.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

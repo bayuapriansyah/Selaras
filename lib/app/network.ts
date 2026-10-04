@@ -1,5 +1,11 @@
 import { claims, facilities } from "@/data/app/seed";
-import type { Claim, EvidenceKind, RiskSignal, Service } from "@/data/app/types";
+import type {
+  Claim,
+  ClaimStatus,
+  EvidenceKind,
+  RiskSignal,
+} from "@/data/app/types";
+import type { ProofState } from "@/data/app/proof";
 import {
   ADAPTIVE_ACTION,
   MESH_FACILITY_IDS,
@@ -25,13 +31,69 @@ import {
  * Network Intelligence Layer — matcher & adaptive verification.
  * Layer ini HANYA membaca data lokal: tidak mengubah score, ranking queue,
  * atau perilaku klaim yang sudah ada.
+ *
+ * Phase 7 — A2 structural matching:
+ * - context per klaim kaya sesi (session-level): evidence state (termasuk
+ *   overlay evidenceAdds dari Proof Layer), jendela layanan, kelengkapan sesi.
+ * - proof-derived flags ringan (attested/anchored/sealed/gap) dari
+ *   DataSource.proof — TANPA memanggil evaluateProof() di hot path.
+ * - matcher tetap pure & deterministik.
  */
+
+/** Konteks satu sesi (session) untuk matcher — ringan, tanpa evaluateProof. */
+export type ClaimSessionContext = {
+  sessionId: number;
+  serviceId: string;
+  providerId: string;
+  date: string;
+  templateId: string;
+  /** Bukti present pada sesi (DataSource.services sudah termasuk overlay evidenceAdds). */
+  present: Set<EvidenceKind>;
+  /** Required template yang belum ada pada sesi ini. */
+  missing: Set<EvidenceKind>;
+  /** Sesi lengkap = seluruh bukti wajib template terpenuh. */
+  complete: boolean;
+};
+
+/** Phase 7 — fakta proof-derived ringan (lihat DataSource.proof). */
+export type ClaimProofFlags = {
+  /** Ada attestation ATTESTED (ServicePassport sesi atau Claim). */
+  attested: boolean;
+  /** Salah satu sesi punya anchor event ANCHORED. */
+  anchored: boolean;
+  /** proofStates[claimId] === "SEALED". */
+  sealed: boolean;
+  /** proofStates[claimId] PROOF_GAP / INCONSISTENT. */
+  gap: boolean;
+};
 
 export type ClaimMatchContext = {
   claim: Claim;
   providers: Set<string>;
   signals: Set<SignalCode>;
   missingRequired: Set<EvidenceKind>;
+  // Phase 7 — structural/session context (additive)
+  facilityId: string;
+  sessions: ClaimSessionContext[];
+  completeSessions: number;
+  /** Union bukti yang hilang di ≥1 sesi (claim-level missingRequired menyembunyikan fakta ini). */
+  sessionMissing: Set<EvidenceKind>;
+  /** Jendela layanan klaim (min/max tanggal sesi; fallback periode klaim). */
+  serviceWindow: { from: string; to: string };
+  localStatus: ClaimStatus;
+  proof: ClaimProofFlags;
+};
+
+type MatchEnv = {
+  providersByClaim: Record<string, Set<string>>;
+  contextsByClaim: Record<string, ClaimMatchContext>;
+};
+
+type ProofIndex = {
+  attestedServices: Set<string>;
+  attestedClaims: Set<string>;
+  anchoredServices: Set<string>;
+  states: Record<string, ProofState>;
 };
 
 function dayNumber(iso: string): number {
@@ -39,14 +101,25 @@ function dayNumber(iso: string): number {
   return Number.isFinite(t) ? Math.round(t / 86_400_000) : 0;
 }
 
-function periodGapDays(a: Claim, b: Claim): number {
-  const aFrom = dayNumber(a.periodFrom);
-  const aTo = dayNumber(a.periodTo);
-  const bFrom = dayNumber(b.periodFrom);
-  const bTo = dayNumber(b.periodTo);
+/** Jarak antar dua jendela waktu (0 = tumpang tindih / bersinggungan). */
+function windowGapDays(
+  a: { from: string; to: string },
+  b: { from: string; to: string },
+): number {
+  const aFrom = dayNumber(a.from);
+  const aTo = dayNumber(a.to);
+  const bFrom = dayNumber(b.from);
+  const bTo = dayNumber(b.to);
   if (aTo < bFrom) return bFrom - aTo;
   if (bTo < aFrom) return aFrom - bTo;
   return 0;
+}
+
+function periodGapDays(a: Claim, b: Claim): number {
+  return windowGapDays(
+    { from: a.periodFrom, to: a.periodTo },
+    { from: b.periodFrom, to: b.periodTo },
+  );
 }
 
 export function buildProvidersByClaim(
@@ -60,16 +133,73 @@ export function buildProvidersByClaim(
   return map;
 }
 
+function buildProofIndex(src: DataSource): ProofIndex {
+  const attestedServices = new Set<string>();
+  const attestedClaims = new Set<string>();
+  for (const a of src.proof?.attestations ?? []) {
+    if (a.status !== "ATTESTED") continue;
+    if (a.subjectType === "ServicePassport") attestedServices.add(a.subjectId);
+    if (a.subjectType === "Claim") attestedClaims.add(a.subjectId);
+  }
+  const anchoredServices = new Set<string>();
+  for (const anchor of src.proof?.anchors ?? []) {
+    if (anchor.state === "ANCHORED") anchoredServices.add(anchor.serviceId);
+  }
+  return {
+    attestedServices,
+    attestedClaims,
+    anchoredServices,
+    states: src.proof?.proofStates ?? {},
+  };
+}
+
 function contextFor(
   claim: Claim,
   src: DataSource,
   providersByClaim: Record<string, Set<string>>,
   signalsByClaim: Record<string, RiskSignal[]>,
+  viewsByClaim: Record<string, ClaimView | undefined>,
+  proofIndex: ProofIndex,
 ): ClaimMatchContext {
+  const services = src.services.filter((s) => s.claimId === claim.id);
+
+  // Session-level context (Phase 7): evidence state per sesi — termasuk
+  // overlay evidenceAdds, karena DataSource.services sudah di-overlay.
+  const sessions: ClaimSessionContext[] = services.map((s) => {
+    const required = getTemplate(s.templateId).required;
+    const present = new Set<EvidenceKind>(
+      s.evidence.filter((e) => e.state === "present").map((e) => e.kind),
+    );
+    const missing = new Set<EvidenceKind>(
+      required.filter((k) => !present.has(k)),
+    );
+    return {
+      sessionId: s.sessionId ?? 0,
+      serviceId: s.id,
+      providerId: s.providerId,
+      date: s.date,
+      templateId: s.templateId,
+      present,
+      missing,
+      complete: missing.size === 0,
+    };
+  });
+
+  const completeSessions = sessions.filter((s) => s.complete).length;
+  const sessionMissing = new Set<EvidenceKind>();
+  for (const s of sessions) for (const k of s.missing) sessionMissing.add(k);
+
+  const dates = sessions
+    .map((s) => s.date)
+    .filter((d) => d)
+    .sort();
+  const serviceWindow =
+    dates.length > 0
+      ? { from: dates[0], to: dates[dates.length - 1] }
+      : { from: claim.periodFrom, to: claim.periodTo };
+
+  // Claim-level missingRequired (kompatibilitas kondisi lama).
   const template = getTemplate(claim.templateId);
-  const services: Service[] = src.services.filter(
-    (s) => s.claimId === claim.id,
-  );
   const missingRequired = new Set<EvidenceKind>();
   for (const kind of template.required) {
     if (services.length === 0) continue;
@@ -78,23 +208,61 @@ function contextFor(
     );
     if (!present) missingRequired.add(kind);
   }
+
   const signals = new Set<SignalCode>();
   for (const s of signalsByClaim[claim.id] ?? []) signals.add(s.code);
+
+  const proofState = proofIndex.states[claim.id];
+  const proof: ClaimProofFlags = {
+    attested:
+      proofIndex.attestedClaims.has(claim.id) ||
+      sessions.some((s) => proofIndex.attestedServices.has(s.serviceId)),
+    anchored: sessions.some((s) =>
+      proofIndex.anchoredServices.has(s.serviceId),
+    ),
+    sealed: proofState === "SEALED",
+    gap: proofState === "PROOF_GAP" || proofState === "INCONSISTENT",
+  };
+
   return {
     claim,
     providers: providersByClaim[claim.id] ?? new Set<string>(),
     signals,
     missingRequired,
+    facilityId: claim.facilityId,
+    sessions,
+    completeSessions,
+    sessionMissing,
+    serviceWindow,
+    localStatus: viewsByClaim[claim.id]?.baseStatus ?? claim.status,
+    proof,
   };
 }
 
-function buildSignalsByClaim(src: DataSource): Record<string, RiskSignal[]> {
-  const map: Record<string, RiskSignal[]> = {};
+/** Index matcher per panggilan: providers + seluruh konteks klaim jaringan. */
+function buildMatchIndex(src: DataSource): MatchEnv {
+  const providersByClaim = buildProvidersByClaim(src);
+  const viewsByClaim: Record<string, ClaimView | undefined> = {};
+  const signalsByClaim: Record<string, RiskSignal[]> = {};
   for (const claim of claims) {
-    const view: ClaimView | undefined = claimView(claim.id, src);
-    map[claim.id] = view?.signals ?? [];
+    const view = claimView(claim.id, src);
+    viewsByClaim[claim.id] = view;
+    signalsByClaim[claim.id] = view?.signals ?? [];
   }
-  return map;
+  const proofIndex = buildProofIndex(src);
+  const contextsByClaim: Record<string, ClaimMatchContext> = {};
+  for (const claim of claims) {
+    if (!MESH_FACILITY_IDS.includes(claim.facilityId)) continue;
+    contextsByClaim[claim.id] = contextFor(
+      claim,
+      src,
+      providersByClaim,
+      signalsByClaim,
+      viewsByClaim,
+      proofIndex,
+    );
+  }
+  return { providersByClaim, contextsByClaim };
 }
 
 export function conditionLabel(cond: NetworkCondition): string {
@@ -108,16 +276,22 @@ export function conditionLabel(cond: NetworkCondition): string {
     case "sameProviderWindow":
       return `provider sama dalam jendela ${cond.days} hari`;
     case "missingEvidence":
-      return `bukti hilang: ${cond.kinds.join(", ")}`;
+      return `sesi tanpa bukti: ${cond.kinds.join(", ")}`;
     case "localSignal":
       return `sinyal lokal ${cond.code}`;
+    case "sameProviderOverlap":
+      return cond.days && cond.days > 0
+        ? `provider sama · jendela layanan tumpang tindih ≤ ${cond.days} hari`
+        : "provider sama · jendela layanan tumpang tindih";
+    case "sessionsComplete":
+      return "seluruh sesi lengkap (bukti tuntas)";
   }
 }
 
 function conditionHolds(
   cond: NetworkCondition,
   ctx: ClaimMatchContext,
-  providersByClaim: Record<string, Set<string>>,
+  env: MatchEnv,
 ): boolean {
   switch (cond.kind) {
     case "template":
@@ -133,24 +307,52 @@ function conditionHolds(
           other.facilityId === ctx.claim.facilityId &&
           other.templateId === ctx.claim.templateId &&
           periodGapDays(ctx.claim, other) <= cond.days &&
-          [...(providersByClaim[other.id] ?? [])].some((p) =>
+          [...(env.providersByClaim[other.id] ?? [])].some((p) =>
             ctx.providers.has(p),
           ),
       );
-    case "missingEvidence":
-      return cond.kinds.some((kind) => ctx.missingRequired.has(kind));
+    case "missingEvidence": {
+      // Phase 7: evaluasi LEVEL SESI — klaim match bila ≥1 sesi kehilangan
+      // bukti (claim-level missingRequired menyembunyikan gap per sesi).
+      return cond.kinds.some((kind) => ctx.sessionMissing.has(kind));
+    }
     case "localSignal":
       return ctx.signals.has(cond.code);
+    case "sameProviderOverlap": {
+      // Phase 7 (A2): ada klaim lain pada faskes & template sama, provider
+      // berbagi, dan jendela layanan mereka tumpang tindih (toleransi `days`,
+      // default 0 = overlap ketat). Bukan sekadar provider ID sama.
+      const tolerance = cond.days ?? 0;
+      return Object.values(env.contextsByClaim).some((other) => {
+        if (other.claim.id === ctx.claim.id) return false;
+        if (other.claim.facilityId !== ctx.claim.facilityId) return false;
+        if (other.claim.templateId !== ctx.claim.templateId) return false;
+        const otherProviders = env.providersByClaim[other.claim.id];
+        const shared = [...(otherProviders ?? [])].some((p) =>
+          ctx.providers.has(p),
+        );
+        if (!shared) return false;
+        return (
+          windowGapDays(ctx.serviceWindow, other.serviceWindow) <= tolerance
+        );
+      });
+    }
+    case "sessionsComplete":
+      // Phase 7: lengkap = SEMUA sesi klaim punya seluruh bukti wajib
+      // template terpenuh (dihitung dari evidence state per sesi, termasuk
+      // overlay evidenceAdds — bukan metadata klaim). Klaim tanpa sesi
+      // dianggap tidak lengkap.
+      return ctx.sessions.length > 0 && ctx.completeSessions === ctx.sessions.length;
   }
 }
 
 export function evaluateSignature(
   signature: RiskSignature,
   ctx: ClaimMatchContext,
-  providersByClaim: Record<string, Set<string>>,
+  env: MatchEnv,
 ): boolean {
   return signature.detectionConditions.every((cond) =>
-    conditionHolds(cond, ctx, providersByClaim),
+    conditionHolds(cond, ctx, env),
   );
 }
 
@@ -158,22 +360,14 @@ function matchContexts(
   signatures: RiskSignature[],
   src: DataSource,
 ): { matches: SignatureMatch[]; contexts: Record<string, ClaimMatchContext> } {
-  const providersByClaim = buildProvidersByClaim(src);
-  const signalsByClaim = buildSignalsByClaim(src);
+  const env = buildMatchIndex(src);
   const matches: SignatureMatch[] = [];
-  const contexts: Record<string, ClaimMatchContext> = {};
   for (const sig of signatures) {
     for (const claim of claims) {
       if (!MESH_FACILITY_IDS.includes(claim.facilityId)) continue;
-      const ctx =
-        contexts[claim.id] ??
-        (contexts[claim.id] = contextFor(
-          claim,
-          src,
-          providersByClaim,
-          signalsByClaim,
-        ));
-      if (evaluateSignature(sig, ctx, providersByClaim)) {
+      const ctx = env.contextsByClaim[claim.id];
+      if (!ctx) continue;
+      if (evaluateSignature(sig, ctx, env)) {
         matches.push({
           key: `${sig.id}|${claim.id}`,
           signatureId: sig.id,
@@ -184,7 +378,7 @@ function matchContexts(
       }
     }
   }
-  return { matches, contexts };
+  return { matches, contexts: env.contextsByClaim };
 }
 
 export function matchesForClaim(
@@ -364,20 +558,15 @@ export function immunityView(
   if (!target) {
     return { signature: seeds[0], isLive: false, facilities: [] };
   }
-  const providersByClaim = buildProvidersByClaim(src);
-  const signalsByClaim = buildSignalsByClaim(src);
+  const env = buildMatchIndex(src);
 
   const facilities: ImmunityFacilityState[] = MESH_FACILITY_IDS.map(
     (id, idx) => {
-      const scopeClaims = claims.filter(
-        (c) =>
-          c.facilityId === id &&
-          evaluateSignature(
-            target,
-            contextFor(c, src, providersByClaim, signalsByClaim),
-            providersByClaim,
-          ),
-      );
+      const scopeClaims = claims.filter((c) => {
+        if (c.facilityId !== id) return false;
+        const ctx = env.contextsByClaim[c.id];
+        return ctx ? evaluateSignature(target, ctx, env) : false;
+      });
       return {
         facilityId: id,
         node: NODES[idx],

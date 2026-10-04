@@ -30,7 +30,7 @@ import type {
   Role,
   Service,
 } from "@/data/app/types";
-import { getTemplate } from "@/lib/app/selectors";
+import { getTemplate, seedSource, type DataSource } from "@/lib/app/selectors";
 
 export type EvidenceAdd = {
   serviceId: string;
@@ -176,5 +176,38 @@ export function applyEvidenceAdds(
       complete && !service.endTime
         ? (evidence.find((e) => e.kind === "claim")?.at ?? service.startTime)
         : service.endTime,
+  };
+}
+
+/**
+ * Bangun DataSource dari PersistedState terbaru (bukan closure render).
+ * Dipakai store (src memo) dan publishSignature (recompute matcher dengan
+ * state paling baru — lihat Phase 7 §14 "bukan stale closure").
+ * evidenceAdds di-apply sebagai overlay supaya session/evidence state di
+ * matcher mencerminkan capture dari Proof Layer.
+ */
+export function buildDataSource(state: PersistedState): DataSource {
+  return {
+    services: [...seedSource.services, ...state.createdServices].map((s) =>
+      applyEvidenceAdds(s, state.evidenceAdds),
+    ),
+    reviews:
+      state.reviews.length > 0
+        ? [...state.reviews, ...seedSource.reviews]
+        : seedSource.reviews,
+    audit:
+      state.audit.length > 0
+        ? [...state.audit, ...seedSource.audit]
+        : seedSource.audit,
+    notifications:
+      state.notifications.length > 0
+        ? [...state.notifications, ...seedSource.notifications]
+        : seedSource.notifications,
+    proof: {
+      proofEvents: state.proofEvents,
+      attestations: state.attestations,
+      anchors: state.anchors,
+      proofStates: state.proofStates,
+    },
   };
 }

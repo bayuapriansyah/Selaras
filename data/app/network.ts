@@ -45,7 +45,13 @@ export type NetworkCondition =
   | { kind: "minItems"; n: number }
   | { kind: "sameProviderWindow"; days: number }
   | { kind: "missingEvidence"; kinds: EvidenceKind[] }
-  | { kind: "localSignal"; code: SignalCode };
+  | { kind: "localSignal"; code: SignalCode }
+  /** Phase 7 (A2 structural): klaim lain pada faskes & template sama, provider
+   * berbagi, dan jendela layanan tumpang tindih. `days` (default 0) adalah
+   * toleransi jarak antar jendela dalam hari — 0 berarti overlap ketat. */
+  | { kind: "sameProviderOverlap"; days?: number }
+  /** Phase 7: seluruh sesi klaim lengkap (semua bukti wajib terpenuh). */
+  | { kind: "sessionsComplete" };
 
 export type RiskSignature = {
   id: string;
@@ -132,7 +138,7 @@ export const NETWORK_SIMULATION_LABEL = "Simulasi Jaringan Prototipe";
 export const ADAPTIVE_ACTION: Record<AdaptiveLevel, string> = {
   LEVEL1: "LOLOS",
   LEVEL2: "MINTA BUKTI TAMBAHAN",
-  LEVEL3: "VERIFIKASI LANJUTAN",
+  LEVEL3: "VERIFIKASI STEP-UP",
   LEVEL4: "TINJAUAN MANUSIA",
 };
 
@@ -178,19 +184,21 @@ export const signatureSeeds: RiskSignature[] = [
     id: "RS-017",
     name: "Repeated Service Representation",
     pattern:
-      "Satu episode layanan fisioterapi direpresentasikan pada lebih dari satu klaim dalam jendela waktu pendek pada provider/faskes yang sama.",
+      "Satu episode layanan fisioterapi direpresentasikan pada lebih dari satu klaim dengan jendela layanan yang tumpang tindih pada provider dan faskes yang sama.",
     whyItMatters:
       "Pola ini ditemukan dari tinjauan klaim fisioterapi lokal, lalu divalidasi Reviewer. Tanpa kontrol, episode ganda lolos ke tahap pembayaran karena tiap klaim terlihat lengkap secara terpisah.",
-    serviceScope: "Fisioterapi · seluruh faskes jaringan",
+    serviceScope: "Fisioterapi · jaringan faskes (scope FAC-03)",
     detectionConditions: [
       { kind: "template", templateId: "TPL-PHYSIO" },
-      { kind: "sameProviderWindow", days: 16 },
+      { kind: "facility", facilityIds: ["FAC-03"] },
+      { kind: "sameProviderOverlap" },
+      { kind: "sessionsComplete" },
     ],
     signalNotes: [
-      "same service family",
-      "overlapping claim period",
-      "same provider within 16 days",
-      "reused evidence reference pattern",
+      "same facility & same provider",
+      "overlapping service window",
+      "every session complete — each claim looks complete individually",
+      "physiotherapy scope at FAC-03",
     ],
     requiredEvidence: [
       "Bukti penyelesaian tiap episode",
@@ -215,16 +223,15 @@ export const signatureSeeds: RiskSignature[] = [
       "Klaim fisioterapi memiliki sesi tanpa bukti penyelesaian (completion) namun tetap dibillingkan.",
     whyItMatters:
       "Sesi tanpa penyelesaian berarti pelayanan tidak dapat dibuktikan tuntas; klaim semacam ini dominan pada tinjauan awal faskes asal.",
-    serviceScope: "Fisioterapi · faskes asal (FAC-01)",
+    serviceScope: "Fisioterapi · seluruh faskes jaringan",
     detectionConditions: [
       { kind: "template", templateId: "TPL-PHYSIO" },
-      { kind: "facility", facilityIds: ["FAC-01"] },
       { kind: "missingEvidence", kinds: ["completion"] },
     ],
     signalNotes: [
-      "completion evidence missing",
+      "session-level completion gap",
       "billing present without completion",
-      "service status not SELESAI",
+      "one or more sessions missing completion evidence",
     ],
     requiredEvidence: [
       "Bukti penyelesaian sesi",

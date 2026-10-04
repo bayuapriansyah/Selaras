@@ -28,12 +28,31 @@ import { computeClaimSignals, unionSignals } from "./signals";
 import type { SignalContext, SignalSession } from "./signals";
 import { riskScoreOf } from "./score";
 import type { RiskScore } from "./score";
+import type {
+  Attestation,
+  EvidenceEvent,
+  ProofState,
+  ServiceAnchorEvent,
+} from "@/data/app/proof";
+
+/**
+ * Phase 7 — lightweight proof context untuk network matcher.
+ * Hanya fakta terstruktur hasil Proof Layer (attestation/anchor/proof state);
+ * TIDAK memanggil evaluateProof() di hot path jaringan.
+ */
+export type NetworkProofContext = {
+  proofEvents: EvidenceEvent[];
+  attestations: Attestation[];
+  anchors: ServiceAnchorEvent[];
+  proofStates: Record<string, ProofState>;
+};
 
 export type DataSource = {
   services: Service[];
   reviews: ReviewAction[];
   audit: AuditEntry[];
   notifications: Notification[];
+  proof?: NetworkProofContext;
 };
 
 export const seedSource: DataSource = {

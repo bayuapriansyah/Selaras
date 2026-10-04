@@ -11,9 +11,9 @@ import type {
   Role,
   User,
 } from "@/data/app/types";
-import { seedSource, type DataSource } from "@/lib/app/selectors";
+import { type DataSource } from "@/lib/app/selectors";
 import {
-  applyEvidenceAdds,
+  buildDataSource,
   initialPersistedState,
   mergePersistedState,
   nowStamp,
@@ -218,28 +218,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const src = React.useMemo<DataSource>(() => {
-    const base = [
-      ...seedSource.services,
-      ...state.createdServices,
-    ].map((s) => applyEvidenceAdds(s, state.evidenceAdds));
-
-    return {
-      services: base,
-      reviews:
-        state.reviews.length > 0
-          ? [...state.reviews, ...seedSource.reviews]
-          : seedSource.reviews,
-      audit:
-        state.audit.length > 0
-          ? [...state.audit, ...seedSource.audit]
-          : seedSource.audit,
-      notifications:
-        state.notifications.length > 0
-          ? [...state.notifications, ...seedSource.notifications]
-          : seedSource.notifications,
-    };
-  }, [state]);
+  const src = React.useMemo<DataSource>(() => buildDataSource(state), [state]);
 
   const user = React.useMemo(
     () => users.find((u) => u.role === state.role) ?? seedUser,
@@ -477,10 +456,13 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
         if (!sig || sig.status === "ACTIVE" || sig.status === "RETIRED") {
           return prev;
         }
-        const before = allMatches(bundle.active, src);
+        // Phase 7 §14: recompute matcher dari state TERBARU (bukan closure
+        // render) — evidenceAdds/proof terbaru ikut terbaca.
+        const publishSrc = buildDataSource(prev);
+        const before = allMatches(bundle.active, publishSrc);
         const after = allMatches(
           [...bundle.active, { ...sig, status: "ACTIVE" as const }],
-          src,
+          publishSrc,
         );
         const newMatches = after.filter(
           (m) => !before.some((b) => b.key === m.key),
@@ -519,7 +501,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
         };
       });
     },
-    [setState, src],
+    [setState],
   );
 
   const startVerification = React.useCallback(
