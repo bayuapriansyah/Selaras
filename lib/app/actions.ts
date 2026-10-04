@@ -26,6 +26,8 @@ export const AUDIT_LABEL: Record<string, string> = {
   NET_VERIFICATION_RESULT: "Hasil verifikasi step-up",
   IDENTITY_BOUND: "Identitas terikat",
   SERVICE_ANCHORED: "Anchor layanan tercatat",
+  SERVICE_ATTESTED: "Attestasi provider",
+  ANCHOR_MISMATCH: "Konteks anchor tidak cocok",
   EVIDENCE_RECORDED: "Bukti terekam",
   EVIDENCE_UPDATED: "Bukti diperbarui",
   PROOF_ASSESSED: "Proof dinilai",

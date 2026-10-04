@@ -75,6 +75,9 @@ export type Attestation = {
 
 export type AnchorState = "PENDING" | "ANCHORED" | "FAILED";
 
+/** Cara provider mengonfirmasi titik layanan: scan QR anchor atau pilihan virtual. */
+export type AnchorMethod = "QR" | "VIRTUAL";
+
 export type ServiceAnchorEvent = {
   id: string;
   serviceId: string;
@@ -85,6 +88,14 @@ export type ServiceAnchorEvent = {
   anchoredAt: string;
   source: EvidenceSource;
   state: AnchorState;
+  /** Konteks anchor (additive): faskes tempat sesi berlangsung. */
+  facilityId?: string;
+  /** Konteks anchor (additive): kode titik layanan pada registry (mis. PHYSIO-04). */
+  servicePointId?: string;
+  /** Konteks anchor (additive): nama titik layanan sesi. */
+  servicePoint?: string;
+  /** Konteks anchor (additive): QR stiker titik layanan atau konfirmasi virtual. */
+  method?: AnchorMethod;
 };
 
 export type ProvenanceResource =

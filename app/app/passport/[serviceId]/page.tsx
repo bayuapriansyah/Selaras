@@ -67,6 +67,15 @@ export default function PassportDetailPage() {
   );
   const proofState =
     state.proofStates[serviceId] ?? proof?.assessment.state ?? null;
+  const attestationRec = state.attestations.find(
+    (a) =>
+      a.subjectType === "ServicePassport" &&
+      a.subjectId === serviceId &&
+      a.status === "ATTESTED",
+  );
+  const anchorRec = state.anchors.find(
+    (a) => a.serviceId === serviceId && a.state === "ANCHORED",
+  );
 
   if (!row) {
     return (
@@ -397,6 +406,61 @@ export default function PassportDetailPage() {
             framed={false}
           />
         </div>
+      </section>
+
+      <section
+        aria-label="Service context"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <p className="text-[11px] font-medium tracking-[0.16em] text-slate-400 uppercase">
+          Service context
+        </p>
+        <h2 className="mt-0.5 text-sm font-semibold text-slate-900">
+          Provider attestation dan anchor titik layanan passport ini
+        </h2>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div
+            data-testid="service-context-attestation"
+            className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5"
+          >
+            <p className="font-mono text-[10px] tracking-wider text-slate-400">
+              PROVIDER ATTESTATION
+            </p>
+            <p className="mt-0.5 text-xs font-medium text-slate-700">
+              {attestationRec
+                ? `✓ ATTESTED · ${attestationRec.actorId} · ${attestationRec.at}`
+                : "Belum ada attestasi provider"}
+            </p>
+          </div>
+          <div
+            data-testid="service-context-anchor"
+            className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5"
+          >
+            <p className="font-mono text-[10px] tracking-wider text-slate-400">
+              SERVICE POINT
+            </p>
+            <p className="mt-0.5 text-xs font-medium text-slate-700">
+              {anchorRec
+                ? `✓ ANCHORED · ${anchorRec.servicePointId} · ${anchorRec.facilityId} · ${anchorRec.method ?? "VIRTUAL"} · ${anchorRec.anchoredAt}`
+                : "Belum dikonfirmasi"}
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5">
+            <p className="font-mono text-[10px] tracking-wider text-slate-400">
+              SERVICE EPISODE
+            </p>
+            <p className="mt-0.5 break-words text-xs font-medium text-slate-700">
+              {serviceId} · {service.servicePoint} · {service.providerId}
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-3 text-xs text-slate-500">
+          Anchor adalah context witness atas sesi layanan — bukan bukti
+          tunggal; proof assessment tetap berdiri di atas identitas, provider,
+          evidence, temporal, billing, dan klaim.
+        </p>
       </section>
     </div>
   );

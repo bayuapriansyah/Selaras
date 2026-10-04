@@ -54,7 +54,11 @@ import { submitReview as submitReviewReducer } from "@/lib/app/services/reviewSe
 import {
   appendAnchorEvent,
   assessProofAction,
+  attestServiceStart as attestServiceStartReducer,
+  confirmServiceAnchor,
   sealProofAction,
+  type AnchorConfirmInput,
+  type AnchorConfirmResult,
 } from "@/lib/app/services/proofService";
 import {
   appendProvenance,
@@ -141,6 +145,8 @@ type AppContextValue = {
   addProofEvent: (input: ProofEventInput) => string;
   addAttestation: (input: AttestationInput) => string;
   addAnchorEvent: (input: AnchorEventInput) => string;
+  attestServiceStart: (serviceId: string) => void;
+  confirmAnchor: (input: AnchorConfirmInput) => AnchorConfirmResult;
   addProvenanceRecord: (input: ProvenanceInput) => string;
   setProofState: (subjectId: string, state: ProofState) => void;
   setProofAssessment: (claimId: string, input: ProofAssessmentInput) => void;
@@ -624,6 +630,38 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [setState],
   );
 
+  const attestServiceStart = React.useCallback(
+    (serviceId: string): void => {
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        return attestServiceStartReducer(prev, serviceId, {
+          id: u?.id,
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        }).state;
+      });
+    },
+    [setState],
+  );
+
+  const confirmAnchor = React.useCallback(
+    (input: AnchorConfirmInput): AnchorConfirmResult => {
+      let out!: AnchorConfirmResult;
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        const result = confirmServiceAnchor(prev, input, {
+          id: u?.id,
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+        out = result;
+        return result.state;
+      });
+      return out;
+    },
+    [setState],
+  );
+
   const addProvenanceRecord = React.useCallback(
     (input: ProvenanceInput): string => {
       let id = "";
@@ -730,6 +768,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       addProofEvent,
       addAttestation,
       addAnchorEvent,
+      attestServiceStart,
+      confirmAnchor,
       addProvenanceRecord,
       setProofState,
       setProofAssessment,
@@ -759,6 +799,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       addProofEvent,
       addAttestation,
       addAnchorEvent,
+      attestServiceStart,
+      confirmAnchor,
       addProvenanceRecord,
       setProofState,
       setProofAssessment,

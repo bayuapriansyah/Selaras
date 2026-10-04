@@ -9,8 +9,10 @@ import {
   Check,
   ClipboardList,
   Lock,
+  MapPin,
   Plus,
   ShieldCheck,
+  Stamp,
 } from "lucide-react";
 import { useApp } from "@/components/app/store";
 import { PageHeader } from "@/components/app/PageHeader";
@@ -20,6 +22,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { EVIDENCE_LABEL, EVIDENCE_ORDER } from "@/data/app/types";
 import type { CaptureChannel, EvidenceKind } from "@/data/app/types";
 import { patients, providers } from "@/data/app/seed";
+import { ANCHOR_REGISTRY } from "@/data/app/anchorRegistry";
+import type { AnchorMethod } from "@/data/app/proof";
+import type { AnchorConfirmResult } from "@/lib/app/services/proofService";
 import { getTemplate } from "@/lib/app/selectors";
 import { passportRow } from "@/lib/app/services/passportService";
 import {
@@ -69,7 +74,17 @@ function VerifyItem({
 export default function ServiceWorkspacePage() {
   const params = useParams<{ serviceId: string }>();
   const serviceId = params.serviceId;
-  const { src, state, addEvidence, role, logAudit } = useApp();
+  const {
+    src,
+    state,
+    addEvidence,
+    role,
+    logAudit,
+    user,
+    addAttestation,
+    attestServiceStart,
+    confirmAnchor,
+  } = useApp();
 
   const row = React.useMemo(
     () => passportRow(serviceId, src),
@@ -79,7 +94,21 @@ export default function ServiceWorkspacePage() {
   const [channel, setChannel] = React.useState<CaptureChannel | null>(null);
   const [note, setNote] = React.useState("");
   const [qrToken, setQrToken] = React.useState<string | null>(null);
+  const [anchorCode, setAnchorCode] = React.useState("");
+  const [anchorSelect, setAnchorSelect] = React.useState("");
+  const [anchorResult, setAnchorResult] =
+    React.useState<AnchorConfirmResult | null>(null);
   const noteAllowed = can(role, "captureClinical");
+  const attestAllowed = can(role, "captureClinical");
+  const attestation = state.attestations.find(
+    (a) =>
+      a.subjectType === "ServicePassport" &&
+      a.subjectId === serviceId &&
+      a.status === "ATTESTED",
+  );
+  const anchorEvent = state.anchors.find(
+    (a) => a.serviceId === serviceId && a.state === "ANCHORED",
+  );
 
   React.useEffect(() => {
     let alive = true;
@@ -173,6 +202,33 @@ export default function ServiceWorkspacePage() {
     addEvidence(serviceId, kind, via ?? channel ?? "MANUAL");
   }
 
+  function handleAttest() {
+    if (!attestAllowed || attestation) return;
+    addAttestation({
+      subjectType: "ServicePassport",
+      subjectId: serviceId,
+      actorId: user.id,
+      actorRole: role,
+      statement: `Provider mengesahkan awal layanan ${serviceId} — ${template.name} · ${service.servicePoint}.`,
+      method: "MANUAL",
+      status: "ATTESTED",
+    });
+    attestServiceStart(serviceId);
+  }
+
+  function handleConfirmAnchor() {
+    if (!attestAllowed || !attestation) return;
+    const code = anchorCode.trim() || anchorSelect;
+    if (!code) return;
+    const method: AnchorMethod = anchorCode.trim() ? "QR" : "VIRTUAL";
+    const result = confirmAnchor({ serviceId, code, method });
+    setAnchorResult(result);
+    if (result.outcome === "CONFIRMED") {
+      setAnchorCode("");
+      setAnchorSelect("");
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -230,6 +286,231 @@ export default function ServiceWorkspacePage() {
             ok={Boolean(service.startTime)}
           />
         </div>
+      </section>
+
+      <section
+        aria-label="Provider attestation"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+            <Stamp aria-hidden="true" className="size-4" />
+          </span>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900">
+              Attestasi provider
+            </h2>
+            <p className="text-xs text-slate-500">
+              Provider attestation mengesahkan awal sesi layanan — attestation
+              + proof event SERVICE_STARTED.
+            </p>
+          </div>
+        </div>
+
+        {attestation ? (
+          <div
+            data-testid="attest-state"
+            className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-4"
+          >
+            <p className="font-mono text-xs font-semibold text-emerald-700">
+              SERVICE STARTED ✓
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <VerifyItem
+                label="Provider"
+                value={`${service.providerId} — ${providerName}`}
+                ok
+              />
+              <VerifyItem
+                label="Actor attestation"
+                value={`${attestation.actorId} · ${ROLE_LABEL[attestation.actorRole] ?? attestation.actorRole}`}
+                ok
+              />
+              <VerifyItem label="Timestamp" value={attestation.at} ok />
+              <VerifyItem label="Service episode" value={serviceId} ok />
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <p className="max-w-2xl text-xs text-slate-500">
+              {attestAllowed
+                ? "Attestasi provider menautkan sesi layanan ke penanggung jawab klinis sebelum titik layanan dikonfirmasi."
+                : `Hanya ${rolesLabel("captureClinical")} yang dapat mengesahkan layanan — peran ${ROLE_LABEL[role] ?? role} tidak memiliki izin attestasi provider.`}
+            </p>
+            <Button
+              type="button"
+              size="sm"
+              data-testid="attest-start"
+              disabled={!attestAllowed}
+              title={attestAllowed ? undefined : captureDenyTitle(role)}
+              onClick={handleAttest}
+              className="h-8 shrink-0 rounded-full"
+            >
+              <Stamp aria-hidden="true" className="size-3.5" />
+              MULAI &amp; ATTEST SERVICE
+            </Button>
+          </div>
+        )}
+      </section>
+
+      <section
+        aria-label="Service context"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-slate-800 text-white">
+            <MapPin aria-hidden="true" className="size-4" />
+          </span>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900">
+              Konfirmasi titik layanan (service context)
+            </h2>
+            <p className="text-xs text-slate-500">
+              Anchor = context witness atas sesi layanan — konteks titik
+              layanan, bukan bukti tunggal.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <VerifyItem label="Service episode" value={serviceId} ok />
+          <VerifyItem
+            label="Titik layanan sesi"
+            value={`${service.servicePoint} · ${service.facilityId}`}
+            ok
+          />
+          <VerifyItem
+            label="Anchor"
+            value={
+              anchorEvent
+                ? `${anchorEvent.servicePointId} · ${anchorEvent.facilityId} — ANCHORED`
+                : "NOT CONFIRMED"
+            }
+            ok={Boolean(anchorEvent)}
+          />
+        </div>
+
+        {anchorEvent ? (
+          <div
+            data-testid="anchor-state"
+            className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-4"
+          >
+            <p className="font-mono text-xs font-semibold text-emerald-700">
+              ANCHOR CONFIRMED ✓ — context witness
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <VerifyItem
+                label="Anchor code"
+                value={anchorEvent.servicePointId ?? "-"}
+                ok
+              />
+              <VerifyItem
+                label="Facility"
+                value={anchorEvent.facilityId ?? "-"}
+                ok
+              />
+              <VerifyItem label="Provider" value={service.providerId} ok />
+              <VerifyItem
+                label="Timestamp"
+                value={`${anchorEvent.anchoredAt} · ${anchorEvent.method ?? "VIRTUAL"}`}
+                ok
+              />
+            </div>
+            <p className="mt-3 text-xs text-slate-500">
+              Anchor bukan bukti tunggal — proof assessment tetap berdiri di
+              atas identitas, provider, evidence, temporal, billing, dan klaim.
+            </p>
+            {anchorResult?.outcome === "IDEMPOTENT" ? (
+              <p className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600">
+                {anchorResult.message}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="mt-4">
+          {anchorResult?.outcome === "MISMATCH" ? (
+            <p
+              data-testid="anchor-mismatch"
+              role="alert"
+              className="mb-3 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs text-red-700"
+            >
+              {anchorResult.message}
+            </p>
+          ) : null}
+
+          <p className="text-xs text-slate-500">
+            {!attestation
+              ? "Attestasi provider diperlukan sebelum konfirmasi titik layanan."
+              : !attestAllowed
+                ? `Hanya ${rolesLabel("captureClinical")} yang dapat mengonfirmasi titik layanan.`
+                : anchorEvent
+                  ? "Konfirmasi berulang dengan konteks sama bersifat idempoten — event tidak ditulis ulang."
+                  : "Pilih anchor titik layanan (konfirmasi virtual) atau masukkan kode anchor dari QR titik layanan."}
+          </p>
+
+            <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end">
+              <label className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                  Anchor virtual (titik layanan)
+                </span>
+                <select
+                  aria-label="Pilih anchor titik layanan"
+                  data-testid="anchor-select"
+                  value={anchorSelect}
+                  onChange={(e) => setAnchorSelect(e.target.value)}
+                  disabled={!attestAllowed || !attestation}
+                  className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400 disabled:bg-slate-50"
+                >
+                  <option value="">— pilih anchor titik layanan —</option>
+                  {ANCHOR_REGISTRY.map((e) => (
+                    <option key={e.code} value={e.code}>
+                      {`${e.code} · ${e.facilityId} · ${e.servicePoint}`}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                  Kode anchor dari QR
+                </span>
+                <input
+                  type="text"
+                  aria-label="Kode anchor dari QR titik layanan"
+                  data-testid="anchor-input"
+                  value={anchorCode}
+                  onChange={(e) => setAnchorCode(e.target.value)}
+                  disabled={!attestAllowed || !attestation}
+                  placeholder="mis. PHYSIO-01 (QR stiker titik layanan)"
+                  className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-700 placeholder:text-slate-400 focus-visible:outline-2 focus-visible:outline-sky-400 disabled:bg-slate-50"
+                />
+              </label>
+              <Button
+                type="button"
+                size="sm"
+                data-testid="confirm-anchor"
+                disabled={
+                  !attestAllowed ||
+                  !attestation ||
+                  !(anchorCode.trim() || anchorSelect)
+                }
+                title={
+                  !attestAllowed
+                    ? captureDenyTitle(role)
+                    : !attestation
+                      ? "Attestasi provider diperlukan sebelum konfirmasi titik layanan."
+                      : !(anchorCode.trim() || anchorSelect)
+                        ? "Pilih anchor titik layanan atau masukkan kode anchor."
+                        : undefined
+                }
+                onClick={handleConfirmAnchor}
+                className="h-9 shrink-0 rounded-full"
+              >
+                <MapPin aria-hidden="true" className="size-3.5" />
+                Konfirmasi titik layanan
+              </Button>
+            </div>
+          </div>
       </section>
 
       <section
