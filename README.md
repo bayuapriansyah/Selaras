@@ -72,6 +72,8 @@ npm install
 npm run dev        # → http://localhost:3000
 ```
 
+Build terbaru juga live di **https://selaras-bice.vercel.app** (otomatis ter-deploy dari `main` lewat Vercel). Untuk demo dari kondisi bersih: hapus localStorage `selaras-app-v1` lalu reload — role default aplikasi adalah **Reviewer**, jadi ganti peran dulu di Pengaturan (`/app/settings`) sesuai langkah (Operator untuk memulai pelayanan, Provider untuk attestasi, Admin untuk publikasi jaringan).
+
 Rute demo:
 - `/` — landing page
 - `/app` — dashboard reviewer
@@ -104,7 +106,20 @@ Rute demo:
 9. `/app/network/signatures/RS-017` — **Learning Loop** terisi (matches/verified/false-positive rate) + **GOVERNANCE** (Pantau/Perbarui/Pensiunkan).
 10. `/app/audit-log` — seluruh langkah jaringan tercatat.
 
-Kedua demo berjalan tanpa hidden shortcut — semua langkah lewat UI, tanpa akses rahasia.
+### DEMO C — POINT-OF-CARE (10 langkah, dari layanan)
+
+1. `/app/pelayanan` — role **Operator** (via Pengaturan) → isi form **Mulai pelayanan baru** → **Mulai Pelayanan →**; Evidence **Kedatangan** tercatat otomatis + audit `SERVICE_STARTED` / `IDENTITY_BOUND`.
+2. Panel **Verifikasi sesi layanan** — 4 syarat wajib (Episode / Provider / Titik layanan / Timestamp) sebelum evidence bisa dicatat.
+3. Role **Provider** → **MULAI & ATTEST SERVICE** → `SERVICE STARTED ✓` + audit `SERVICE_ATTESTED` (aktor manusia, bukan sistem).
+4. **Konfirmasi titik layanan** — jalur gagal dulu: kode salah (`RADIOLOGY-02`) → **ANCHOR CONTEXT MISMATCH** ditolak tanpa event → kode benar (`PHYSIO-01`) → **ANCHOR CONFIRMED ✓**; konfirmasi ulang **idempoten**.
+5. **DEMO SCAN** QR — token HMAC-SHA256, 30 menit, sekali pakai, tanpa data pasien di QR; sebelum scan evidence chip **"Terkunci — scan QR dulu"**.
+6. Catat evidence sesuai template (Tindakan, Catatan Klinis khusus Provider, Penyelesaian, Billing) sampai **"Selesai — seluruh evidence lengkap"**.
+7. **Buka Service Passport →** — status LENGKAP, cakupan, timeline event (identitas: *"Belum tertaut ke klaim"* — sesi baru memang terpisah dari siklus klaim).
+8. Sambung ke episode golden: `/app/passport/SVC-08421-09` (sesi dengan bukti hilang) → tombol **"Lihat klaim CLM-08421 →"**.
+9. Lanjut **DEMO A** dari situ (klaim → Proof View → replay → graf → AI → impact → klarifikasi → audit).
+10. Lanjut **DEMO B** (Integrity Mesh) — role **Admin** untuk publish.
+
+Ketiga demo berjalan tanpa hidden shortcut — semua langkah lewat UI, tanpa akses rahasia; alur Demo C (termasuk jalur gagal anchor & RBAC) dibuktikan suite E2E `p6` 14 langkah.
 
 ## Tech stack
 
