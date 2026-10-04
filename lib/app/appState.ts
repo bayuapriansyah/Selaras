@@ -4,6 +4,7 @@ import type {
   NetworkProposal,
   SignatureFeedback,
   SignatureStatus,
+  VerificationSession,
 } from "@/data/app/network";
 import type {
   EvidenceEvent,
@@ -53,6 +54,8 @@ export type PersistedState = {
   proposals: NetworkProposal[];
   signatureStatus: Record<string, SignatureStatus>;
   feedbacks: SignatureFeedback[];
+  /** Phase 8 — sesi verifikasi jaringan (persist via store pattern). */
+  verificationSessions: VerificationSession[];
   proofEvents: EvidenceEvent[];
   attestations: Attestation[];
   anchors: ServiceAnchorEvent[];
@@ -81,6 +84,7 @@ export const initialPersistedState: PersistedState = {
   proposals: [],
   signatureStatus: {},
   feedbacks: [],
+  verificationSessions: [],
   proofEvents: EMPTY_EVIDENCE_EVENTS,
   attestations: EMPTY_ATTESTATIONS,
   anchors: EMPTY_ANCHOR_EVENTS,

@@ -13,6 +13,7 @@ import {
   type FeedbackOutcome,
   type NetworkCondition,
   type NetworkProposal,
+  type RecommendedControl,
   type RiskSignature,
   type SignatureFeedback,
   type SignatureMatch,
@@ -414,6 +415,83 @@ export function adaptiveLevel(
 
 export function adaptiveAction(level: AdaptiveLevel): string {
   return ADAPTIVE_ACTION[level];
+}
+
+const CONTROL_SERVICE_UNIQUENESS: RecommendedControl = {
+  code: "SERVICE_UNIQUENESS",
+  label: "Service uniqueness",
+  reason: "Confirm that this service episode is represented only once.",
+  required: true,
+  evidence: "passport",
+};
+
+const CONTROL_COMPLETION: RecommendedControl = {
+  code: "COMPLETION_EVIDENCE",
+  label: "Completion evidence",
+  reason: "Confirm required completion evidence exists.",
+  required: true,
+  evidence: "session",
+};
+
+const CONTROL_BILLING: RecommendedControl = {
+  code: "BILLING_LINKAGE",
+  label: "Billing linkage",
+  reason: "Confirm billing points to the same service episode.",
+  required: true,
+  evidence: "claimTrace",
+};
+
+/**
+ * Phase 8 — RiskSignature → RecommendedControl[].
+ * Sumber: deklarasi `recommendedControls` pada signature (makna signature),
+ * fallback diturunkan dari detectionConditions (bukan hardcode UI).
+ */
+export function controlsOf(signature: RiskSignature): RecommendedControl[] {
+  if (signature.recommendedControls?.length) {
+    return signature.recommendedControls;
+  }
+  const out: RecommendedControl[] = [];
+  const add = (c: RecommendedControl) => {
+    if (!out.some((x) => x.code === c.code)) out.push(c);
+  };
+  const conds = signature.detectionConditions;
+  if (
+    conds.some(
+      (c) =>
+        c.kind === "sameProviderOverlap" ||
+        c.kind === "sameProviderWindow" ||
+        c.kind === "minItems" ||
+        (c.kind === "localSignal" && c.code === "DUPLICATE_SESSION"),
+    )
+  ) {
+    add(CONTROL_SERVICE_UNIQUENESS);
+  }
+  if (
+    conds.some(
+      (c) =>
+        (c.kind === "missingEvidence" && c.kinds.includes("completion")) ||
+        c.kind === "sessionsComplete",
+    )
+  ) {
+    add(CONTROL_COMPLETION);
+  }
+  if (
+    conds.some(
+      (c) => c.kind === "localSignal" && c.code === "BILLING_BEFORE_PASSPORT",
+    )
+  ) {
+    add(CONTROL_BILLING);
+  }
+  if (out.length === 0) {
+    add({
+      code: "GENERAL_REVIEW",
+      label: signature.recommendedControl,
+      reason: signature.pattern,
+      required: true,
+      evidence: "claimTrace",
+    });
+  }
+  return out;
 }
 
 export function effectiveStatus(

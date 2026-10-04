@@ -63,6 +63,9 @@ export type RiskSignature = {
   signalNotes: string[];
   requiredEvidence: string[];
   recommendedControl: string;
+  /** Phase 8 — kontrol verifikasi khusus risiko (field additive, opsional;
+   * jika tidak ada, controlsOf() menurunkannya dari detectionConditions). */
+  recommendedControls?: RecommendedControl[];
   severity: SignatureSeverity;
   version: number;
   status: SignatureStatus;
@@ -118,6 +121,68 @@ export type SignatureFeedback = {
   at: string;
 };
 
+/** Phase 8 — tautan bukti untuk kontrol verifikasi (route yang sudah ada). */
+export type ControlEvidenceLink =
+  | "passport"
+  | "attestation"
+  | "session"
+  | "claimTrace";
+
+/**
+ * Phase 8 — RecommendedControl: representasi domain kontrol yang direkomendasikan
+ * sebuah Risk Signature (bukan array UI hardcode). Dideklarasikan pada signature
+ * (`recommendedControls`) atau diturunkan dari detectionConditions oleh
+ * controlsOf() di lib/app/network.ts.
+ */
+export type RecommendedControl = {
+  code: string;
+  label: string;
+  reason: string;
+  required: boolean;
+  evidence: ControlEvidenceLink;
+};
+
+export type VerificationStepStatus = "PENDING" | "VERIFIED";
+
+/** Phase 8 — langkah verifikasi tersimpan per sesi (state checklist). */
+export type VerificationStep = {
+  id: string;
+  signatureId: string;
+  code: string;
+  label: string;
+  reason: string;
+  status: VerificationStepStatus;
+  required: boolean;
+  evidence: ControlEvidenceLink;
+  checkedBy?: string;
+  checkedAt?: string;
+};
+
+export type VerificationSessionStatus =
+  | "NOT_STARTED"
+  | "IN_PROGRESS"
+  | "COMPLETED";
+
+/**
+ * Phase 8 — verification session (persist via PersistedState, tanpa backend).
+ * Status sesi terpisah dari outcome hasil (§18).
+ */
+export type VerificationSession = {
+  id: string;
+  matchKey: string;
+  claimId: string;
+  signatureId: string;
+  level: AdaptiveLevel;
+  status: VerificationSessionStatus;
+  steps: VerificationStep[];
+  startedBy: string;
+  startedAt: string;
+  completedBy?: string;
+  completedAt?: string;
+  result?: FeedbackOutcome;
+  note?: string;
+};
+
 export type NetworkFacility = {
   id: string;
   node: "A" | "B" | "C" | "D";
@@ -156,6 +221,38 @@ export const VERIFICATION_RESULT_OUTCOME: Record<
   PASS: "CLEARED",
   NEEDS_CLARIFICATION: "NEEDS_MORE_DATA",
   HUMAN_REVIEW: "CONFIRMED",
+};
+
+/** Phase 8 — outcome yang boleh disubmit reviewer (§6; FALSE_POSITIVE tetap
+ * didukung model feedback tetapi bukan tombol submit — governance = Phase 9). */
+export const SUBMITTABLE_OUTCOMES = [
+  "CLEARED",
+  "NEEDS_MORE_DATA",
+  "CONFIRMED",
+] as const;
+
+export type SubmittableOutcome = (typeof SUBMITTABLE_OUTCOMES)[number];
+
+/** Pemetaan balik outcome submit → VerificationResult field SignatureFeedback. */
+export const OUTCOME_RESULT: Record<SubmittableOutcome, VerificationResult> = {
+  CLEARED: "PASS",
+  NEEDS_MORE_DATA: "NEEDS_CLARIFICATION",
+  CONFIRMED: "HUMAN_REVIEW",
+};
+
+export const OUTCOME_LABEL: Record<FeedbackOutcome, string> = {
+  CLEARED: "CLEARED",
+  NEEDS_MORE_DATA: "NEEDS MORE DATA",
+  CONFIRMED: "CONFIRMED",
+  FALSE_POSITIVE: "FALSE POSITIVE",
+};
+
+export const OUTCOME_MEANING: Record<SubmittableOutcome, string> = {
+  CLEARED: "Sinyal tidak lagi membutuhkan eskalasi berdasarkan verifikasi ini.",
+  NEEDS_MORE_DATA:
+    "Bukti belum cukup — reviewer/provider dapat diminta melengkapi evidence.",
+  CONFIRMED:
+    "Pola tetap didukung hasil verifikasi — tetap menjadi finding untuk keputusan manusia.",
 };
 
 export const PROPOSAL_STATUS_LABEL: Record<ProposalStatus, string> = {
@@ -206,6 +303,36 @@ export const signatureSeeds: RiskSignature[] = [
       "Dokumen pendukung pelayanan",
     ],
     recommendedControl: "Verifikasi keunikan episode layanan (step-up)",
+    recommendedControls: [
+      {
+        code: "SERVICE_UNIQUENESS",
+        label: "Service uniqueness",
+        reason: "Confirm that this service episode is represented only once.",
+        required: true,
+        evidence: "passport",
+      },
+      {
+        code: "PROVIDER_ATTESTATION",
+        label: "Provider attestation",
+        reason: "Confirm provider attestation exists for this episode.",
+        required: true,
+        evidence: "attestation",
+      },
+      {
+        code: "COMPLETION_EVIDENCE",
+        label: "Completion evidence",
+        reason: "Confirm required completion evidence exists.",
+        required: true,
+        evidence: "session",
+      },
+      {
+        code: "BILLING_LINKAGE",
+        label: "Billing linkage",
+        reason: "Confirm billing points to the same service episode.",
+        required: true,
+        evidence: "claimTrace",
+      },
+    ],
     severity: "MEDIUM",
     version: 1,
     status: "VALIDATED",

@@ -25,12 +25,12 @@ import {
 import { ROLE_LABEL } from "@/lib/app/actions";
 import {
   signatureSeeds,
-  VERIFICATION_RESULT_OUTCOME,
+  type AdaptiveLevel,
   type NetworkProposal,
   type SignatureFeedback,
   type SignatureSeverity,
   type SignatureStatus,
-  type VerificationResult,
+  type SubmittableOutcome,
 } from "@/data/app/network";
 import type { NetworkCondition } from "@/data/app/network";
 import type {
@@ -64,6 +64,11 @@ import {
   appendProvenance,
   type ProvenanceAppendInput,
 } from "@/lib/app/services/provenanceService";
+import {
+  startNetworkVerification,
+  submitNetworkVerification,
+  toggleVerificationStep as toggleVerificationStepReducer,
+} from "@/lib/app/services/verificationService";
 
 export type { EvidenceAdd, StartServiceInput } from "@/lib/app/appState";
 
@@ -134,12 +139,16 @@ type AppContextValue = {
     note?: string,
   ) => void;
   publishSignature: (signatureId: string) => void;
-  startVerification: (matchKey: string, claimId: string, signatureId: string) => void;
-  completeVerification: (
+  startVerification: (
     matchKey: string,
     claimId: string,
     signatureId: string,
-    result: VerificationResult,
+    level: AdaptiveLevel,
+  ) => string;
+  toggleVerificationStep: (sessionId: string, stepId: string) => void;
+  submitVerification: (
+    sessionId: string,
+    outcome: SubmittableOutcome,
     note?: string,
   ) => void;
   addProofEvent: (input: ProofEventInput) => string;
@@ -505,66 +514,52 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const startVerification = React.useCallback(
-    (matchKey: string, claimId: string, signatureId: string) => {
-      setState((prev) => {
-        const u = users.find((x) => x.role === prev.role);
-        return {
-          ...prev,
-          audit: pushAudit(
-            prev.audit,
-            {
-              action: "NET_VERIFICATION_STARTED",
-              entity: "Network",
-              entityId: claimId,
-              description: `Verifikasi step-up dimulai untuk ${claimId} (match ${signatureId}).`,
-            },
-            u?.name ?? "Pengguna Demo",
-            prev.role,
-          ),
-        };
-      });
-      void matchKey;
-    },
-    [setState],
-  );
-
-  const completeVerification = React.useCallback(
     (
       matchKey: string,
       claimId: string,
       signatureId: string,
-      result: VerificationResult,
-      note?: string,
-    ) => {
+      level: AdaptiveLevel,
+    ): string => {
+      let sessionId = "";
       setState((prev) => {
         const u = users.find((x) => x.role === prev.role);
-        const name = u?.name ?? "Pengguna Demo";
-        const feedback: SignatureFeedback = {
-          id: uid("FB"),
-          matchKey,
-          signatureId,
-          claimId,
-          result,
-          outcome: VERIFICATION_RESULT_OUTCOME[result],
+        const result = startNetworkVerification(
+          prev,
+          { matchKey, claimId, signatureId, level },
+          { name: u?.name ?? "Pengguna Demo", role: prev.role },
+        );
+        sessionId = result.session?.id ?? "";
+        return result.state;
+      });
+      return sessionId;
+    },
+    [setState],
+  );
+
+  const toggleVerificationStep = React.useCallback(
+    (sessionId: string, stepId: string) => {
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        return toggleVerificationStepReducer(prev, sessionId, stepId, {
+          name: u?.name ?? "Pengguna Demo",
+          role: prev.role,
+        });
+      });
+    },
+    [setState],
+  );
+
+  const submitVerification = React.useCallback(
+    (sessionId: string, outcome: SubmittableOutcome, note?: string) => {
+      setState((prev) => {
+        const u = users.find((x) => x.role === prev.role);
+        return submitNetworkVerification(
+          prev,
+          sessionId,
+          outcome,
           note,
-          by: name,
-          at: nowStamp(),
-        };
-        return {
-          ...prev,
-          feedbacks: [feedback, ...prev.feedbacks],
-          audit: pushAudit(
-            prev.audit,
-            {
-              action: "NET_VERIFICATION_RESULT",
-              entity: "Network",
-              entityId: claimId,
-              description: `Hasil verifikasi ${claimId} (${signatureId}): ${result} — hasil ${feedback.outcome}.`,
-            },
-            name,
-            prev.role,
-          ),
-        };
+          { name: u?.name ?? "Pengguna Demo", role: prev.role },
+        ).state;
       });
     },
     [setState],
@@ -746,7 +741,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       decideProposal,
       publishSignature,
       startVerification,
-      completeVerification,
+      toggleVerificationStep,
+      submitVerification,
       addProofEvent,
       addAttestation,
       addAnchorEvent,
@@ -777,7 +773,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       decideProposal,
       publishSignature,
       startVerification,
-      completeVerification,
+      toggleVerificationStep,
+      submitVerification,
       addProofEvent,
       addAttestation,
       addAnchorEvent,
